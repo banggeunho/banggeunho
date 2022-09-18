@@ -1,7 +1,7 @@
 ### 👋 Hi there [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbanggeunho&count_bg=%232C9CB8&title_bg=%232B69BC&icon=&icon_color=%237E2828&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
 <p>
   <a href="https://www.instagram.com/giyomi_ghgh/" target="_blank"><img src="https://img.shields.io/badge/giyomi_ghgh-0A66C2?style=flat-square&logo=instagram&logoColor=white"/></a>
-  <a href="mailto:iscowkite@gmail.com" target="_blank"><img src="https://img.shields.io/badge/panggeunho@gmail.com-EA4335?style=flat-square&logo=Gmail&logoColor=white"/></a>
+  <a href="mailto:panggeunho@gmail.com" target="_blank"><img src="https://img.shields.io/badge/panggeunho@gmail.com-EA4335?style=flat-square&logo=Gmail&logoColor=white"/></a>
 </p>
 <p>
   👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in Android, Web, Server, Machine learning.🚀<br/>
