@@ -1,21 +1,13 @@
-### Hi there 👋
-
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbanggeunho&count_bg=%232C9CB8&title_bg=%232B69BC&icon=&icon_color=%237E2828&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
-
-### 🤞 Nice way to meet me
+### 👋 Hi there [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbanggeunho&count_bg=%232C9CB8&title_bg=%232B69BC&icon=&icon_color=%237E2828&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
 <p>
-  <a href="https://blog.cowkite.com/" target="_blank"><img src="https://img.shields.io/badge/Tech_Blog-DD0B78?style=flat-square&logo=GitHub%20Sponsors&logoColor=white"/></a>
-  <a href="https://www.linkedin.com/in/cowkite/" target="_blank"><img src="https://img.shields.io/badge/SoyeonKim-0A66C2?style=flat-square&logo=Linkedin&logoColor=white"/></a>
-  <a href="https://twitter.com/cowkite" target="_blank"><img src="https://img.shields.io/badge/cowkite-1DA1F2?style=flat-square&logo=Twitter&logoColor=white"/></a>
-  <a href="mailto:iscowkite@gmail.com" target="_blank"><img src="https://img.shields.io/badge/iscowkite@gmail.com-EA4335?style=flat-square&logo=Gmail&logoColor=white"/></a>
+  <a href="https://www.instagram.com/giyomi_ghgh/" target="_blank"><img src="https://img.shields.io/badge/giyomi_ghgh-0A66C2?style=flat-square&logo=instagram&logoColor=white"/></a>
+  <a href="mailto:iscowkite@gmail.com" target="_blank"><img src="https://img.shields.io/badge/panggeunho@gmail.com-EA4335?style=flat-square&logo=Gmail&logoColor=white"/></a>
 </p>
-
 <p>
-  👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in API, WEB, and APP.🚀<br/>
-  I have experience 7 years of Android development and 2 years of iOS development.<br/>
-  For the past year, I have been interested in creating Graph-QL APIs with Quarkus and a web screen with React.<br/>
-  Sometimes I develop cross-platforms mobile app like ReactNative or Flutter. (but prefer native💖)<br/><br/>
-  I enjoy hiking, swimming, dive and surf. ⛰ 🏄<br/>
+  👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in Android, Web, Server, Deep-Learning.🚀<br/>
+  For the past year, I have been interested in creating android with Java and Data analysis with pytorch.<br/>
+  Currently, I develop web with react and typescript. <br/><br/>
+  I enjoy hiking, drinking and do jogging. ⛰ <br/>
   I hope to develop every beautiful things. ✨ <br/><br/>
 </p>
 
@@ -37,12 +29,9 @@
   <img src="https://img.shields.io/badge/Swift-FA7343?style=flat-square&logo=Swift&logoColor=white"/>
 </p>
 
-- 🔭 I’m currently working on ...
+- 🔭 I’m currently working on kako enterprise edu-program as a student.
 - 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
+- 
+
+
 
