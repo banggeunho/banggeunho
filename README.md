@@ -6,7 +6,7 @@
 <p>
   👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in Android, Web, Server, Machine learning.🚀<br/>
   For the past year, I have been interested in creating android with Java and Data analysis with pytorch.<br/>
-  Currently, I develop web with react and typescript. <br/><br/>
+  Currently, I develop web service using react, spring, oracle, kafka and kubernetes. <br/><br/>
   I enjoy hiking, drinking and do jogging. ⛰ <br/>
   I hope to develop every beautiful things. ✨ <br/><br/>
 </p>
