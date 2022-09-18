@@ -4,7 +4,7 @@
   <a href="mailto:iscowkite@gmail.com" target="_blank"><img src="https://img.shields.io/badge/panggeunho@gmail.com-EA4335?style=flat-square&logo=Gmail&logoColor=white"/></a>
 </p>
 <p>
-  👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in Android, Web, Server, Deep-Learning.🚀<br/>
+  👋&nbsp; Hi there! I'm <b>full stack developer</b> skilled in Android, Web, Server, Machine learning.🚀<br/>
   For the past year, I have been interested in creating android with Java and Data analysis with pytorch.<br/>
   Currently, I develop web with react and typescript. <br/><br/>
   I enjoy hiking, drinking and do jogging. ⛰ <br/>
@@ -15,23 +15,24 @@
 ### 💪 Skills
 #### Platforms & Languages
 <p>
-  <img src="https://img.shields.io/badge/Quarkus-4695EB?style=flat-square&logo=Quarkus&logoColor=white"/>
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/>
-  <img src="https://img.shields.io/badge/ReactNative-61DAFB?style=flat-square&logo=React&logoColor=black"/>
   <img src="https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=Android&logoColor=white"/>
-  <img src="https://img.shields.io/badge/iOS-000000?style=flat-square&logo=iOS&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=Flutter&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Javascript-007396?style=flat-square&logo=Javascript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/>
 </p>
 <p>
-  <img src="https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=Kotlin&logoColor=white"/> 
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=TypeScript&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Swift-FA7343?style=flat-square&logo=Swift&logoColor=white"/>
+
+  
+
 </p>
 
 - 🔭 I’m currently working on kako enterprise edu-program as a student.
 - 🌱 I’m currently learning ...
-- 
+  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=TypeScript&logoColor=white"/>
+    <img src="https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=Kotlin&logoColor=white"/> 
+  
+<div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/js-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/ts-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/react-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/redux-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/python-icon.svg" alt="icon" width="45" height="45" /></div><div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/restapi-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/docker-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/github-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/nginx-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="icon" width="45" height="45" /></div><div style="display: flex; align-items: flex-start;"><img src="https://techstack-generator.vercel.app/kubernetes-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/java-icon.svg" alt="icon" width="45" height="45" /><img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="45" height="45" /></div>
 
 
 
