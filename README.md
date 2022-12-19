@@ -16,7 +16,7 @@
 ### 🌱 I’m currently learning ...
 #### Front-End
 <p>
-  <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/>
+  
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=TypeScript&logoColor=white"/>
     <img src="https://img.shields.io/badge/Redux-764ABC?style=flat-square&logo=Redux&logoColor=white"/>
     <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=Next.js&logoColor=white"/>
@@ -24,7 +24,7 @@
 
 #### Back-End
 <p>
-    <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=Spring-boot&logoColor=white"/>
+    
   <img src="https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=Kotlin&logoColor=white"/> 
 
   <img src="https://img.shields.io/badge/Kafka-231F20?style=flat-square&logo=apache-Kafka&logoColor=white"/>
@@ -49,7 +49,7 @@
     <img src="https://img.shields.io/badge/WearOS-4285F4?style=flat-square&logo=WearOS&logoColor=black"/>
   
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black"/>
-
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=Spring-boot&logoColor=white"/>
   <img src="https://img.shields.io/badge/Scikitlearn-F7931E?style=flat-square&logo=Scikit-learn&logoColor=black"/>
   <img src="https://img.shields.io/badge/Pytorch-EE4C2C?style=flat-square&logo=Pytorch&logoColor=white"/>
  </p>
