@@ -81,6 +81,7 @@
     <img src="https://img.shields.io/badge/AWS_RDS-527FFF?style=flat-square&logo=Amazon-RDS&logoColor=black"/>
    <img src="https://img.shields.io/badge/AWS_S3-569A31?style=flat-square&logo=Amazon-S3&logoColor=white"/>
     <img src="https://img.shields.io/badge/Oracle_Cloud-F80000?style=flat-square&logo=Oracle&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Kakao_i_Cloud-FFCD00?style=flat-square&logo=Kakao&logoColor=black"/>
 
 </p>
 
