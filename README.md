@@ -6,9 +6,6 @@
   Currently, I'm developing a backend service of a cloud native web service using <b>Next js, Spring boot,
   <br/>and DevOps(Terraform, kubernetes) on <a href="https://www.kakaoicloud.com/"> KakaoiCloud </a>.</b> 
   <br>
-  <blockquote>
-       * <a href="https://formduo.xyz">새로운 차원의 설문조사 플랫폼 - 폼듀</a>
-   </blockquote>
   I enjoy hiking, drinking and do jogging. ⛰ <br/>
   I hope to develop every beautiful things. ✨ <br/>
 </p>
@@ -30,7 +27,7 @@
 
 <hr/>
 
-### 💪 Skills
+### 💪 Skills & Experiences
 #### Languages
 <p>
   <img src="https://img.shields.io/badge/C-A8B9CC?style=flat-square&logo=C&logoColor=white"/>
