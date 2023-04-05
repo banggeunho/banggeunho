@@ -4,9 +4,9 @@
   I'm <b>full stack developer</b> skilled in Mobile, Web, Server, Infra, Machine learning.🚀<br/>
   For the past year, I have been interested in creating android apps with Java and Data analysis with pytorch.<br/>
   Currently, I'm developing a backend service of a cloud native web service using <b>Next js, Spring boot,
-  <br/>and DevOps(Terraform, kubernetes) on <a href="https://www.kakaoicloud.com/"> KakaoiCloud </a>.</b> 
+  <br/>and DevOps(Terraform, kubernetes).</b> 
   <br>
-  I enjoy hiking, drinking and do jogging. ⛰ <br/>
+  I enjoy hiking and do jogging. ⛰ <br/>
   I hope to develop every beautiful things. ✨ <br/>
 </p>
 <p>
