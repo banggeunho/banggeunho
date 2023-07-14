@@ -9,6 +9,11 @@
 
 <div align="center">
 <hr/>
+  
+  ###  😎 Currently Devloping
+  [(가치일기) 다이어리 공유 플랫폼 API 서버 개발](https://github.com/Ddooby-Leah/GACHI-ILLGI-BACKEND)
+  
+<br>
 
  ###  😎 Currently Learning
 <p>
@@ -16,7 +21,8 @@
   <img src="https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=Kotlin&logoColor=white"/> 
   <img src="https://img.shields.io/badge/MySQL-Review-4479A1?style=flat-square&logo=MySQL&logoColor=white"/> 
 
-</p>
+</p><br>
+
 
 
 ### 💪 Skills & Experiences
