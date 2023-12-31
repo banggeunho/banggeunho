@@ -17,9 +17,11 @@
 
  ###  😎 Currently Learning
 <p>
-   <img src="https://img.shields.io/badge/Java-Review-007396?style=flat-square&logo=Java&logoColor=white"/> 
-  <img src="https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=Kotlin&logoColor=white"/> 
   <img src="https://img.shields.io/badge/MySQL-Review-4479A1?style=flat-square&logo=MySQL&logoColor=white"/> 
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=NestJS&logoColor=white"/> 
+  <img src="https://img.shields.io/badge/Jest-C21325?style=flat-square&logo=Jest&logoColor=white"/> 
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=Typescript&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=Express&logoColor=white"/>
 
 </p><br>
 
@@ -68,7 +70,7 @@
     <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=flat-square&logo=Amazon-EC2&logoColor=black"/>
     <img src="https://img.shields.io/badge/AWS_RDS-527FFF?style=flat-square&logo=Amazon-RDS&logoColor=black"/>
    <img src="https://img.shields.io/badge/AWS_S3-569A31?style=flat-square&logo=Amazon-S3&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Kakao_i_Cloud-FFCD00?style=flat-square&logo=Kakao&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Kakao_Cloud-FFCD00?style=flat-square&logo=Kakao&logoColor=black"/>
 
 </p>
 
