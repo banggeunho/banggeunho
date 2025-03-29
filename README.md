@@ -11,7 +11,6 @@
 <hr/>
   
   ###  🛠 Currently Developing
-  [(가치일기) 다이어리 공유 플랫폼 API 서버 개발](https://github.com/Ddooby-Leah/GACHI-ILLGI-BACKEND)
   
 <br>
 
