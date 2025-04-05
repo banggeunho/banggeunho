@@ -2,7 +2,6 @@
 <div align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Belanosima&weight=600&size=70&pause=15000&color=F753B2&background=E9CFE780&center=true&vCenter=true&width=900&height=120&lines=Welcome+to+Geunho's+World" alt="Hello Geunho's World." />
   <br/><br/>
- <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fbanggeunho&count_bg=%23E11ECB&title_bg=%23555555&icon=iconify.svg&icon_color=%23FFFFFF&title=hits&edge_flat=false"/>
 </div>
 
 
