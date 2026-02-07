@@ -24,6 +24,10 @@ CDC(Change Data Capture) 파이프라인을 Kafka와 Debezium을 활용하여 �
 <!-- 이미지를 추가하려면 images/ 폴더에 넣고 아래처럼 사용하세요 -->
 <!-- ![아키텍처](images/architecture.png) -->
 
+![architecture](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2021/11/30/GameLift-with-Serverless-backend-reference-architecture-diagram.png)
+
 ## 배운 점
 
 여기에 프로젝트를 통해 배운 점이나 회고를 작성하세요.
+
+## 시로시로
