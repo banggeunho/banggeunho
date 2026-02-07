@@ -38,10 +38,7 @@
       <!-- Hero image -->
       
       <div class="project-detail-hero">
-        <div class="project-detail-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>프로젝트 썸네일을 추가하세요</span>
-        </div>
+        <img src="images/thumbnail.svg" alt="토스페이 결제 시스템 연동">
       </div>
       
 
@@ -75,7 +72,7 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>기존 이니시스(신용카드), 카카오페이(간편결제) 결제 수단에 토스페이를 추가하여 결제 옵션을 다양화하고 전체 거래액의 30%(111억 원)를 달성했습니다.</p>
+<p>기존 이니시스(신용카드), 카카오페이(간편결제) 결제 수단에 토스페이를 추가하여 결제 옵션을 다양화하고 전체 거래액의 30%(111억 원)를 달성했습니다. ISMS-P 보안 인증 심사와 병행하며 통상 3개월 작업을 6주 만에 완료한 프로젝트입니다.</p>
 </section>
 <section class="content-section">
 <h2>프로젝트 배경</h2>
@@ -88,7 +85,7 @@
 <p><strong>기술적 도전:</strong></p>
 <ul>
 <li><strong>영향 범위 광범위:</strong> 결제, 주문, 정산, 어드민 시스템 전 영역에 걸친 변경 작업</li>
-<li><strong>ISMS-P 인증 동시 진행:</strong> 보안 인증 심사와 신규 결제 수단 개발을 병행 수행</li>
+<li><strong>ISMS-P 인증 동시 진행:</strong> 보안 인증 심사와 신규 결제 수단 개발을 병행 수행 (정보보호 관리체계 인증)</li>
 <li><strong>타이트한 일정:</strong> 통상 3개월 소요되는 작업을 비즈니스 요구사항에 따라 6주 내 완료 필요</li>
 <li><strong>데이터 정합성 보장:</strong> 결제-주문-정산 전 과정의 트랜잭션 일관성 유지</li>
 </ul>
@@ -124,7 +121,7 @@
 <p><strong>결제 시스템:</strong></p>
 <ul>
 <li>토스페이 API 연동 (승인, 취소, 환불)</li>
-<li>기존 결제 로직과 통합 (전략 패턴)</li>
+<li>기존 결제 로직과 통합 (전략 패턴으로 PG사별 분기 처리)</li>
 <li>Webhook 기반 실시간 결제 상태 동기화</li>
 </ul>
 <p><strong>주문 시스템:</strong></p>
@@ -152,7 +149,7 @@
 <li>태스크 분해 및 일정 산정</li>
 <li>ISMS-P 요구사항 반영</li>
 </ol>
-<p><strong>병렬 개발:</strong></p>
+<p><strong>병렬 개발 전략:</strong></p>
 <ul>
 <li>결제 API 연동 (2주)</li>
 <li>주문/정산 로직 확장 (2주)</li>
@@ -177,7 +174,7 @@
 <ul>
 <li><strong>문제:</strong> 결제 승인 후 주문 생성 실패 시 고객 과금 문제 발생 가능</li>
 <li><strong>해결:</strong><ul>
-<li>분산 트랜잭션 패턴 적용 (Saga 패턴)</li>
+<li>분산 트랜잭션 패턴 적용 (Saga 패턴으로 보상 트랜잭션 설계)</li>
 <li>TossPay Webhook을 통한 결제 상태 실시간 동기화</li>
 <li>실패 케이스별 보상 트랜잭션 설계 (자동 환불, 재시도 로직)</li>
 <li>결제-주문 매핑 테이블로 중복 결제 방지</li>
@@ -207,9 +204,9 @@
 <section class="content-section">
 <h2>배운 점</h2>
 <ul>
-<li>복잡한 시스템 통합 경험</li>
-<li>짧은 일정 내 효율적 태스크 관리</li>
-<li>보안 인증 요구사항 대응</li>
+<li>복잡한 시스템 통합 경험 (결제-주문-정산 전 영역 변경)</li>
+<li>짧은 일정 내 효율적 태스크 관리 및 우선순위 결정</li>
+<li>보안 인증 요구사항 대응 및 규제 준수 프로세스 이해</li>
 </ul>
 </section>
 
@@ -226,5 +223,7 @@
 
 
   <script src="../../script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </body>
 </html>

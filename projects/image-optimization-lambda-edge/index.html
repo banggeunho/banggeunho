@@ -38,10 +38,7 @@
       <!-- Hero image -->
       
       <div class="project-detail-hero">
-        <div class="project-detail-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>프로젝트 썸네일을 추가하세요</span>
-        </div>
+        <img src="images/thumbnail.svg" alt="실시간 이미지 최적화 시스템">
       </div>
       
 
@@ -75,17 +72,12 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>에브리타임 혜택탭 출시로 트래픽 30% 증가 상황에서 Lambda@Edge 기반 On-demand 이미지 처리 시스템을 구축하여 비용을 68% 절감했습니다.</p>
+<p>에브리타임 혜택탭 출시로 트래픽 30% 증가 상황에서 Lambda@Edge 기반 On-demand 이미지 처리 시스템을 구축하여 비용을 68% 절감하고 페이지 로딩 속도를 50% 개선했습니다.</p>
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
 <p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
-<ul>
-<li>에브리타임 앱 내 전용 탭으로 커머스 서비스 노출</li>
-<li>거의 모든 페이지에 배너/상품 이미지 존재</li>
-<li>출시 후 트래픽 30% 급증</li>
-<li>CloudFront 데이터 전송 비용 피크 월 90만 원 도달</li>
-</ul>
+<p>에브리타임은 대학생 커뮤니티 앱으로, 커머스 서비스를 앱 내 전용 &#39;혜택탭&#39;으로 노출하게 되었습니다. 거의 모든 페이지에 배너와 상품 이미지가 존재하여 출시 후 트래픽이 30% 급증했고, CloudFront 데이터 전송 비용이 피크 월 90만 원에 도달했습니다.</p>
 <p><strong>기존 시스템의 문제:</strong></p>
 <ul>
 <li><strong>원본 이미지 서빙:</strong> 고해상도 원본 파일을 그대로 전송 (불필요한 대역폭 낭비)</li>
@@ -128,7 +120,7 @@
 <p><strong>Lambda@Edge (이미지 처리):</strong></p>
 <ul>
 <li><strong>리사이징:</strong> Sharp 라이브러리 기반 고성능 이미지 리사이징</li>
-<li><strong>포맷 변환:</strong> WebP, AVIF 등 차세대 압축 포맷 지원</li>
+<li><strong>포맷 변환:</strong> WebP, AVIF 등 차세대 압축 포맷 지원 (브라우저 호환성 자동 처리)</li>
 <li><strong>품질 조정:</strong> 기본 80% 품질로 시각적 품질과 용량 최적 밸런스 유지</li>
 <li><strong>원본 보존:</strong> S3에 원본 이미지 유지, 변환된 이미지는 CloudFront 캐시에만 저장</li>
 </ul>
@@ -144,15 +136,18 @@
 <h2>기술적 도전과 해결</h2>
 <p><strong>도전 1: Lambda@Edge 타임아웃</strong></p>
 <ul>
-<li>해결: Sharp 최적화, 메모리 1024MB 할당</li>
+<li><strong>문제:</strong> 대용량 이미지 처리 시 Lambda@Edge 타임아웃 발생</li>
+<li><strong>해결:</strong> Sharp 라이브러리 최적화 설정, 메모리 1024MB 할당으로 처리 속도 향상</li>
 </ul>
 <p><strong>도전 2: 비용 폭증 우려</strong></p>
 <ul>
-<li>해결: CloudFront Functions 사전 검증, 캐시 효율 극대화</li>
+<li><strong>문제:</strong> 악의적 사용자가 다양한 크기 조합을 요청하면 Lambda 호출 비용 폭증 가능</li>
+<li><strong>해결:</strong> CloudFront Functions 사전 검증으로 비정상 요청 차단, 캐시 효율 극대화</li>
 </ul>
-<p><strong>도전 3: 캐시 히트율</strong></p>
+<p><strong>도전 3: 캐시 히트율 개선</strong></p>
 <ul>
-<li>해결: 캐시 키 정규화, 인기 크기 우선 캐싱 (65% → 85%)</li>
+<li><strong>문제:</strong> 초기 캐시 히트율 65%로 Lambda 호출이 빈번하여 비용 및 응답 속도 저하</li>
+<li><strong>해결:</strong> 캐시 키 정규화 (100px 단위), 인기 크기 우선 캐싱 전략으로 히트율 85%까지 개선</li>
 </ul>
 </section>
 <section class="content-section">
@@ -165,9 +160,9 @@
 <section class="content-section">
 <h2>배운 점</h2>
 <ul>
-<li>엣지 컴퓨팅 아키텍처 설계</li>
-<li>차세대 이미지 포맷 활용</li>
-<li>AWS 비용 최적화 전략</li>
+<li>엣지 컴퓨팅 아키텍처 설계 경험 (CDN 레벨에서의 동적 처리)</li>
+<li>차세대 이미지 포맷 활용 (WebP, AVIF) 및 브라우저 호환성 처리</li>
+<li>AWS 비용 최적화 전략 (캐시 효율, 어뷰징 방지)</li>
 </ul>
 </section>
 
@@ -184,5 +179,7 @@
 
 
   <script src="../../script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </body>
 </html>

@@ -38,10 +38,7 @@
       <!-- Hero image -->
       
       <div class="project-detail-hero">
-        <div class="project-detail-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>프로젝트 썸네일을 추가하세요</span>
-        </div>
+        <img src="images/thumbnail.svg" alt="사용자 이벤트 로그 데이터 파이프라인">
       </div>
       
 
@@ -75,7 +72,7 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>AWS 관리형 서비스 기반 실시간 데이터 파이프라인을 구축하여 데이터 확인 속도를 2<del>3일에서 1시간</del>1일로 단축했습니다.</p>
+<p>AWS 관리형 서비스 기반 실시간 데이터 파이프라인을 구축하여 데이터 확인 속도를 2<del>3일에서 1시간</del>1일로 단축하고 Tableau 작업을 50% 이상 자동화했습니다.</p>
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
@@ -87,6 +84,7 @@
 <li><strong>적재:</strong> 정제된 데이터를 데이터 웨어하우스에 수동 업로드</li>
 <li><strong>지연:</strong> 데이터 요청부터 분석 가능 시점까지 평균 2~3일 소요</li>
 </ol>
+<p>예를 들어, 마케팅팀이 &quot;지난 주 프로모션 배너의 클릭률을 분석하고 싶다&quot;고 요청하면, 백엔드 개발자가 수동으로 DB를 조회하고 엑셀로 정제하여 전달하는 방식이었습니다.</p>
 <p><strong>문제점:</strong></p>
 <ul>
 <li>실시간 의사결정 불가 (마케팅 캠페인 효과 측정 지연)</li>
@@ -97,7 +95,7 @@
 <section class="content-section">
 <h2>주요 성과</h2>
 <ul>
-<li>데이터 확인: 2<del>3일 → 1시간</del>1일</li>
+<li>데이터 확인: 2<del>3일 → 1시간</del>1일 (최대 72배 단축)</li>
 <li>월 비용: 약 9,000원 (3,000만 건 처리)</li>
 <li>Tableau 작업: 50% 이상 자동화</li>
 <li>주요 이벤트: 100% 수집</li>
@@ -115,11 +113,12 @@
 </code></pre>
 </section>
 <section class="content-section">
-<h2>주요 이벤트</h2>
+<h2>수집 이벤트</h2>
 <ul>
-<li>구매, 상품상세, 장바구니 담기</li>
+<li>구매, 상품상세 조회, 장바구니 담기</li>
 <li>로그인, 회원가입</li>
 <li>장바구니 조회, 구매페이지 진입</li>
+<li>검색, 배너 클릭 등</li>
 </ul>
 </section>
 <section class="content-section">
@@ -127,15 +126,15 @@
 <p><strong>실시간 데이터 수집:</strong></p>
 <ul>
 <li>애플리케이션에서 사용자 이벤트 발생 시 Kinesis Firehose로 스트리밍 전송</li>
-<li>Lambda를 통해 JSON 데이터를 Parquet 포맷으로 변환 (저장 공간 70% 절감)</li>
+<li>Lambda를 통해 JSON 데이터를 Parquet 포맷으로 변환 (저장 공간 70% 절감, 쿼리 성능 향상)</li>
 <li>S3에 원본 데이터 백업 (장애 대비 및 재처리 가능)</li>
 <li>1시간 단위 배치로 자동 파티셔닝 (년/월/일/시간 구조)</li>
 </ul>
 <p><strong>데이터 분석 환경:</strong></p>
 <ul>
 <li><strong>Athena:</strong> S3 데이터를 직접 쿼리하여 빠른 임시 조회 (서버리스, 쿼리당 과금)</li>
-<li><strong>Redshift:</strong> 정형화된 분석을 위해 S3 → Redshift로 데이터 적재</li>
-<li><strong>Tableau:</strong> Redshift 연동으로 실시간 대시보드 및 리포트 생성</li>
+<li><strong>Redshift:</strong> 정형화된 분석을 위해 S3 → Redshift로 데이터 적재 (집계 및 조인 최적화)</li>
+<li><strong>Tableau:</strong> Redshift 연동으로 실시간 대시보드 및 리포트 생성 (비즈니스 인사이트 도출)</li>
 </ul>
 </section>
 <section class="content-section">
@@ -147,9 +146,9 @@
 <section class="content-section">
 <h2>배운 점</h2>
 <ul>
-<li>AWS 관리형 서비스 활용</li>
-<li>저비용 고효율 파이프라인</li>
-<li>데이터 엔지니어링 기초</li>
+<li>AWS 관리형 서비스 활용 (서버리스 아키텍처의 장점 이해)</li>
+<li>저비용 고효율 데이터 파이프라인 설계 (월 9,000원으로 3,000만 건 처리)</li>
+<li>데이터 엔지니어링 기초 (ETL, 파티셔닝, 포맷 최적화)</li>
 </ul>
 </section>
 
@@ -166,5 +165,7 @@
 
 
   <script src="../../script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </body>
 </html>

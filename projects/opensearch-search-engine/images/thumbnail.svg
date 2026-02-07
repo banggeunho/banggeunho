@@ -1,0 +1,44 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="450" fill="#0d1117"/>
+
+  <!-- Gradient Background Pattern -->
+  <defs>
+    <linearGradient id="searchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowBlue" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#58a6ff;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#searchGradient)"/>
+
+  <!-- Glow Effect -->
+  <circle cx="400" cy="180" r="200" fill="url(#glowBlue)"/>
+
+  <!-- Search Icon Circle -->
+  <circle cx="400" cy="180" r="80" fill="none" stroke="#58a6ff" stroke-width="8"/>
+  <line x1="460" y1="240" x2="510" y2="290" stroke="#58a6ff" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Data Points -->
+  <circle cx="320" cy="140" r="4" fill="#7ee787" opacity="0.6"/>
+  <circle cx="360" cy="110" r="3" fill="#7ee787" opacity="0.8"/>
+  <circle cx="440" cy="130" r="4" fill="#7ee787" opacity="0.7"/>
+  <circle cx="480" cy="160" r="3" fill="#7ee787" opacity="0.6"/>
+  <circle cx="370" cy="220" r="4" fill="#7ee787" opacity="0.8"/>
+
+  <!-- Connecting Lines -->
+  <line x1="320" y1="140" x2="360" y2="110" stroke="#7ee787" stroke-width="1" opacity="0.3"/>
+  <line x1="360" y1="110" x2="440" y2="130" stroke="#7ee787" stroke-width="1" opacity="0.3"/>
+  <line x1="440" y1="130" x2="480" y2="160" stroke="#7ee787" stroke-width="1" opacity="0.3"/>
+
+  <!-- Title -->
+  <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#c9d1d9" text-anchor="middle">검색 엔진 개편</text>
+
+  <!-- Tech Tag -->
+  <rect x="320" y="360" width="160" height="36" rx="18" fill="#1c2128" stroke="#58a6ff" stroke-width="2"/>
+  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#58a6ff" text-anchor="middle">OpenSearch</text>
+</svg>

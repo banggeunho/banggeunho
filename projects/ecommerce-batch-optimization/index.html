@@ -38,10 +38,7 @@
       <!-- Hero image -->
       
       <div class="project-detail-hero">
-        <div class="project-detail-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>프로젝트 썸네일을 추가하세요</span>
-        </div>
+        <img src="images/thumbnail.svg" alt="e커머스 주문 수집 배치 성능 개선">
       </div>
       
 
@@ -73,19 +70,16 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>템플릿 메소드 패턴을 활용하여 다중 커머스 플랫폼의 주문 수집 배치 시스템을 설계하고 구축하여 처리 성능을 10배 개선하고 유지보수성을 대폭 향상시켰습니다.</p>
+<p>템플릿 메소드 패턴을 활용하여 다중 커머스 플랫폼의 주문 수집 배치 시스템을 설계하고 구축하여 처리 성능을 10배 개선하고 신규 커머스 추가 시간을 2주에서 2일로 단축했습니다.</p>
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
 <p><strong>다중 커머스 플랫폼 연동:</strong></p>
+<p>위메프, 롯데ON, TMON 등 여러 외부 커머스 플랫폼과 연동하여 주문 데이터를 수집해야 했습니다. 각 플랫폼별 API 스펙이 완전히 상이했습니다:</p>
 <ul>
-<li>위메프, 롯데ON, TMON 등 여러 외부 커머스 플랫폼과 연동</li>
-<li>각 플랫폼별 API 스펙이 완전히 상이함<ul>
 <li><strong>응답 형식:</strong> JSON, XML, CSV 등 다양</li>
 <li><strong>인증 방식:</strong> API Key, OAuth, Basic Auth 등 제각각</li>
 <li><strong>데이터 구조:</strong> 주문 정보 필드명 및 계층 구조 모두 상이</li>
-</ul>
-</li>
 </ul>
 <p><strong>기존 시스템의 문제:</strong></p>
 <ul>
@@ -123,7 +117,7 @@
 <li><strong>공통 로직 추상화:</strong> 인증 → API 호출 → 데이터 변환 → 저장 플로우를 상위 클래스에서 정의</li>
 <li><strong>커머스별 특화 로직 분리:</strong> 각 커머스 구현체는 인증 방식, 파싱 로직만 구현</li>
 <li><strong>신규 커머스 추가 용이:</strong> 추상 클래스 상속 후 3개 메서드만 구현하면 완료 (2주 → 2일)</li>
-<li><strong>병렬 처리:</strong> CompletableFuture를 활용하여 여러 커머스 동시 수집</li>
+<li><strong>병렬 처리:</strong> CompletableFuture를 활용하여 여러 커머스 동시 수집 (처리 시간 10배 향상)</li>
 </ul>
 <p><strong>Jenkins 기반 배치 관리:</strong></p>
 <ul>
@@ -166,5 +160,7 @@
 
 
   <script src="../../script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </body>
 </html>

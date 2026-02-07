@@ -38,10 +38,7 @@
       <!-- Hero image -->
       
       <div class="project-detail-hero">
-        <div class="project-detail-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>프로젝트 썸네일을 추가하세요</span>
-        </div>
+        <img src="images/thumbnail.svg" alt="검색 엔진 전면 개편">
       </div>
       
 
@@ -75,7 +72,7 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>300만 회원 커머스 플랫폼에서 Fuse.js 기반 클라이언트 검색의 한계를 극복하기 위해 AWS OpenSearch 기반 검색 시스템을 설계하고 구축했습니다.</p>
+<p>300만 회원 커머스 플랫폼에서 Fuse.js 기반 클라이언트 검색의 한계를 극복하기 위해 AWS OpenSearch 기반 검색 시스템을 설계하고 구축했습니다. 검색 CTR을 32% 향상시키고 응답 속도를 600배 개선하여 사용자 경험을 획기적으로 개선했습니다.</p>
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
@@ -139,15 +136,15 @@
 <h2>기술적 의사결정</h2>
 <p><strong>OpenSearch 선택 이유:</strong></p>
 <ul>
-<li><strong>AWS 생태계 통합:</strong> Redshift, Lambda, S3와 원활한 연동</li>
+<li><strong>AWS 생태계 통합:</strong> Redshift, Lambda, S3와 원활한 연동으로 기존 인프라 활용</li>
 <li><strong>관리형 서비스:</strong> CloudSearch 대비 비용 효율적이고 커스터마이징 자유도 높음</li>
 <li><strong>알고리즘 유연성:</strong> CTR, 브랜드 점수 등 비즈니스 로직 기반 스코어링 가능</li>
 <li><strong>확장성:</strong> 트래픽 증가에 따른 수평 확장 용이</li>
 </ul>
 <p><strong>CloudSearch 대비 장점:</strong></p>
 <ul>
-<li>커스텀 스코어링 알고리즘 구현 자유도</li>
-<li>동의어, 형태소 분석기 등 고급 기능 활용</li>
+<li>커스텀 스코어링 알고리즘 구현 자유도 (비즈니스 요구사항에 맞춘 랭킹 로직)</li>
+<li>동의어, 형태소 분석기 등 고급 기능 활용 (한국어 검색 품질 향상)</li>
 <li>비용 효율성 (동일 트래픽 대비 30% 절감)</li>
 </ul>
 </section>
@@ -180,5 +177,7 @@
 
 
   <script src="../../script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </body>
 </html>
