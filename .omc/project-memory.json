@@ -76,6 +76,12 @@
       "type": "file"
     },
     {
+      "path": "portfolio/data/projects.json",
+      "accessCount": 4,
+      "lastAccessed": 1770468835222,
+      "type": "file"
+    },
+    {
       "path": "AGENTS.md",
       "accessCount": 2,
       "lastAccessed": 1770454897155,
@@ -112,9 +118,15 @@
       "type": "file"
     },
     {
-      "path": "portfolio/data/projects.json",
+      "path": "portfolio/projects/opensearch-search-engine/index.md",
       "accessCount": 2,
-      "lastAccessed": 1770466372942,
+      "lastAccessed": 1770468700353,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
+      "accessCount": 2,
+      "lastAccessed": 1770468743234,
       "type": "file"
     },
     {
@@ -134,6 +146,36 @@
       "accessCount": 1,
       "lastAccessed": 1770457899957,
       "type": "file"
+    },
+    {
+      "path": "portfolio/projects/tosspay-payment-integration/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770468723933,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/redis-writeback-optimization/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770468761713,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/data-pipeline-firehose/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770468774634,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770468785721,
+      "type": "file"
+    },
+    {
+      "path": "portfolio",
+      "accessCount": 1,
+      "lastAccessed": 1770468795014,
+      "type": "directory"
     }
   ],
   "userDirectives": []
