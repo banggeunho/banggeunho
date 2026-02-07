@@ -6,9 +6,9 @@
 
 <div align="center">
 
-**Backend Developer** who builds scalable systems with modern cloud-native technologies.
+**Backend Developer** @ Commerce Platform (3M+ users)
 
-Passionate about **DevOps**, **distributed systems**, and **data engineering**.
+대규모 트래픽 환경에서 **안정적이고 효율적인 서비스**를 만드는 일에 몰입합니다.
 
 <img src="https://img.shields.io/badge/AWS_Solutions_Architect_Associate-232F3E?style=flat-square&logo=Amazon-AWS&logoColor=white"/>
 
@@ -20,10 +20,10 @@ Passionate about **DevOps**, **distributed systems**, and **data engineering**.
 
 ### 🧑‍💻 About Me
 
-- Backend & Infra 중심의 개발자입니다
-- AWS 기반 클라우드 아키텍처 설계 및 운영 (SAA 자격증 보유)
-- 이벤트 기반 데이터 파이프라인 구축 경험 (Kafka, SQS, Debezium)
-- CI/CD 파이프라인 및 컨테이너 기반 배포 환경 구축
+- 300만 회원 규모의 커머스 플랫폼에서 백엔드를 개발하고 있습니다
+- **대용량 트래픽을 어떻게 안정적으로 처리할 수 있을까**를 항상 고민합니다
+- 비동기 처리, 캐싱 전략, 이벤트 기반 아키텍처로 **DB 부하를 줄이고 서비스 안정성을 높이는 일**에 관심이 많습니다
+- 데이터가 유실 없이 정확하게 흐르는 **신뢰할 수 있는 파이프라인**을 설계하는 것을 좋아합니다
 
 ---
 
