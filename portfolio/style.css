@@ -701,6 +701,55 @@ img {
   line-height: 1.7;
 }
 
+/* Lists */
+.content-section ul,
+.content-section ol {
+  margin: 1.5rem 0;
+  padding-left: 2.5rem;
+  line-height: 1.8;
+}
+
+.content-section ul {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.content-section ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.content-section li {
+  margin: 0.75rem 0;
+  padding-left: 0.5rem;
+  color: var(--text-primary);
+}
+
+.content-section li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.content-section li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.content-section ul ul,
+.content-section ol ol,
+.content-section ul ol,
+.content-section ol ul {
+  margin: 0.5rem 0;
+}
+
+.content-section ul ul {
+  list-style-type: circle;
+}
+
+.content-section ol ol {
+  list-style-type: lower-alpha;
+}
+
 /* Mermaid diagrams */
 .content-section .mermaid {
   background: var(--bg-secondary);
