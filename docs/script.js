@@ -126,7 +126,7 @@
 // ========== Scroll Reveal ==========
 (function initReveal() {
   const targets = document.querySelectorAll(
-    '.section-title, .about-text, .about-details, .detail-card, .skill-category, .project-card, .contact-content'
+    '.section-title, .about-text, .about-details, .detail-card, .project-card, .contact-content, .content-section'
   );
 
   targets.forEach((el) => el.classList.add('fade-in'));
