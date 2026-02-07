@@ -6,17 +6,34 @@ const matter = require('gray-matter');
 const { marked } = require('marked');
 const ejs = require('ejs');
 
+// Function to create slug from heading text
+function createSlug(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s가-힣-]/g, '')  // Keep alphanumeric, spaces, Korean, hyphens
+    .replace(/\s+/g, '-')            // Replace spaces with hyphens
+    .replace(/-+/g, '-')             // Replace multiple hyphens with single
+    .trim();
+}
+
 // Configure marked for better code rendering
-marked.setOptions({
-  highlight: function(code, lang) {
-    // Return code with language class for syntax highlighting
-    return code;
-  },
-  langPrefix: 'language-',
-  breaks: true,
+const renderer = new marked.Renderer();
+
+// Custom heading renderer to add IDs
+renderer.heading = function(text, level) {
+  const slug = createSlug(text);
+  return `<h${level} id="${slug}">${text}</h${level}>\n`;
+};
+
+// Custom code renderer
+renderer.code = function(code, language) {
+  return `<pre><code class="language-${language || ''}">${code}</code></pre>`;
+};
+
+marked.use({
   gfm: true,
-  headerIds: true,
-  mangle: false
+  breaks: true,
+  renderer: renderer
 });
 
 // Paths
