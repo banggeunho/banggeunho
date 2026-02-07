@@ -1,142 +1,993 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 860">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
 
-  <!-- background -->
+  <!-- Background -->
   <rect width="100%" height="100%" fill="#0d1117"/>
 
-  <!-- ═══════════ CODE RAIN (full height, 800px width) ═══════════ -->
-  <g font-family="'Courier New',monospace" font-size="11">
-    <!-- layer 1 -->
-    <text x="10" y="-30" fill="#58a6ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="14s" repeatCount="indefinite" begin="0s"/>const app = express();</text>
-    <text x="170" y="-30" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-30;890" dur="18s" repeatCount="indefinite" begin="3s"/>@Injectable()</text>
-    <text x="300" y="-30" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-30;890" dur="12s" repeatCount="indefinite" begin="1s"/>return await this.repo.find();</text>
-    <text x="350" y="-30" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-30;890" dur="16s" repeatCount="indefinite" begin="5s"/>await redis.set(key, val, 'EX', 3600);</text>
-    <text x="520" y="-30" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-30;890" dur="13s" repeatCount="indefinite" begin="2s"/>SELECT * FROM orders WHERE</text>
-    <text x="80" y="-30" fill="#7ee787" opacity="0.06"><animate attributeName="y" values="-30;890" dur="19s" repeatCount="indefinite" begin="7s"/>kafka.producer.send(record);</text>
-    <text x="420" y="-30" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="11s" repeatCount="indefinite" begin="0.5s"/>@Transactional</text>
-    <text x="500" y="-30" fill="#58a6ff" opacity="0.08"><animate attributeName="y" values="-30;890" dur="15s" repeatCount="indefinite" begin="4s"/>consumer.subscribe({ topic });</text>
-    <text x="230" y="-30" fill="#ff7b72" opacity="0.11"><animate attributeName="y" values="-30;890" dur="10s" repeatCount="indefinite" begin="6s"/>app.listen(3000, () =&gt; {</text>
-    <text x="680" y="-30" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-30;890" dur="17s" repeatCount="indefinite" begin="1.5s"/>pipe()</text>
-
-    <!-- layer 2 -->
-    <text x="40" y="-30" fill="#d2a8ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="20s" repeatCount="indefinite" begin="8s"/>@GetMapping("/api/v1/users")</text>
-    <text x="260" y="-30" fill="#58a6ff" opacity="0.09"><animate attributeName="y" values="-30;890" dur="14s" repeatCount="indefinite" begin="10s"/>return ResponseEntity.ok(body);</text>
-    <text x="460" y="-30" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-30;890" dur="21s" repeatCount="indefinite" begin="9s"/>CREATE INDEX idx_user ON users;</text>
-    <text x="580" y="-30" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-30;890" dur="16s" repeatCount="indefinite" begin="11s"/>this.cacheManager.get(key);</text>
-    <text x="110" y="-30" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-30;890" dur="18s" repeatCount="indefinite" begin="12s"/>await queryRunner.connect();</text>
-    <text x="340" y="-30" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="13s" repeatCount="indefinite" begin="3.5s"/>torch.nn.Linear(512, 256)</text>
-    <text x="540" y="-30" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-30;890" dur="19s" repeatCount="indefinite" begin="13s"/>INSERT INTO events VALUES (?)</text>
-
-    <!-- layer 3 -->
-    <text x="20" y="-30" fill="#7ee787" opacity="0.05"><animate attributeName="y" values="-30;890" dur="22s" repeatCount="indefinite" begin="14s"/>@KafkaListener(topics = "order.created")</text>
-    <text x="280" y="-30" fill="#d2a8ff" opacity="0.04"><animate attributeName="y" values="-30;890" dur="24s" repeatCount="indefinite" begin="15s"/>CompletableFuture.supplyAsync(() -&gt;</text>
-    <text x="480" y="-30" fill="#58a6ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="20s" repeatCount="indefinite" begin="16s"/>upstream backend { server; }</text>
-    <text x="650" y="-30" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-30;890" dur="23s" repeatCount="indefinite" begin="17s"/>docker build -t api .</text>
-    <text x="130" y="-30" fill="#7ee787" opacity="0.04"><animate attributeName="y" values="-30;890" dur="25s" repeatCount="indefinite" begin="18s"/>stage('Deploy') { sh 'helm' }</text>
-    <text x="400" y="-30" fill="#58a6ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="21s" repeatCount="indefinite" begin="19s"/>SELECT COUNT(*) FROM events</text>
-    <text x="600" y="-30" fill="#d2a8ff" opacity="0.05"><animate attributeName="y" values="-30;890" dur="22s" repeatCount="indefinite" begin="20s"/>await this.em.flush();</text>
+  <!-- Enhanced code rain background -->
+  <g font-family="'JetBrains Mono','Courier New',monospace" font-size="11" opacity="0.18">
+    <text x="50" y="-20" fill="#58a6ff"><animate attributeName="y" values="-20;820" dur="14s" repeatCount="indefinite"/>const app = express();</text>
+    <text x="200" y="-20" fill="#7ee787"><animate attributeName="y" values="-20;820" dur="18s" repeatCount="indefinite" begin="2s"/>await redis.set(key);</text>
+    <text x="380" y="-20" fill="#d2a8ff"><animate attributeName="y" values="-20;820" dur="16s" repeatCount="indefinite" begin="5s"/>@Injectable()</text>
+    <text x="550" y="-20" fill="#ffa657"><animate attributeName="y" values="-20;820" dur="20s" repeatCount="indefinite" begin="1s"/>function deploy() {}</text>
+    <text x="720" y="-20" fill="#79c0ff"><animate attributeName="y" values="-20;820" dur="17s" repeatCount="indefinite" begin="4s"/>import { Module }</text>
+    <text x="900" y="-20" fill="#58a6ff"><animate attributeName="y" values="-20;820" dur="19s" repeatCount="indefinite" begin="3s"/>SELECT * FROM orders</text>
+    <text x="1050" y="-20" fill="#ff7b72"><animate attributeName="y" values="-20;820" dur="21s" repeatCount="indefinite" begin="7s"/>kafka.send()</text>
+    <text x="120" y="-20" fill="#a5d6ff"><animate attributeName="y" values="-20;820" dur="22s" repeatCount="indefinite" begin="6s"/>class Service {}</text>
+    <text x="650" y="-20" fill="#7ee787"><animate attributeName="y" values="-20;820" dur="15s" repeatCount="indefinite" begin="8s"/>async getData()</text>
+    <text x="820" y="-20" fill="#ffa198"><animate attributeName="y" values="-20;820" dur="23s" repeatCount="indefinite" begin="2.5s"/>try { ... } catch</text>
   </g>
 
-  <!-- ═══════════ HEADER ═══════════ -->
-  <text x="400" y="108" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="52" fill="#ffffff" opacity="0.95">Geunho Bang</text>
-  <text x="400" y="148" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="18" fill="#8b949e">Backend Engineer &#xB7; Commerce Platform &#xB7; 3M+ Users</text>
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- LEFT SECTION: 3D ISOMETRIC BUILDING WITH MERGE ANIMATION -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
 
-  <!-- divider -->
-  <line x1="280" y1="195" x2="520" y2="195" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <defs>
+    <!-- Glow filter for summit -->
+    <filter id="summit-glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
 
-  <!-- ═══════════ TECH STACK ═══════════ -->
+    <!-- Shadow filter for depth -->
+    <filter id="building-shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
 
-  <!-- LANGUAGES (total=362, start=(800-362)/2=219) -->
-  <text x="400" y="240" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">LANGUAGES</text>
-  <g transform="translate(219, 255)">
-    <g><rect width="56" height="28" rx="6" fill="#ED8B00"/><text x="28" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Java</text></g>
-    <g transform="translate(66,0)"><rect width="102" height="28" rx="6" fill="#F7DF1E"/><text x="51" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">JavaScript</text></g>
-    <g transform="translate(178,0)"><rect width="102" height="28" rx="6" fill="#3178C6"/><text x="51" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">TypeScript</text></g>
-    <g transform="translate(290,0)"><rect width="72" height="28" rx="6" fill="#3776AB"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Python</text></g>
-  </g>
+    <!-- Enhanced gradients for polished isometric blocks -->
+    <linearGradient id="grad-top" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.2);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad-side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(0,0,0,0);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(0,0,0,0.3);stop-opacity:1" />
+    </linearGradient>
 
-  <!-- BACKEND (total=244, start=(800-244)/2=278) -->
-  <text x="400" y="325" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">BACKEND</text>
-  <g transform="translate(278, 340)">
-    <g><rect width="72" height="28" rx="6" fill="#6DB33F"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Spring</text></g>
-    <g transform="translate(82,0)"><rect width="72" height="28" rx="6" fill="#E0234E"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">NestJS</text></g>
-    <g transform="translate(164,0)"><rect width="80" height="28" rx="6" fill="#353535"/><text x="40" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Express</text></g>
-  </g>
+    <!-- Particle gradients for orbiting system -->
+    <radialGradient id="grad-c-particle"><stop offset="0%" stop-color="#A8B9CC" stop-opacity="0.9"/><stop offset="100%" stop-color="#A8B9CC" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-java-particle"><stop offset="0%" stop-color="#ED8B00" stop-opacity="0.9"/><stop offset="100%" stop-color="#ED8B00" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-js-particle"><stop offset="0%" stop-color="#F7DF1E" stop-opacity="0.9"/><stop offset="100%" stop-color="#F7DF1E" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-ts-particle"><stop offset="0%" stop-color="#3178C6" stop-opacity="0.9"/><stop offset="100%" stop-color="#3178C6" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-py-particle"><stop offset="0%" stop-color="#3776AB" stop-opacity="0.9"/><stop offset="100%" stop-color="#3776AB" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-react-particle"><stop offset="0%" stop-color="#61DAFB" stop-opacity="0.9"/><stop offset="100%" stop-color="#61DAFB" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-vue-particle"><stop offset="0%" stop-color="#4FC08D" stop-opacity="0.9"/><stop offset="100%" stop-color="#4FC08D" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-spring-particle"><stop offset="0%" stop-color="#6DB33F" stop-opacity="0.9"/><stop offset="100%" stop-color="#6DB33F" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-nest-particle"><stop offset="0%" stop-color="#E0234E" stop-opacity="0.9"/><stop offset="100%" stop-color="#E0234E" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-express-particle"><stop offset="0%" stop-color="#8b949e" stop-opacity="0.9"/><stop offset="100%" stop-color="#8b949e" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-jquery-particle"><stop offset="0%" stop-color="#0769AD" stop-opacity="0.9"/><stop offset="100%" stop-color="#0769AD" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-aws-particle"><stop offset="0%" stop-color="#FF9900" stop-opacity="0.9"/><stop offset="100%" stop-color="#FF9900" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-docker-particle"><stop offset="0%" stop-color="#2496ED" stop-opacity="0.9"/><stop offset="100%" stop-color="#2496ED" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-k8s-particle"><stop offset="0%" stop-color="#326CE5" stop-opacity="0.9"/><stop offset="100%" stop-color="#326CE5" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-kafka-particle"><stop offset="0%" stop-color="#8b949e" stop-opacity="0.9"/><stop offset="100%" stop-color="#8b949e" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-mysql-particle"><stop offset="0%" stop-color="#4479A1" stop-opacity="0.9"/><stop offset="100%" stop-color="#4479A1" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-redis-particle"><stop offset="0%" stop-color="#DC382D" stop-opacity="0.9"/><stop offset="100%" stop-color="#DC382D" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-actions-particle"><stop offset="0%" stop-color="#2088FF" stop-opacity="0.9"/><stop offset="100%" stop-color="#2088FF" stop-opacity="0.3"/></radialGradient>
+    <radialGradient id="grad-terraform-particle"><stop offset="0%" stop-color="#7B42BC" stop-opacity="0.9"/><stop offset="100%" stop-color="#7B42BC" stop-opacity="0.3"/></radialGradient>
+  </defs>
 
-  <!-- INFRASTRUCTURE row1 (total=284, start=(800-284)/2=258) -->
-  <text x="400" y="410" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">INFRASTRUCTURE</text>
-  <g transform="translate(258, 425)">
-    <g><rect width="52" height="28" rx="6" fill="#FF9900"/><text x="26" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">AWS</text></g>
-    <g transform="translate(62,0)"><rect width="72" height="28" rx="6" fill="#2496ED"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Docker</text></g>
-    <g transform="translate(144,0)"><rect width="140" height="28" rx="6" fill="#2088FF"/><text x="70" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">GitHub Actions</text></g>
-  </g>
-  <!-- INFRASTRUCTURE row2 (total=220, start=(800-220)/2=290) -->
-  <g transform="translate(290, 463)">
-    <g><rect width="72" height="28" rx="6" fill="#FC6D26"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">GitLab</text></g>
-    <g transform="translate(82,0)"><rect width="64" height="28" rx="6" fill="#FCC624"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">Linux</text></g>
-    <g transform="translate(156,0)"><rect width="64" height="28" rx="6" fill="#009639"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">nginx</text></g>
-  </g>
+  <!-- Centered in left section: x=250 (middle of 0-500) -->
+  <g id="isometric-building" transform="translate(250, 400)" filter="url(#building-shadow)">
 
-  <!-- DATA (total=306, start=(800-306)/2=247) -->
-  <text x="400" y="535" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">DATA</text>
-  <g transform="translate(247, 550)">
-    <g><rect width="68" height="28" rx="6" fill="#4479A1"/><text x="34" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">MySQL</text></g>
-    <g transform="translate(78,0)"><rect width="64" height="28" rx="6" fill="#DC382D"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Redis</text></g>
-    <g transform="translate(152,0)"><rect width="64" height="28" rx="6" fill="#231F20"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Kafka</text></g>
-    <g transform="translate(226,0)"><rect width="80" height="28" rx="6" fill="#EE4C2C"/><text x="40" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">PyTorch</text></g>
-  </g>
+    <!-- LAYER 1: LANGUAGES (0-2s) -->
+    <g id="layer-languages">
 
-  <!-- FRONTEND (total=204, start=(800-204)/2=298) -->
-  <text x="400" y="620" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">FRONTEND</text>
-  <g transform="translate(298, 635)">
-    <g><rect width="64" height="28" rx="6" fill="#61DAFB"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">React</text></g>
-    <g transform="translate(74,0)"><rect width="72" height="28" rx="6" fill="#0769AD"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">jQuery</text></g>
-    <g transform="translate(156,0)"><rect width="48" height="28" rx="6" fill="#1572B6"/><text x="24" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">CSS</text></g>
-  </g>
+      <!-- C block -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="0s" dur="6s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-120,80; -120,20; -120,20; 0,0"
+          begin="0s" dur="6s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
 
-  <!-- ═══════════ FEATURED PROJECTS ═══════════ -->
-  <line x1="240" y1="695" x2="560" y2="695" stroke="#30363d" stroke-width="1" opacity="0.5"/>
-  <text x="400" y="725" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">FEATURED PROJECTS</text>
+        <polygon points="0,0 35,-18 35,18 0,36" fill="#8c9ba8"/>
+        <polygon points="0,0 0,36 -35,18 -35,-18" fill="#6a7582"/>
+        <polygon points="0,0 35,-18 0,-36 -35,-18" fill="#a8b9cc"/>
+        <polygon points="0,0 35,-18 0,-36 -35,-18" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,36 -35,18 -35,-18" fill="url(#grad-side)" opacity="0.5"/>
 
-  <!-- row 1 (cards: 260+20+260=540, start=(800-540)/2=130) -->
-  <g transform="translate(130, 742)">
-    <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-    <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">CDC-Kafka-Debezium</text>
-    <text x="246" y="17" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="11" fill="#7ee787">&#9733; 6</text>
-    <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">CDC pipeline with Kafka &amp; Debezium</text>
-    <g transform="translate(280,0)">
-      <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">concurrent-handler-lock</text>
-      <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">Concurrency with Redis/DB Lock</text>
+        <!-- C icon from Simple Icons -->
+        <svg x="-6" y="-28" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M16.5921 9.1962s-.354-3.2971-3.3552-3.2971c-2.9291 0-3.3552 3.2971-3.3552 3.2971s-.354 3.2971 3.3552 3.2971c2.9291 0 3.3552-3.2971 3.3552-3.2971zm.1932 1.4631s-.5689 2.469-3.5482 2.469c-2.9793 0-3.5482-2.469-3.5482-2.469s.5689-2.469 3.5482-2.469c2.9793 0 3.5482 2.469 3.5482 2.469zm3.5572-2.469s-.5689 2.469-3.5482 2.469c-2.9793 0-3.5482-2.469-3.5482-2.469s.5689-2.469 3.5482-2.469c2.9793 0 3.5482 2.469 3.5482 2.469z" fill="#A8B9CC"/>
+        </svg>
+        <text x="0" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#fff">C</text>
+      </g>
+
+      <!-- Java block -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="0.3s" dur="5.7s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-60,80; -60,20; -60,20; 0,0"
+          begin="0.3s" dur="5.7s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 40,-20 40,20 0,40" fill="#d27200"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="#995400"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="#ed8b00"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Java icon -->
+        <svg x="-6" y="-30" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573" fill="#ED8B00"/>
+        </svg>
+        <text x="0" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Java</text>
+      </g>
+
+      <!-- JavaScript block -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="0.6s" dur="5.4s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="0,80; 0,20; 0,20; 0,0"
+          begin="0.6s" dur="5.4s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 40,-20 40,20 0,40" fill="#dcc419"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="#a89010"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="#f7df1e"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- JS icon -->
+        <svg x="-6" y="-30" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z" fill="#000"/>
+        </svg>
+        <text x="0" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#000">JS</text>
+      </g>
+
+      <!-- TypeScript block -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="0.9s" dur="5.1s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="60,80; 60,20; 60,20; 0,0"
+          begin="0.9s" dur="5.1s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 40,-20 40,20 0,40" fill="#2866af"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="#1a4477"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="#3178c6"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- TS icon -->
+        <svg x="-6" y="-30" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z" fill="#3178C6"/>
+        </svg>
+        <text x="0" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#fff">TS</text>
+      </g>
+
+      <!-- Python block -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="1.2s" dur="4.8s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="120,80; 120,20; 120,20; 0,0"
+          begin="1.2s" dur="4.8s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 40,-20 40,20 0,40" fill="#2d6190"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="#1d4160"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="#3776ab"/>
+        <polygon points="0,0 40,-20 0,-40 -40,-20" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,40 -40,20 -40,-20" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Python icon -->
+        <svg x="-6" y="-30" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z" fill="#3776AB"/>
+        </svg>
+        <text x="0" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#fff">Py</text>
+      </g>
     </g>
-  </g>
 
-  <!-- row 2 -->
-  <g transform="translate(130, 790)">
-    <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-    <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">terraform-ecs-example</text>
-    <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">Infrastructure as Code with Terraform</text>
-    <g transform="translate(280,0)">
-      <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-      <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">Spring-Boot-MSA</text>
-      <text x="246" y="17" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="11" fill="#7ee787">&#9733; 1</text>
-      <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">MSA with Grafana, Zipkin, Prometheus</text>
+    <!-- LAYER 2: FRONTEND & BACKEND (2-3.5s) -->
+    <g id="layer-frameworks">
+
+      <!-- React -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2s" dur="4s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="120,-80; 120,-30; 120,-30; 0,0"
+          begin="2s" dur="4s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 35,-18 35,18 0,36" fill="#50bfe6"/>
+        <polygon points="0,0 0,36 -35,18 -35,-18" fill="#2a8aa8"/>
+        <polygon points="0,0 35,-18 0,-36 -35,-18" fill="#61dafb"/>
+        <polygon points="0,0 35,-18 0,-36 -35,-18" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,36 -35,18 -35,-18" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- React icon -->
+        <svg x="-6" y="-28" width="12" height="12" viewBox="0 0 24 24">
+          <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z" fill="#61DAFB"/>
+        </svg>
+        <text x="0" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#000">React</text>
+      </g>
+
+      <!-- Vue -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2.2s" dur="3.8s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="80,-80; 80,-30; 80,-30; 0,0"
+          begin="2.2s" dur="3.8s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 32,-16 32,16 0,32" fill="#3ea371"/>
+        <polygon points="0,0 0,32 -32,16 -32,-16" fill="#276b49"/>
+        <polygon points="0,0 32,-16 0,-32 -32,-16" fill="#4fc08d"/>
+        <polygon points="0,0 32,-16 0,-32 -32,-16" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,32 -32,16 -32,-16" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Vue icon -->
+        <svg x="-5.5" y="-26" width="11" height="11" viewBox="0 0 24 24">
+          <path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" fill="#4FC08D"/>
+        </svg>
+        <text x="0" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#fff">Vue</text>
+      </g>
+
+      <!-- jQuery -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2.4s" dur="3.6s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="40,-80; 40,-30; 40,-30; 0,0"
+          begin="2.4s" dur="3.6s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 30,-15 30,15 0,30" fill="#055489"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="#033658"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="#0769ad"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- jQuery icon -->
+        <svg x="-5" y="-24" width="10" height="10" viewBox="0 0 24 24">
+          <path d="M1.534 5.874c-2.123 3.05-1.86 7.017-.237 10.256l.084.158a74.93 74.93 0 0 0 1.938 2.98c.043.063.096.133.145.196l.054.068c.054.072.11.146.167.217.01.014.018.027.024.04.04.051.082.1.124.149.025.028.049.055.073.081.032.035.065.07.1.106l.135.135.05.047c.063.06.126.117.19.172.026.023.054.047.082.07.07.06.14.115.214.17l.033.029.104.074c.072.05.144.1.218.15.007.005.015.012.023.017l.12.074c.082.05.166.098.25.145.012.006.023.015.035.022l.108.057.284.135.022.01.12.05c.1.042.202.082.304.118.007.003.015.006.021.008l.107.032.32.078.033.007c.037.009.072.017.11.024.1.02.2.04.3.057.025.003.05.008.076.01.04.007.082.01.123.016.096.011.19.024.287.035.04.003.076.008.114.01.086.01.17.015.256.021.024.002.05.005.074.006.095.006.188.01.282.012.022.002.045.002.067.002.143.004.285.007.428.007.21 0 .418-.006.626-.015.024 0 .045-.002.067-.003.1-.004.198-.01.297-.019.02-.001.04-.003.062-.005.107-.009.214-.021.32-.032.02-.002.04-.003.06-.006.106-.011.212-.024.317-.039.023-.003.045-.005.068-.01.097-.013.193-.028.29-.044.034-.007.07-.01.104-.018.089-.015.176-.033.265-.05.04-.007.08-.014.118-.023.087-.019.174-.04.26-.061.027-.007.056-.015.084-.022.077-.02.156-.041.234-.063.035-.01.068-.02.102-.032.091-.027.182-.056.273-.086.013-.004.026-.009.038-.013.093-.03.187-.062.28-.095.03-.01.058-.019.088-.03.092-.035.184-.071.277-.108.027-.01.053-.022.08-.033.091-.039.181-.079.271-.12.024-.012.048-.024.072-.036.089-.043.179-.087.268-.132.02-.01.04-.02.06-.03.088-.046.175-.095.262-.143.021-.012.043-.024.064-.037.084-.048.168-.095.25-.145.026-.014.05-.03.075-.044.081-.05.163-.1.243-.15.033-.02.065-.04.098-.062.074-.05.15-.098.223-.148.038-.025.074-.052.112-.077.069-.05.138-.098.205-.148.046-.03.09-.063.135-.094.06-.045.12-.088.179-.133.052-.039.1-.081.151-.12.053-.043.107-.084.16-.126.057-.048.11-.099.166-.147.046-.04.093-.078.138-.118.061-.053.12-.108.179-.162.038-.036.078-.07.116-.107.065-.06.128-.124.191-.186.023-.022.05-.043.073-.066.121-.118.235-.238.346-.36.017-.018.035-.037.051-.055.091-.1.174-.202.258-.304.026-.031.054-.061.079-.093.074-.092.145-.186.214-.28.026-.033.053-.066.078-.1.069-.092.133-.186.195-.28.026-.037.053-.073.078-.11.06-.092.117-.184.172-.276.029-.046.056-.092.084-.138.052-.09.103-.18.152-.271.031-.056.06-.112.09-.168.045-.087.088-.176.131-.264.033-.066.066-.133.098-.2.039-.085.077-.17.114-.257.035-.08.07-.16.103-.241.033-.084.064-.17.095-.255.032-.088.064-.176.095-.265.025-.08.048-.161.072-.242.028-.096.055-.193.08-.29.02-.078.04-.157.057-.236.024-.106.046-.213.068-.32.014-.073.028-.146.041-.22.02-.11.036-.221.053-.332.01-.066.02-.132.03-.198.015-.12.028-.241.039-.363.007-.058.013-.116.019-.175.01-.12.014-.24.02-.361.004-.064.01-.128.012-.192.005-.117.006-.235.007-.353 0-.068.004-.135.004-.203 0-.11-.006-.218-.009-.326-.002-.08-.003-.158-.006-.237-.006-.102-.014-.203-.022-.305-.006-.084-.01-.167-.017-.251-.01-.1-.023-.2-.036-.3-.01-.078-.019-.157-.03-.236-.014-.102-.031-.204-.049-.306-.013-.075-.025-.15-.04-.224-.022-.11-.05-.218-.077-.327-.016-.066-.03-.133-.047-.199-.031-.116-.066-.232-.102-.347-.017-.056-.032-.112-.05-.168-.041-.122-.087-.242-.134-.362-.016-.042-.03-.085-.046-.127-.055-.135-.114-.268-.176-.401-.01-.024-.021-.048-.032-.071-.068-.148-.142-.294-.22-.44-.012-.022-.024-.045-.037-.068-.068-.128-.139-.256-.215-.382-.02-.033-.038-.065-.058-.097-.063-.104-.128-.208-.196-.311-.027-.042-.053-.084-.08-.125-.059-.088-.118-.175-.179-.262-.038-.054-.076-.107-.114-.161-.05-.071-.1-.142-.152-.212-.05-.067-.1-.132-.152-.198-.042-.054-.085-.108-.129-.162-.063-.076-.128-.15-.194-.225-.039-.043-.077-.087-.116-.129-.088-.097-.178-.192-.27-.287-.013-.013-.026-.026-.038-.039-.096-.099-.197-.196-.297-.293-.036-.036-.072-.071-.108-.106-.1-.091-.2-.18-.303-.268-.032-.027-.063-.053-.095-.08-.12-.1-.244-.197-.369-.293-.022-.018-.044-.035-.066-.053-.115-.086-.233-.169-.352-.25-.032-.023-.063-.044-.096-.066-.12-.08-.243-.157-.367-.233-.036-.023-.072-.045-.108-.067-.113-.068-.228-.134-.346-.198-.05-.028-.1-.056-.151-.083-.1-.055-.2-.107-.301-.158-.061-.032-.123-.061-.185-.09-.088-.045-.179-.089-.27-.132-.073-.035-.146-.068-.22-.101-.081-.037-.161-.074-.243-.108-.089-.038-.178-.073-.268-.108-.065-.026-.13-.053-.196-.078-.103-.038-.208-.073-.313-.108-.053-.018-.106-.038-.16-.055-.119-.04-.241-.076-.363-.112-.038-.011-.075-.024-.113-.034-.125-.035-.253-.066-.381-.096-.034-.008-.068-.018-.102-.026-.134-.03-.268-.057-.404-.082-.027-.005-.053-.012-.08-.017-.14-.025-.281-.045-.423-.064-.022-.003-.044-.007-.067-.01-.145-.019-.291-.034-.438-.046-.02-.002-.039-.005-.06-.008-.15-.013-.301-.021-.452-.029-.016-.001-.031-.003-.047-.004-.155-.006-.311-.01-.468-.01-.012 0-.024-.002-.036-.002-.036 0-.071 0-.107.002-.012 0-.024.002-.036.002-.156.001-.312.004-.468.01-.016.001-.031.003-.047.004-.151.008-.302.016-.452.029-.02.003-.04.006-.06.008-.147.012-.293.027-.438.046-.023.003-.045.007-.067.01-.142.019-.283.039-.423.064-.027.005-.053.012-.08.017-.136.025-.27.052-.404.082-.034.008-.068.018-.102.026-.128.03-.256.061-.381.096-.038.01-.075.023-.113.034-.122.036-.244.072-.363.112-.054.017-.107.037-.16.055-.105.035-.21.07-.313.108-.066.025-.131.052-.196.078-.09.035-.179.07-.268.108-.082.034-.162.071-.243.108-.074.033-.147.066-.22.101-.091.043-.182.087-.27.132-.062.029-.124.058-.185.09-.101.051-.201.103-.301.158-.051.027-.101.055-.151.083-.118.064-.233.13-.346.198-.036.022-.072.044-.108.067-.124.076-.247.153-.367.233-.033.022-.064.043-.096.066-.119.081-.237.164-.352.25-.022.018-.044.035-.066.053-.125.096-.249.193-.369.293-.032.027-.063.053-.095.08-.103.088-.203.177-.303.268-.036.035-.072.07-.108.106-.1.097-.201.194-.297.293-.012.013-.025.026-.038.039-.092.095-.182.19-.27.287-.039.042-.077.086-.116.129-.066.075-.131.149-.194.225-.044.054-.087.108-.129.162-.052.066-.102.131-.152.198-.052.07-.102.141-.152.212-.038.054-.076.107-.114.161-.061.087-.12.174-.179.262-.027.041-.053.083-.08.125-.068.103-.133.207-.196.311-.02.032-.038.064-.058.097-.076.126-.147.254-.215.382-.013.023-.025.046-.037.068-.078.146-.152.292-.22.44-.011.023-.022.047-.032.071-.062.133-.121.266-.176.401-.016.042-.03.085-.046.127-.047.12-.093.24-.134.362-.018.056-.033.112-.05.168-.036.115-.071.231-.102.347-.017.066-.031.133-.047.199-.027.109-.055.217-.077.327-.015.074-.027.149-.04.224-.018.102-.035.204-.049.306-.011.079-.02.158-.03.236-.013.1-.026.2-.036.3-.007.084-.011.167-.017.251-.008.102-.016.203-.022.305-.003.079-.004.157-.006.237-.003.108-.009.216-.009.326 0 .068.004.135.004.203.001.118.002.236.007.353.002.064.008.128.012.192.006.121.01.241.02.361.006.059.012.117.019.175.011.122.024.243.039.363.01.066.02.132.03.198.017.111.033.222.053.332.013.074.027.147.041.22.022.107.044.214.068.32.017.079.037.158.057.236.025.097.052.194.08.29.024.081.047.162.072.242.031.089.063.177.095.265.031.085.062.171.095.255.033.081.068.161.103.241.037.087.075.172.114.257.032.067.065.134.098.2.043.088.086.177.131.264.03.056.059.112.09.168.049.091.1.181.152.271.028.046.055.092.084.138.055.092.112.184.172.276.025.037.052.073.078.11.062.094.126.188.195.28.025.034.052.067.078.1.069.094.14.188.214.28.025.032.053.062.079.093.084.102.167.204.258.304.016.018.034.037.051.055.111.122.225.242.346.36.023.023.05.044.073.066.063.062.126.126.191.186.038.037.078.071.116.107.059.054.118.109.179.162.045.04.092.078.138.118.056.048.109.099.166.147.053.042.107.083.16.126.051.039.099.081.151.12.059.045.119.088.179.133.045.031.089.064.135.094.067.05.136.098.205.148.038.025.074.052.112.077.073.05.149.098.223.148.033.022.065.042.098.062.08.05.162.1.243.15.025.014.05.03.075.044.082.05.166.097.25.145.021.013.043.025.064.037.087.048.174.097.262.143.02.01.04.02.06.03.089.045.179.089.268.132.024.012.048.024.072.036.09.041.18.081.271.12.027.011.053.023.08.033.093.037.185.073.277.108.03.011.058.02.088.03.093.033.187.065.28.095.012.004.025.009.038.013.091.03.182.059.273.086.034.012.067.022.102.032.078.022.157.043.234.063.028.007.057.015.084.022.086.021.173.042.26.061.038.009.078.016.118.023.089.017.176.035.265.05.034.008.07.011.104.018.097.016.193.031.29.044.023.005.045.007.068.01.105.015.211.028.317.039.02.003.04.004.06.006.106.011.213.023.32.032.022.002.042.004.062.005.099.009.197.015.297.019.022.001.043.003.067.003.208.009.416.015.626.015.143 0 .285-.003.428-.007.022 0 .045 0 .067-.002.094-.002.187-.006.282-.012.024-.001.05-.004.074-.006.086-.006.17-.011.256-.021.038-.002.074-.007.114-.01.097-.011.191-.024.287-.035.041-.006.083-.009.123-.016.026-.002.051-.007.076-.01.1-.017.2-.037.3-.057.038-.007.073-.015.11-.024.011-.002.022-.005.033-.007.107-.019.214-.04.32-.078.036-.01.071-.021.107-.032.006-.002.014-.005.021-.008.102-.036.204-.076.304-.118.04-.016.08-.033.12-.05.007-.003.015-.007.022-.01.095-.037.19-.077.284-.135.036-.019.072-.038.108-.057.012-.007.024-.016.035-.022.084-.047.168-.095.25-.145.04-.024.08-.049.12-.074.008-.005.016-.012.023-.017.074-.05.144-.1.218-.15.035-.025.07-.05.104-.074.011-.008.022-.017.033-.029.074-.055.144-.11.214-.17.028-.023.056-.047.082-.07.064-.055.127-.112.19-.172l.05-.047c.045-.045.09-.09.135-.135.035-.036.068-.071.1-.106.024-.026.048-.053.073-.081.042-.049.084-.098.124-.149.006-.013.014-.026.024-.04.057-.071.113-.145.167-.217.018-.023.036-.045.054-.068.049-.063.102-.133.145-.196a74.93 74.93 0 0 0 1.938-2.98l.084-.158c1.623-3.239 1.886-7.206-.237-10.256-2.153-3.089-6.039-4.618-10.054-4.618-5.024 0-9.99 2.388-13.773 6.502l-.044.046c.15-.147.303-.292.46-.435l.026-.023a24.06 24.06 0 0 1 6.104-4.193l.078-.039c.255-.124.515-.243.778-.356l.065-.027a27.28 27.28 0 0 1 5.766-1.562l.106-.018c.335-.053.673-.098 1.013-.135l.082-.008c.357-.037.716-.065 1.078-.083l.046-.002c.373-.018.749-.027 1.126-.027.206 0 .411.006.615.015.022 0 .042.002.064.003.097.004.193.01.29.019.019.001.04.003.06.005.104.009.209.021.313.032.018.002.037.003.055.006.103.011.207.024.31.039.022.003.043.005.065.01.094.013.189.028.283.044.033.007.067.01.1.018.087.015.173.033.26.05.037.007.076.014.113.023.085.019.17.04.255.061.025.006.053.014.08.021.076.02.152.041.229.064.033.01.065.02.097.032.089.027.178.056.267.086.011.004.022.009.033.012.092.031.183.062.275.096.028.008.055.018.083.029.09.035.18.071.271.108.025.01.05.022.075.033.089.039.178.079.266.12.022.012.045.024.068.035.088.043.175.087.263.133.019.008.037.018.056.027.087.046.172.095.258.143.019.012.04.023.059.035.083.048.165.095.246.145.024.013.046.028.07.042.08.05.16.1.238.15.031.02.061.04.092.06.073.05.147.098.219.148.035.024.07.05.105.073.067.05.135.098.201.148.043.029.084.061.125.091.059.045.118.088.176.133.049.038.095.079.143.117.051.043.104.083.154.125.055.047.106.097.16.144.044.039.09.075.133.115.06.053.117.107.176.161.036.035.075.068.112.103.064.06.125.123.187.184.022.021.047.041.068.062.119.117.23.236.338.357.015.017.032.034.047.051.089.099.171.199.254.301.024.03.05.058.073.088.073.091.142.184.209.277.024.031.05.062.073.095.067.091.13.183.191.276.024.035.05.069.073.104.058.091.114.181.168.272.027.043.052.086.078.129.051.088.101.178.149.267.029.053.057.105.085.159.044.086.087.173.128.26.032.063.062.126.092.189.038.083.075.167.112.252.033.076.066.152.097.228.032.083.062.167.091.251.031.084.062.169.091.254.024.078.047.155.07.233.027.094.052.188.077.282.018.075.036.149.053.224.023.103.044.206.065.31.013.07.027.14.039.211.019.107.034.216.05.324.01.063.019.126.027.19.015.118.027.237.037.356.006.056.012.112.017.169.009.117.013.234.019.352.003.061.008.122.01.184.004.115.005.23.006.345 0 .066.003.132.003.198 0 .107-.005.213-.008.319-.002.076-.002.15-.005.226-.005.099-.012.198-.02.297-.005.08-.009.159-.016.239-.009.097-.021.195-.033.292-.009.075-.017.15-.028.225-.013.099-.029.198-.046.297-.012.071-.023.142-.037.213-.021.106-.048.21-.073.315-.014.063-.027.126-.043.189-.029.113-.063.225-.097.337-.015.053-.029.107-.046.16-.04.118-.083.235-.128.352-.014.04-.027.081-.042.121-.052.131-.109.261-.168.391-.009.022-.019.045-.029.067-.066.144-.137.286-.211.428-.011.021-.022.043-.034.064-.065.124-.133.248-.205.371-.018.031-.035.061-.053.092-.06.101-.123.202-.188.302-.025.04-.05.08-.076.119-.056.085-.112.169-.17.253-.035.051-.071.102-.107.153-.047.068-.094.137-.143.204-.047.064-.095.126-.144.189-.04.052-.081.104-.123.155-.06.074-.123.146-.186.218-.036.041-.071.083-.108.124-.084.093-.17.185-.257.276-.012.012-.023.024-.035.036-.092.095-.188.189-.284.28-.034.034-.068.067-.102.1-.095.087-.19.172-.288.256-.029.025-.058.051-.088.076-.114.096-.232.189-.351.28-.02.017-.041.032-.061.048-.109.082-.221.161-.334.239-.03.021-.059.042-.09.062-.114.076-.231.149-.348.221-.034.021-.068.042-.102.063-.108.065-.218.127-.329.189-.047.027-.096.053-.143.078-.095.052-.19.102-.287.15-.058.03-.117.058-.176.086-.085.043-.17.085-.257.125-.069.033-.139.064-.209.095-.077.035-.153.07-.231.103-.084.036-.169.069-.255.103-.061.024-.122.05-.184.073-.098.037-.198.07-.298.105-.05.017-.1.036-.15.052-.114.038-.23.073-.346.107-.036.01-.071.022-.107.032-.12.033-.242.063-.364.092-.032.008-.063.017-.096.024-.127.029-.255.054-.384.078-.025.005-.05.011-.075.016-.134.023-.268.043-.403.061-.021.003-.042.007-.064.009-.138.018-.277.032-.417.044-.018.002-.036.005-.054.007-.143.012-.286.02-.43.027-.015.001-.029.003-.044.004-.148.006-.297.009-.446.01-.011 0-.022.002-.033.002-.033.002-.066.002-.099.002-.033 0-.066 0-.099-.002-.011 0-.022-.002-.033-.002-.149-.001-.298-.004-.446-.01-.015-.001-.029-.003-.044-.004-.144-.007-.287-.015-.43-.027-.018-.002-.036-.005-.054-.007-.14-.012-.279-.026-.417-.044-.022-.002-.043-.006-.064-.009-.135-.018-.269-.038-.403-.061-.025-.005-.05-.011-.075-.016-.129-.024-.257-.049-.384-.078-.033-.007-.064-.016-.096-.024-.122-.029-.244-.059-.364-.092-.036-.01-.071-.022-.107-.032-.116-.034-.232-.069-.346-.107-.05-.016-.1-.035-.15-.052-.1-.035-.2-.068-.298-.105-.062-.023-.123-.049-.184-.073-.086-.034-.171-.067-.255-.103-.078-.033-.154-.068-.231-.103-.07-.031-.14-.062-.209-.095-.087-.04-.172-.082-.257-.125-.059-.028-.118-.056-.176-.086-.097-.048-.192-.098-.287-.15-.047-.025-.096-.051-.143-.078-.111-.062-.221-.124-.329-.189-.034-.021-.068-.042-.102-.063-.117-.072-.234-.145-.348-.221-.031-.02-.06-.041-.09-.062-.113-.078-.225-.157-.334-.239-.02-.016-.041-.031-.061-.048-.119-.091-.237-.184-.351-.28-.03-.025-.059-.051-.088-.076-.098-.084-.193-.169-.288-.256-.034-.033-.068-.066-.102-.1-.096-.091-.192-.185-.284-.28-.012-.012-.023-.024-.035-.036-.087-.091-.173-.183-.257-.276-.037-.041-.072-.083-.108-.124-.063-.072-.126-.144-.186-.218-.042-.051-.083-.103-.123-.155-.049-.063-.097-.125-.144-.189-.049-.067-.096-.136-.143-.204-.036-.051-.072-.102-.107-.153-.058-.084-.114-.168-.17-.253-.026-.039-.051-.079-.076-.119-.065-.1-.128-.201-.188-.302-.018-.031-.035-.061-.053-.092-.072-.123-.14-.247-.205-.371-.012-.021-.023-.042-.034-.064-.074-.142-.145-.284-.211-.428-.01-.022-.02-.045-.029-.067-.059-.13-.116-.26-.168-.391-.015-.04-.028-.081-.042-.121-.045-.117-.088-.234-.128-.352-.017-.053-.031-.107-.046-.16-.034-.112-.068-.224-.097-.337-.016-.063-.029-.126-.043-.189-.025-.105-.052-.209-.073-.315-.014-.071-.025-.142-.037-.213-.017-.099-.033-.198-.046-.297-.011-.075-.019-.15-.028-.225-.012-.097-.024-.195-.033-.292-.007-.08-.011-.159-.016-.239-.008-.099-.015-.198-.02-.297-.003-.076-.003-.15-.005-.226-.003-.106-.008-.212-.008-.319 0-.066.003-.132.003-.198.001-.115.002-.23.006-.345.002-.062.007-.123.01-.184.006-.118.01-.235.019-.352.005-.057.011-.113.017-.169.01-.119.022-.238.037-.356.008-.064.017-.127.027-.19.016-.108.031-.217.05-.324.012-.071.026-.141.039-.211.021-.104.042-.207.065-.31.017-.075.035-.149.053-.224.025-.094.05-.188.077-.282.023-.078.046-.155.07-.233.029-.085.06-.17.091-.254.029-.084.059-.168.091-.251.031-.076.064-.152.097-.228.037-.085.074-.169.112-.252.03-.063.06-.126.092-.189.041-.087.084-.174.128-.26.028-.054.056-.106.085-.159.048-.089.098-.179.149-.267.026-.043.051-.086.078-.129.054-.091.11-.181.168-.272.023-.035.049-.069.073-.104.061-.093.124-.185.191-.276.023-.033.049-.064.073-.095.067-.093.136-.186.209-.277.023-.03.049-.058.073-.088.083-.102.165-.202.254-.301.015-.017.032-.034.047-.051.109-.121.219-.24.338-.357.021-.021.046-.041.068-.062.062-.061.123-.124.187-.184.037-.035.075-.068.112-.103.059-.054.116-.108.176-.161.043-.04.089-.076.133-.115.054-.047.105-.097.16-.144.05-.042.103-.082.154-.125.048-.038.094-.079.143-.117.058-.045.117-.088.176-.133.041-.03.082-.062.125-.091.067-.05.135-.098.201-.148.035-.023.07-.049.105-.073.072-.05.146-.098.219-.148.031-.02.061-.04.092-.06.079-.05.158-.1.238-.15.024-.014.046-.029.07-.042.081-.05.163-.097.246-.145.019-.012.04-.023.059-.035.087-.048.171-.097.258-.143.019-.009.037-.019.056-.027.088-.046.175-.09.263-.133.023-.011.046-.023.068-.035.088-.041.177-.081.266-.12.025-.011.05-.023.075-.033.091-.037.181-.073.271-.108.028-.011.055-.021.083-.029.092-.034.184-.065.275-.096.011-.004.022-.008.033-.012.089-.03.178-.059.267-.086.032-.012.064-.022.097-.032.077-.023.153-.044.229-.064.027-.007.055-.015.08-.021.085-.021.17-.042.255-.061.037-.009.076-.016.113-.023.087-.017.173-.035.26-.05.033-.008.067-.011.1-.018.094-.016.189-.031.283-.044.022-.005.043-.007.065-.01.103-.015.207-.028.31-.039.018-.003.037-.004.055-.006.104-.011.209-.023.313-.032.02-.002.041-.004.06-.005.097-.009.193-.015.29-.019.022-.001.042-.003.064-.003.204-.009.409-.015.615-.015.377 0 .753.009 1.126.027l.046.002c.362.018.721.046 1.078.083l.082.008c.34.037.678.082 1.013.135l.106.018a27.28 27.28 0 0 1 5.766 1.562l.065.027c.263.113.523.232.778.356l.078.039a24.06 24.06 0 0 1 6.104 4.193l.026.023c.157.143.31.288.46.435l-.044-.046c-3.783-4.114-8.749-6.502-13.773-6.502-4.015 0-7.901 1.529-10.054 4.618z" fill="#0769AD"/>
+        </svg>
+        <text x="0" y="15" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" font-weight="600" fill="#fff">jQuery</text>
+      </g>
+
+      <!-- Handlebars -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2.6s" dur="3.4s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-40,-80; -40,-30; -40,-30; 0,0"
+          begin="2.6s" dur="3.4s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 30,-15 30,15 0,30" fill="#1a1a1a"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="#0d0d0d"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="#262626"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Handlebars icon -->
+        <path transform="translate(-5, -20) scale(0.021)" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm114.7 150.6c-2.8 2.8-6.2 4.8-9.9 6.1-1.7.6-3.5 1-5.3 1.3-3.6.6-7.3.4-10.8-.5-3.6-.9-6.9-2.6-9.7-5-2.8-2.4-4.9-5.4-6.2-8.8-1.3-3.4-1.7-7-1.2-10.6.5-3.6 1.9-7 4-9.9 2.1-2.9 4.9-5.3 8.1-6.9 3.2-1.6 6.8-2.4 10.4-2.3 3.6.1 7.1 1.1 10.1 3 3 1.9 5.5 4.5 7.2 7.6 1.7 3.1 2.6 6.6 2.5 10.1-.1 3.5-1.1 6.9-3 9.9-1.9 3-4.5 5.5-7.6 7.2z" fill="#fff" opacity="0.8"/>
+        <text x="0" y="15" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">HBS</text>
+      </g>
+
+      <!-- Spring -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2s" dur="4s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-120,-80; -120,-30; -120,-30; 0,0"
+          begin="2s" dur="4s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 38,-19 38,19 0,38" fill="#5fa134"/>
+        <polygon points="0,0 0,38 -38,19 -38,-19" fill="#3d6a21"/>
+        <polygon points="0,0 38,-19 0,-38 -38,-19" fill="#6db33f"/>
+        <polygon points="0,0 38,-19 0,-38 -38,-19" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,38 -38,19 -38,-19" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Spring icon -->
+        <svg x="-6.5" y="-29" width="13" height="13" viewBox="0 0 24 24">
+          <path d="M21.8537 1.4158a10.4504 10.4504 0 0 1-1.284 2.2471A11.9666 11.9666 0 1 0 3.8518 20.7757l.4445.3951a11.9543 11.9543 0 0 0 19.6316-8.2971 11.9194 11.9194 0 0 0-.3187-2.6859 16.2736 16.2736 0 0 1-1.0545 2.6859c-.0888.2041-.1735.4083-.2665.6166-.0845.1857-.1816.3714-.2787.5571-.1857.3549-.3797.7098-.5818 1.0607a7.9853 7.9853 0 0 1-4.5382 3.5038 7.9853 7.9853 0 0 1-8.2148-2.0256 7.9853 7.9853 0 0 1-1.3982-8.5904 7.9853 7.9853 0 0 1 6.5107-4.8837c.2193-.0351.4427-.0598.6703-.0681.2276-.0082.4552-.0082.6828 0 .2276.0083.4511.0288.6703.0639.2193.0351.4345.0845.6538.1404.2193.0599.4345.1239.6497.2028.2152.0764.4303.1609.6372.2538.2069.0929.4057.196.6045.3032.1988.1114.3893.2311.5736.3632.1843.1362.3603.2766.5279.4253.1676.1487.3269.3033.4803.4661.1534.1587.2954.3257.4303.4928.1349.167.2615.3381.3798.5092.1183.1711.2274.3463.3281.5256.1008.1793.1933.3627.2787.5461.0845.1834.1609.3668.2274.5502.0682.1834.1281.3668.1776.5502a7.9853 7.9853 0 0 1 .4468 2.5024 7.9853 7.9853 0 0 1-3.7595 6.5902 7.9853 7.9853 0 0 1-8.3744 0 7.9853 7.9853 0 0 1-3.7595-6.5902c0-2.6859 1.3322-5.063 3.3654-6.5107.4057-.2911.8402-.5461 1.2994-.7633.2274-.1073.4634-.2069.7056-.2954.2422-.0888.4886-.1652.7391-.2316.2506-.0681.5092-.1239.7674-.1693.2623-.0454.5256-.0805.7923-.1032.2666-.0227.5338-.0351.8011-.0351.2674 0 .5347.0124.8011.0351.2667.0227.5338.0578.7923.1032.2582.0454.5175.1012.7674.1693.2505.0664.4969.1428.7391.2316.2422.0845.4782.1881.7056.2954.2276.1032.4469.2193.6662.3425.2193.1239.4303.2538.6372.3921.2069.1383.4057.2871.5983.4427.1917.1556.3756.3199.5536.4927.1775.1729.3464.3549.5092.5461.1628.1912.3199.3921.4703.6003.1504.2069.2912.4221.4262.6413a7.9853 7.9853 0 0 1 1.4641 4.6312c0 4.4198-3.5864 8.0062-8.0062 8.0062s-8.0062-3.5864-8.0062-8.0062c0-2.6859 1.3322-5.063 3.3654-6.5107z" fill="#6DB33F"/>
+        </svg>
+        <text x="0" y="19" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#fff">Spring</text>
+      </g>
+
+      <!-- NestJS -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2.2s" dur="3.8s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-80,-80; -80,-30; -80,-30; 0,0"
+          begin="2.2s" dur="3.8s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 32,-16 32,16 0,32" fill="#c21c3f"/>
+        <polygon points="0,0 0,32 -32,16 -32,-16" fill="#8a1228"/>
+        <polygon points="0,0 32,-16 0,-32 -32,-16" fill="#e0234e"/>
+        <polygon points="0,0 32,-16 0,-32 -32,-16" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,32 -32,16 -32,-16" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- NestJS icon -->
+        <svg x="-5.5" y="-26" width="11" height="11" viewBox="0 0 24 24">
+          <path d="M14.131.047c-.173 0-.334.037-.483.087.316.21.49.49.576.806.007.043.019.074.025.117a.681.681 0 0 1 .013.112c.024.545-.143.614-.26.936-.18.415-.13.87.086 1.225a.39.39 0 0 0 .024.033c.087.11.18.21.28.3.007.007.01.013.017.02a2.22 2.22 0 0 0 .184.147c.013.007.027.013.04.02a1.21 1.21 0 0 0 .187.112 1.01 1.01 0 0 0 .086.043c.067.03.137.054.21.073.024.007.05.01.074.017.084.02.172.033.26.04.01 0 .02.003.03.003a1.47 1.47 0 0 0 .273.007 1.44 1.44 0 0 0 .367-.053.37.37 0 0 0 .04-.013c.12-.04.24-.09.347-.157a.96.96 0 0 0 .034-.023.84.84 0 0 0 .15-.123c.007-.007.013-.01.02-.017.05-.05.097-.104.14-.16.007-.01.013-.02.02-.03a.86.86 0 0 0 .117-.21c.007-.01.007-.02.013-.03a.86.86 0 0 0 .073-.3v-.01a.86.86 0 0 0-.023-.266.89.89 0 0 0-.087-.234v-.003a.89.89 0 0 0-.173-.214.89.89 0 0 0-.084-.073c-.007 0-.01-.007-.017-.01-.084-.063-.18-.11-.28-.143a.83.83 0 0 0-.257-.053c-.01 0-.02-.003-.03-.003a.83.83 0 0 0-.22.013c-.084.013-.167.04-.247.077-.007.003-.013.007-.02.01a.67.67 0 0 0-.084.043c-.01.007-.02.01-.03.017a.89.89 0 0 0-.154.123.89.89 0 0 0-.13.173c-.007.013-.013.027-.02.04a.89.89 0 0 0-.073.234.89.89 0 0 0-.023.266v.01c.003.087.02.174.05.257.007.02.013.04.023.06.01.023.023.047.037.07.007.013.013.023.02.037.01.013.02.027.034.04.013.02.027.04.043.06.007.01.013.02.023.027.007.007.013.013.02.02.01.013.023.023.034.037.01.013.023.023.037.033.013.013.027.023.04.033.014.013.027.023.04.033.014.01.027.02.04.03.014.01.03.02.043.03.007.003.013.007.02.01.007.003.013.007.02.01a.67.67 0 0 0 .084.043c.01.007.02.01.03.017.027.01.053.023.084.03.01.003.02.007.03.01.023.007.05.01.073.013.01.003.02.003.03.003.024.003.05.007.074.007h.01c.01 0 .02-.003.03-.003.023-.003.047-.003.07-.007.01 0 .02-.003.03-.003.024-.003.047-.01.07-.013.01-.003.02-.003.03-.007.024-.007.047-.01.07-.02.01-.003.02-.003.03-.007l.053-.02c.01-.003.02-.007.03-.01a.61.61 0 0 0 .084-.043c.007-.003.013-.007.02-.01.007-.003.013-.007.02-.01a.61.61 0 0 0 .06-.04c.013-.01.027-.02.04-.03.014-.01.027-.02.04-.033.014-.01.027-.02.04-.033.014-.013.027-.023.037-.033.01-.014.023-.024.034-.037.007-.007.013-.013.02-.02.007-.007.013-.017.023-.027.01-.02.027-.04.043-.06.01-.013.023-.027.033-.04.007-.014.013-.024.02-.037.014-.023.027-.047.037-.07.01-.02.017-.04.023-.06.03-.083.047-.17.05-.257v-.01a.89.89 0 0 0-.023-.266.89.89 0 0 0-.073-.234c-.007-.013-.013-.027-.02-.04a.89.89 0 0 0-.13-.173.89.89 0 0 0-.154-.123c-.01-.007-.02-.01-.03-.017a.67.67 0 0 0-.084-.043c-.007-.003-.013-.007-.02-.01a.83.83 0 0 0-.247-.077.83.83 0 0 0-.22-.013c-.01 0-.02.003-.03.003a.83.83 0 0 0-.257.053c-.1.033-.196.08-.28.143-.007.003-.01.007-.017.01a.89.89 0 0 0-.084.073.89.89 0 0 0-.173.214v.003a.89.89 0 0 0-.087.234.89.89 0 0 0-.023.266v.01c0 .1.027.2.073.3.007.01.007.02.013.03.03.08.07.154.117.21.007.01.013.02.02.03.043.056.09.11.14.16.007.007.013.01.02.017a.84.84 0 0 0 .15.123c.01.007.023.013.034.023.107.067.227.117.347.157.013.003.027.01.04.013a1.44 1.44 0 0 0 .367.053 1.47 1.47 0 0 0 .273-.007c.01 0 .02-.003.03-.003.088-.007.176-.02.26-.04.024-.007.05-.01.074-.017.073-.019.143-.043.21-.073.029-.013.057-.027.086-.043a1.21 1.21 0 0 0 .187-.112c.013-.007.027-.013.04-.02a2.22 2.22 0 0 0 .184-.147c.007-.007.01-.013.017-.02.1-.09.193-.19.28-.3a.39.39 0 0 0 .024-.033c.216-.355.266-.81.086-1.225-.117-.322.04-.391.26-.936a.681.681 0 0 1 .013-.112c.006-.043.018-.074.025-.117.086-.316.26-.596.576-.806a1.01 1.01 0 0 0-.483-.087z" fill="#E0234E"/>
+        </svg>
+        <text x="0" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" font-weight="600" fill="#fff">Nest</text>
+      </g>
+
+      <!-- Express -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="2.4s" dur="3.6s" keyTimes="0;0.05;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-40,-80; -40,-30; -40,-30; 0,0"
+          begin="2.4s" dur="3.6s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 30,-15 30,15 0,30" fill="#2a2a2a"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="#151515"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="#353535"/>
+        <polygon points="0,0 30,-15 0,-30 -30,-15" fill="url(#grad-top)" opacity="0.4"/>
+        <polygon points="0,0 0,30 -30,15 -30,-15" fill="url(#grad-side)" opacity="0.5"/>
+
+        <!-- Express icon -->
+        <svg x="-5" y="-24" width="10" height="10" viewBox="0 0 24 24">
+          <path d="M24 18.588a1.529 1.529 0 0 1-1.895-.72l-3.45-4.771-.5-.667-4.003 5.444a1.466 1.466 0 0 1-1.802.708l5.158-6.92-4.798-6.251a1.595 1.595 0 0 1 1.9.666l3.576 4.83 3.596-4.81a1.435 1.435 0 0 1 1.788-.668L21.708 7.9l-2.522 3.283a.666.666 0 0 0 0 .994l4.804 6.412zM.002 11.576l.42-2.075c1.154-4.103 5.858-5.81 9.094-3.27 1.895 1.489 2.368 3.597 2.275 5.973H1.116C.943 16.447 4.005 19.009 7.92 17.7a4.078 4.078 0 0 0 2.582-2.876c.207-.666.548-.78 1.174-.588a5.417 5.417 0 0 1-2.589 3.957 6.272 6.272 0 0 1-7.306-.933 6.575 6.575 0 0 1-1.64-3.858c0-.235-.08-.455-.134-.666A88.33 88.33 0 0 1 0 11.577zm1.127-.286h9.654c-.06-3.076-2.001-5.258-4.59-5.278-2.882-.04-4.944 2.094-5.071 5.264z" fill="#fff"/>
+        </svg>
+        <text x="0" y="15" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" font-weight="600" fill="#fff">Express</text>
+      </g>
     </g>
+
+    <!-- LAYER 3: INFRASTRUCTURE (3.5-4.5s) -->
+    <g id="layer-infrastructure">
+
+      <!-- AWS -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="3.5s" dur="2.5s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-100,-120; -100,-60; -100,-60; 0,0"
+          begin="3.5s" dur="2.5s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 26,-13 26,13 0,26" fill="#ff9900" opacity="0.75"/>
+        <polygon points="0,0 0,26 -26,13 -26,-13" fill="#cc7a00" opacity="0.75"/>
+        <polygon points="0,0 26,-13 0,-26 -26,-13" fill="#ffad33" opacity="0.75"/>
+
+        <!-- AWS icon -->
+        <svg x="-4.5" y="-22" width="9" height="9" viewBox="0 0 24 24">
+          <path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335c-.072.048-.144.072-.208.072-.08 0-.16-.04-.239-.112-.112-.12-.207-.248-.279-.383-.072-.136-.144-.288-.223-.463-.56.66-1.263.99-2.095.99-.599 0-1.079-.17-1.431-.511-.353-.344-.527-.808-.527-1.391 0-.616.216-1.111.655-1.487.44-.376 1.023-.567 1.759-.567.24 0 .488.016.743.056.255.04.519.088.791.152v-.503c0-.528-.112-.903-.327-1.127-.223-.224-.6-.336-1.135-.336-.247 0-.503.032-.768.088-.271.056-.536.12-.791.208-.12.048-.207.08-.256.096-.048.016-.08.024-.104.024-.096 0-.144-.072-.144-.216v-.336c0-.112.016-.2.056-.255.04-.056.12-.104.239-.16.247-.128.543-.231.888-.32.344-.096.72-.136 1.119-.136.855 0 1.479.192 1.871.583.384.384.583 0.96.583 1.727v2.279zm-2.887 1.08c.232 0 .471-.04.727-.127.255-.088.48-.24.671-.44.12-.135.207-.287.247-.455.04-.168.064-.36.064-.583v-.279c-.184-.048-.384-.088-.6-.12-.216-.032-.44-.048-.672-.048-.479 0-.831.096-1.063.287-.232.192-.336.455-.336.791 0 .328.08.576.247.751.168.183.408.271.743.271zm5.783.856c-.128 0-.215-.024-.271-.072-.056-.048-.104-.152-.152-.288L7.046 3.675c-.048-.16-.072-.264-.072-.32 0-.128.064-.2.191-.2h.783c.136 0 .224.024.279.072.056.048.096.152.144.288l1.399 5.527 1.295-5.527c.04-.16.08-.24.136-.288.056-.048.151-.072.279-.072h.631c.136 0 .223.024.279.072.056.048.104.152.144.288l1.311 5.599 1.431-5.599c.048-.16.096-.24.151-.288.056-.048.144-.072.279-.072h.743c.128 0 .2.064.2.2 0 .04-.008.08-.016.127-.008.048-.024.12-.056.200l-2.208 7.936c-.048.16-.096.24-.151.288-.056.048-.144.072-.271.072h-.68c-.136 0-.224-.024-.28-.072-.056-.048-.103-.152-.143-.288l-1.295-5.383-1.279 5.383c-.04.16-.08.24-.144.288-.056.048-.151.072-.279.072h-.68zm9.343.2c-.375 0-.751-.04-1.119-.127-.375-.08-.671-.176-.895-.288-.12-.064-.2-.136-.231-.2-.032-.064-.048-.136-.048-.2v-.351c0-.144.056-.216.16-.216.064 0 .127.016.2.04.271.12.559.216.863.279.304.064.607.096.911.096.479 0 .847-.08 1.103-.248.255-.168.375-.408.375-.711 0-.208-.064-.383-.2-.535-.135-.152-.431-.296-.895-.431l-1.287-.399c-.647-.2-1.127-.495-1.431-.879-.303-.384-.455-.808-.455-1.271 0-.375.08-.703.247-.99.168-.287.391-.535.671-.735.279-.2.607-.344.975-.447.367-.104.759-.152 1.167-.152.168 0 .336.008.503.032.168.016.336.048.495.072.151.032.295.064.431.104.135.04.247.08.327.12.112.056.2.12.247.184.048.056.072.144.072.247v.327c0 .144-.056.223-.16.223-.064 0-.168-.032-.295-.088-.48-.216-1.023-.327-1.639-.327-.44 0-.783.072-1.023.224-.239.151-.359.375-.359.671 0 .208.072.391.215.543.144.152.463.304.959.448l1.255.4c.639.2 1.103.479 1.387.847.287.367.423.791.423 1.266 0 .383-.08.727-.239 1.023-.16.296-.384.551-.671.76-.288.207-.624.367-1.023.479-.4.111-.84.167-1.319.167z" fill="#FF9900"/>
+        </svg>
+        <text x="0" y="13" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" font-weight="600" fill="#000">AWS</text>
+      </g>
+
+      <!-- Docker -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="3.7s" dur="2.3s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-60,-120; -60,-60; -60,-60; 0,0"
+          begin="3.7s" dur="2.3s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 28,-14 28,14 0,28" fill="#1e88d4" opacity="0.75"/>
+        <polygon points="0,0 0,28 -28,14 -28,-14" fill="#1670ad" opacity="0.75"/>
+        <polygon points="0,0 28,-14 0,-28 -28,-14" fill="#2496ed" opacity="0.75"/>
+
+        <!-- Docker icon -->
+        <svg x="-4.8" y="-23" width="9.6" height="9.6" viewBox="0 0 24 24">
+          <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.03-1.01.09-.808-2.602-3.044-3.962-3.149-4.042a.186.186 0 00-.231.028c-.065.06-.098.143-.09.228.015.168.12.657.12 1.075 0 .931-.14 1.562-.42 1.902-.177.216-.38.369-.598.461.09-.087.177-.183.255-.289.433-.579.65-1.407.65-2.46 0-.87-.108-1.598-.108-1.598a.186.186 0 00-.327-.108s-.918 1.063-1.058 2.565c-.028.299-.014.622.037.934a4.18 4.18 0 01-.991-.413c-.615-.375-1.024-.87-1.024-.87a.186.186 0 00-.313.021c-.01.017-.127.233-.127.618 0 .39.127.753.38 1.076.155.198.337.357.538.475a8.89 8.89 0 01-2.416-.317c-.277-.08-.49-.187-.49-.187a.186.186 0 00-.271.196s.51 1.353 2.256 2.13c.346.154.712.27 1.09.348-.37.072-.772.108-1.21.108-.742 0-1.41-.18-1.41-.18a.186.186 0 00-.144.345s.787.91 2.684.91c.408 0 .781-.034 1.117-.1 1.755 1.784 4.964 2.862 8.514 2.862 5.21 0 9.446-3.04 9.446-6.783 0-1.863-1.512-2.895-1.663-2.995" fill="#2496ED"/>
+        </svg>
+        <text x="0" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" font-weight="600" fill="#fff">Docker</text>
+      </g>
+
+      <!-- ECS -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="3.9s" dur="2.1s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-20,-120; -20,-60; -20,-60; 0,0"
+          begin="3.9s" dur="2.1s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 24,-12 24,12 0,24" fill="#ff9900" opacity="0.75"/>
+        <polygon points="0,0 0,24 -24,12 -24,-12" fill="#cc7a00" opacity="0.75"/>
+        <polygon points="0,0 24,-12 0,-24 -24,-12" fill="#ffad33" opacity="0.75"/>
+
+        <!-- ECS icon -->
+        <path transform="translate(-4.2, -18) scale(0.018)" d="M232 256c0-13.3 10.7-24 24-24h48c13.3 0 24 10.7 24 24s-10.7 24-24 24h-48c-13.3 0-24-10.7-24-24zm-104 0c0-13.3 10.7-24 24-24h48c13.3 0 24 10.7 24 24s-10.7 24-24 24h-48c-13.3 0-24-10.7-24-24z" fill="#000" opacity="0.8"/>
+        <text x="0" y="12" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" font-weight="600" fill="#000">ECS</text>
+      </g>
+
+      <!-- Kubernetes -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="4.1s" dur="1.9s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="20,-120; 20,-60; 20,-60; 0,0"
+          begin="4.1s" dur="1.9s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 26,-13 26,13 0,26" fill="#285ea3" opacity="0.75"/>
+        <polygon points="0,0 0,26 -26,13 -26,-13" fill="#1f4a7f" opacity="0.75"/>
+        <polygon points="0,0 26,-13 0,-26 -26,-13" fill="#326ce5" opacity="0.75"/>
+
+        <!-- K8s icon -->
+        <svg x="-4.5" y="-22" width="9" height="9" viewBox="0 0 24 24">
+          <path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011-1.232-2.216a5.193 5.193 0 0 1 3.844-.573L10.976 11.3l-.006.005a.44.44 0 0 0-.6.917zm8.902-5.41l-2.53 1.026-.01-.006a.44.44 0 0 0-.18.76l.003.01 1.779 1.444a5.19 5.19 0 0 1-1.069 3.848l-2.298-1.205-.008.004a.44.44 0 0 0-.614.289v.01l-.296 2.5a5.187 5.187 0 0 1-4.054.217l-.472-2.498v-.009a.44.44 0 0 0-.61-.297l-.008-.003-2.252 1.174a5.186 5.186 0 0 1-1.096-3.838l1.755-1.42.003-.011a.44.44 0 0 0-.168-.76l-.01-.006-2.53-1.026a5.19 5.19 0 0 1 2.595-2.07L8.1 8.697l.01.003a.44.44 0 0 0 .757-.174l.003-.01L9.59 5.83a5.188 5.188 0 0 1 4.122.095l.748 2.64.002.01a.44.44 0 0 0 .76.166l.01-.005 1.596-1.583a5.19 5.19 0 0 1 2.446 2.042zM12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zm.358-8.996a.44.44 0 0 0-.555-.606l-.008.003-2.035 1.36a5.192 5.192 0 0 1-2.053-.884l.924-2.28-.005-.01a.44.44 0 0 0-.254-.567l-.01-.003-2.458-.596a5.188 5.188 0 0 1 .252-3.99l2.474.415.01-.005a.44.44 0 0 0 .502-.63l-.005-.009-1.142-2.325a5.187 5.187 0 0 1 3.74-.99l.897 2.338.01.003a.44.44 0 0 0 .602.252l.01-.005 1.93-1.335a5.19 5.19 0 0 1 2.05.886l-.924 2.28.005.01a.44.44 0 0 0 .254.567l.01.003 2.458.596a5.188 5.188 0 0 1-.252 3.99l-2.474-.415-.01.005a.44.44 0 0 0-.502.63l.005.009 1.142 2.325a5.187 5.187 0 0 1-3.74.99l-.897-2.338z" fill="#326CE5"/>
+        </svg>
+        <text x="0" y="13" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">K8s</text>
+      </g>
+
+      <!-- GitHub Actions -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="4.3s" dur="1.7s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="60,-120; 60,-60; 60,-60; 0,0"
+          begin="4.3s" dur="1.7s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 28,-14 28,14 0,28" fill="#1870cc" opacity="0.75"/>
+        <polygon points="0,0 0,28 -28,14 -28,-14" fill="#1359a3" opacity="0.75"/>
+        <polygon points="0,0 28,-14 0,-28 -28,-14" fill="#2088ff" opacity="0.75"/>
+
+        <!-- GitHub Actions icon -->
+        <svg x="-4.8" y="-23" width="9.6" height="9.6" viewBox="0 0 24 24">
+          <path d="M10.984 13.836a.5.5 0 0 1-.353-.146l-.745-.743a.5.5 0 1 1 .706-.708l.392.391 1.181-1.18a.5.5 0 0 1 .708.707l-1.535 1.533a.504.504 0 0 1-.354.146zm9.353-.147l1.534-1.532a.5.5 0 0 0-.707-.707l-1.181 1.18-.392-.391a.5.5 0 1 0-.706.708l.746.743a.497.497 0 0 0 .706-.001zM4.527 7.452l2.557-1.585A1 1 0 0 0 7.09 4.17L4.533 2.56A1 1 0 0 0 3 3.406v3.196a1 1 0 0 0 1.527.85zm2.03-2.436L4 6.602V3.406l2.557 1.61zM24 12.5c0 1.93-1.57 3.5-3.5 3.5a3.503 3.503 0 0 1-3.46-3h-2.08a3.503 3.503 0 0 1-3.46 3 3.502 3.502 0 0 1-3.46-3H6.46a3.495 3.495 0 0 1-2.96 1.658V14.5h13a1.5 1.5 0 0 0 1.5-1.5v-2h2.54c.23 1.74 1.7 3.5 3.46 3.5zM.002 10.5v2c0 .83.67 1.5 1.5 1.5h1v-5h-1c-.83 0-1.5.67-1.5 1.5z" fill="#2088FF"/>
+        </svg>
+        <text x="0" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">Actions</text>
+      </g>
+
+      <!-- GitLab -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="3.7s" dur="2.3s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="100,-120; 100,-60; 100,-60; 0,0"
+          begin="3.7s" dur="2.3s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 26,-13 26,13 0,26" fill="#c94125" opacity="0.75"/>
+        <polygon points="0,0 0,26 -26,13 -26,-13" fill="#9e321d" opacity="0.75"/>
+        <polygon points="0,0 26,-13 0,-26 -26,-13" fill="#fc6d26" opacity="0.75"/>
+
+        <!-- GitLab icon -->
+        <path transform="translate(-4.5, -19) scale(0.019)" d="M256 8l-66.7 205.2h133.4L256 8zM25 213.2L256 504l-166.3-85.6L25 213.2zm231-0L256 504l166.3-85.6L487 213.2zM0 213.2l25 205.2L256 8 0 213.2zm512 0L487 418.4 256 504l256-290.8z" fill="#fff" opacity="0.8"/>
+        <text x="0" y="13" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">GitLab</text>
+      </g>
+
+      <!-- nginx -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="3.9s" dur="2.1s" keyTimes="0;0.1;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="140,-120; 140,-60; 140,-60; 0,0"
+          begin="3.9s" dur="2.1s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 24,-12 24,12 0,24" fill="#007a2e" opacity="0.75"/>
+        <polygon points="0,0 0,24 -24,12 -24,-12" fill="#006124" opacity="0.75"/>
+        <polygon points="0,0 24,-12 0,-24 -24,-12" fill="#009639" opacity="0.75"/>
+
+        <!-- nginx icon -->
+        <svg x="-4.2" y="-21" width="8.4" height="8.4" viewBox="0 0 24 24">
+          <path d="M12 0L1.605 6v12L12 24l10.395-6V6L12 0zm0 2.488L20.39 7.5v9l-8.39 5.013L3.61 16.5v-9l8.39-5.012zM8.68 8.25v7.5h2.48V12h.08l3.06 3.75h3.18v-7.5h-2.48V12h-.08l-3.06-3.75H8.68z" fill="#009639"/>
+        </svg>
+        <text x="0" y="12" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">nginx</text>
+      </g>
+    </g>
+
+    <!-- LAYER 4: DATA (4.5-5.5s) -->
+    <g id="layer-data">
+
+      <!-- MySQL -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="4.5s" dur="1.5s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-100,-150; -100,-90; -100,-90; 0,0"
+          begin="4.5s" dur="1.5s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 26,-13 26,13 0,26" fill="#3766a1" opacity="0.8"/>
+        <polygon points="0,0 0,26 -26,13 -26,-13" fill="#2d5281" opacity="0.8"/>
+        <polygon points="0,0 26,-13 0,-26 -26,-13" fill="#4479a1" opacity="0.8"/>
+
+        <!-- MySQL icon -->
+        <svg x="-4.5" y="-22" width="9" height="9" viewBox="0 0 24 24">
+          <path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.716-1.01 1.073-1.583 1.073-.153 0-.34-.046-.566-.138v-.494c.11.017.24.026.386.026.268 0 .483-.075.647-.222.197-.18.295-.382.295-.605 0-.155-.077-.47-.23-.944L6.23 14.615h.91l.727 2.36c.164.536.233.91.205 1.123.4-1.064.678-2.227.835-3.483zm12.325 4.08h-2.63v-5.53h.885v4.85h1.745zm-3.32.135l-1.016-.5c.09-.076.177-.158.255-.25.433-.506.648-1.258.648-2.253 0-1.83-.718-2.746-2.155-2.746-.704 0-1.254.232-1.65.697-.43.508-.646 1.256-.646 2.245 0 .972.19 1.686.574 2.14.35.41.877.615 1.583.615.264 0 .506-.033.725-.098l1.325.772.36-.622zM15.5 17.588c-.225-.36-.337-.94-.337-1.736 0-1.393.424-2.09 1.27-2.09.443 0 .77.167.977.5.224.362.336.936.336 1.723 0 1.404-.424 2.108-1.27 2.108-.445 0-.77-.167-.978-.5zm-6.03-3.02v2.23h.93c.328 0 .564-.027.71-.08.292-.107.437-.338.437-.69 0-.293-.107-.507-.32-.64-.214-.135-.528-.202-.943-.202H9.47zm-.93 4.85h-.885v-5.53h2.045c.666 0 1.146.118 1.44.352.295.235.442.58.442 1.036 0 .305-.084.565-.25.782-.165.218-.402.37-.71.454.315.06.552.16.71.298.16.14.24.34.24.6v.96c0 .21.015.353.044.428.033.075.09.134.17.178v.102h-.93c-.033-.045-.06-.12-.08-.223-.02-.104-.03-.28-.03-.53v-.872c0-.315-.073-.527-.22-.636-.145-.11-.413-.164-.802-.164H9.47v2.425zm11.43-5.53h.885v5.53h-.885zm-2.453-.04c.583 0 1.02.2 1.315.598.295.4.442.943.442 1.63 0 .786-.16 1.403-.48 1.85-.315.448-.77.672-1.363.672-.572 0-1.006-.223-1.3-.67-.294-.448-.44-1.065-.44-1.853 0-.75.158-1.33.476-1.74.317-.41.77-.615 1.35-.615zm-2.6-.04h1.033l-.212 1.06h.03c.11-.24.29-.434.54-.583.25-.15.515-.224.794-.224.36 0 .648.1.865.298.218.2.327.453.327.76 0 .202-.02.407-.06.614l-.573 2.898h-.93l.545-2.786c.033-.13.05-.258.05-.384 0-.18-.048-.318-.143-.416-.095-.1-.24-.15-.434-.15-.206 0-.39.068-.553.204-.164.138-.3.35-.41.638l-.598 2.894h-.93zm-3.164 2.285c0-.598-.128-1.05-.385-1.357-.257-.308-.63-.462-1.12-.462-.49 0-.93.154-1.32.462-.39.308-.66.732-.81 1.272h3.635zm.93.674H10.11c0 .573.13 1.01.39 1.313.26.302.644.453 1.15.453.297 0 .585-.033.865-.1.28-.066.56-.165.84-.297v.674c-.28.132-.56.23-.84.297-.28.066-.585.1-.915.1-.73 0-1.29-.223-1.68-.67-.39-.448-.585-1.077-.585-1.888 0-.776.19-1.393.57-1.85.38-.458.88-.687 1.5-.687.58 0 1.03.197 1.35.59.32.392.48.935.48 1.627v.437z" fill="#4479A1"/>
+        </svg>
+        <text x="0" y="13" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">MySQL</text>
+      </g>
+
+      <!-- Redis -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="4.7s" dur="1.3s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-60,-150; -60,-90; -60,-90; 0,0"
+          begin="4.7s" dur="1.3s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 24,-12 24,12 0,24" fill="#b82d24" opacity="0.8"/>
+        <polygon points="0,0 0,24 -24,12 -24,-12" fill="#91241d" opacity="0.8"/>
+        <polygon points="0,0 24,-12 0,-24 -24,-12" fill="#dc382d" opacity="0.8"/>
+
+        <!-- Redis icon -->
+        <svg x="-4.2" y="-21" width="8.4" height="8.4" viewBox="0 0 24 24">
+          <path d="M10.5 2.661l.54.997-1.797.644 2.409.218.748 1.246c.783-.2 1.512-.37 2.031-.545l.498-1.1c.906.218 1.61.38 2.022.54l-.524 1.118c.614.228 1.078.421 1.297.574.524.352.74.977.74 1.63v3.102c0 .653-.216 1.278-.74 1.63-.218.153-.682.346-1.297.574l.524 1.118c-.411.16-1.116.322-2.022.54l-.498-1.1c-.52-.175-1.248-.345-2.031-.545l-.748 1.246-2.409.218 1.797.644-.54.997-2.302-.836-1.351 2.086-1.065-.781.651-.975c-.21-.088-.413-.175-.601-.261-.981-.44-1.567-.92-1.567-1.419v-3.102c0-.499.586-.979 1.567-1.419.188-.086.39-.173.601-.261l-.651-.975 1.065-.781 1.351 2.086 2.302-.836zm-5.518 4.023c-.073.077-.11.158-.11.241v3.102c0 .084.037.165.11.241.219.228.586.445 1.088.645l.054-.09c.34-.568.739-1.099 1.195-1.595-.472-.126-.892-.271-1.257-.435-.365-.164-.727-.354-1.08-.582v-.653c.353-.228.715-.418 1.08-.582.365-.164.785-.309 1.257-.435a9.646 9.646 0 00-1.195-1.595l-.054-.09c-.502.2-.869.417-1.088.645zm9.382-.645l-.054.09c-.34.568-.739 1.099-1.195 1.595.472.126.892.271 1.257.435.365.164.727.354 1.08.582v.653c-.353.228-.715.418-1.08.582-.365.164-.785.309-1.257.435.456.496.855 1.027 1.195 1.595l.054.09c.502-.2.869-.417 1.088-.645.073-.077.11-.158.11-.241V7.28c0-.084-.037-.165-.11-.241-.219-.228-.586-.445-1.088-.645zM12 9.972c-.554 0-1.003.45-1.003 1.003 0 .554.45 1.003 1.003 1.003.554 0 1.003-.45 1.003-1.003 0-.554-.45-1.003-1.003-1.003zm-6.5-6.67l.54.997-1.797.644 2.409.218.748 1.246c.783-.2 1.512-.37 2.031-.545l.498-1.1c.906.218 1.61.38 2.022.54l-.524 1.118c.614.228 1.078.421 1.297.574.524.352.74.977.74 1.63v3.102c0 .653-.216 1.278-.74 1.63-.218.153-.682.346-1.297.574l.524 1.118c-.411.16-1.116.322-2.022.54l-.498-1.1c-.52-.175-1.248-.345-2.031-.545l-.748 1.246-2.409.218 1.797.644-.54.997L3.798 13.9l-1.351 2.086-1.065-.781.651-.975c-.21-.088-.413-.175-.601-.261-.981-.44-1.567-.92-1.567-1.419V9.448c0-.499.586-.979 1.567-1.419.188-.086.39-.173.601-.261l-.651-.975 1.065-.781L3.798 8.098l2.302-.836zM1.432 9.324c-.073.077-.11.158-.11.241v3.102c0 .084.037.165.11.241.219.228.586.445 1.088.645l.054-.09c.34-.568.739-1.099 1.195-1.595-.472-.126-.892-.271-1.257-.435-.365-.164-.727-.354-1.08-.582v-.653c.353-.228.715-.418 1.08-.582.365-.164.785-.309 1.257-.435a9.646 9.646 0 00-1.195-1.595l-.054-.09c-.502.2-.869.417-1.088.645zm9.382-.645l-.054.09c-.34.568-.739 1.099-1.195 1.595.472.126.892.271 1.257.435.365.164.727.354 1.08.582v.653c-.353.228-.715.418-1.08.582-.365.164-.785.309-1.257.435.456.496.855 1.027 1.195 1.595l.054.09c.502-.2.869-.417 1.088-.645.073-.077.11-.158.11-.241V9.565c0-.084-.037-.165-.11-.241-.219-.228-.586-.445-1.088-.645zM6.5 9.972c-.554 0-1.003.45-1.003 1.003 0 .554.45 1.003 1.003 1.003.554 0 1.003-.45 1.003-1.003 0-.554-.45-1.003-1.003-1.003z" fill="#DC382D"/>
+        </svg>
+        <text x="0" y="12" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">Redis</text>
+      </g>
+
+      <!-- Kafka -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="4.9s" dur="1.1s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="-20,-150; -20,-90; -20,-90; 0,0"
+          begin="4.9s" dur="1.1s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 24,-12 24,12 0,24" fill="#1b1919" opacity="0.8"/>
+        <polygon points="0,0 0,24 -24,12 -24,-12" fill="#0f0e0e" opacity="0.8"/>
+        <polygon points="0,0 24,-12 0,-24 -24,-12" fill="#231f20" opacity="0.8"/>
+
+        <!-- Kafka icon -->
+        <svg x="-4.2" y="-21" width="8.4" height="8.4" viewBox="0 0 24 24">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.388 12.154c-.012.021-.03.042-.048.063a3.327 3.327 0 01-2.705 1.396 3.327 3.327 0 01-3.325-3.325c0-.885.348-1.716.98-2.34a3.314 3.314 0 012.345-.984c1.155 0 2.22.597 2.823 1.578.057.093.108.19.153.288.024.054.045.108.066.162.018.048.033.096.048.144.015.048.03.096.042.144.015.063.027.126.039.192.009.048.015.096.021.144.003.027.006.054.009.084.003.063.006.126.006.192 0 .036-.003.072-.003.108 0 .03-.003.063-.006.096-.003.03-.006.063-.009.093-.009.063-.018.126-.03.189-.003.018-.006.036-.009.054-.015.063-.033.126-.051.186l-.018.063c-.018.057-.039.114-.063.171-.009.021-.015.042-.024.063-.027.069-.057.138-.09.204-.018.039-.036.078-.057.114-.03.054-.063.108-.096.159-.021.033-.039.066-.063.099-.036.054-.075.108-.114.159-.027.033-.051.066-.078.096-.042.048-.087.093-.132.138-.033.033-.066.066-.102.096-.045.039-.09.078-.138.114-.036.027-.072.051-.111.075-.051.033-.102.063-.156.09-.039.021-.078.042-.12.063a3.292 3.292 0 01-.69.213c-.048.009-.096.018-.144.024-.06.009-.12.015-.18.021-.048.003-.093.009-.141.009-.054.003-.108.003-.159.003a3.327 3.327 0 01-3.325-3.325c0-1.155.597-2.22 1.578-2.823.093-.057.19-.108.288-.153.054-.024.108-.045.162-.066.048-.018.096-.033.144-.048.048-.015.096-.03.144-.042.063-.015.126-.027.192-.039.048-.009.096-.015.144-.021.027-.003.054-.006.084-.009.063-.003.126-.006.192-.006.036 0 .072.003.108.003.03 0 .063.003.096.006.03.003.063.006.093.009.063.009.126.018.189.03.018.003.036.006.054.009.063.015.126.033.186.051l.063.018c.057.018.114.039.171.063.021.009.042.015.063.024.069.027.138.057.204.09.039.018.078.036.114.057.054.03.108.063.159.096.033.021.066.039.099.063.054.036.108.075.159.114.033.027.066.051.096.078.048.042.093.087.138.132.033.033.066.066.096.102.039.045.078.09.114.138.027.036.051.072.075.111.033.051.063.102.09.156.021.039.042.078.063.12a3.292 3.292 0 01.213.69c.009.048.018.096.024.144.009.06.015.12.021.18.003.048.009.093.009.141.003.054.003.108.003.159 0 .054 0 .108-.003.159-.003.048-.006.093-.009.141-.006.06-.012.12-.021.18-.006.048-.015.096-.024.144a3.292 3.292 0 01-.213.69c-.021.042-.042.081-.063.12z" fill="#231F20"/>
+        </svg>
+        <text x="0" y="12" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#fff">Kafka</text>
+      </g>
+
+      <!-- Debezium -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="5.1s" dur="0.9s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="20,-150; 20,-90; 20,-90; 0,0"
+          begin="5.1s" dur="0.9s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 28,-14 28,14 0,28" fill="#cc5500" opacity="0.8"/>
+        <polygon points="0,0 0,28 -28,14 -28,-14" fill="#a34400" opacity="0.8"/>
+        <polygon points="0,0 28,-14 0,-28 -28,-14" fill="#ff6a00" opacity="0.8"/>
+
+        <!-- Debezium icon -->
+        <path transform="translate(-4.8, -20) scale(0.02)" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm0-360c-88.2 0-160 71.8-160 160s71.8 160 160 160 160-71.8 160-160-71.8-160-160-160zm0 280c-66.2 0-120-53.8-120-120s53.8-120 120-120 120 53.8 120 120-53.8 120-120 120z" fill="#fff" opacity="0.9"/>
+        <text x="0" y="14" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="6" font-weight="600" fill="#fff">Debezium</text>
+      </g>
+
+      <!-- AWS SQS -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="5.3s" dur="0.7s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="60,-150; 60,-90; 60,-90; 0,0"
+          begin="5.3s" dur="0.7s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 24,-12 24,12 0,24" fill="#cc7a00" opacity="0.8"/>
+        <polygon points="0,0 0,24 -24,12 -24,-12" fill="#a36100" opacity="0.8"/>
+        <polygon points="0,0 24,-12 0,-24 -24,-12" fill="#ff9900" opacity="0.8"/>
+
+        <!-- SQS icon -->
+        <path transform="translate(-4.2, -18) scale(0.018)" d="M424 232h-48v-48c0-4.4-3.6-8-8-8h-32c-4.4 0-8 3.6-8 8v48h-48c-4.4 0-8 3.6-8 8v32c0 4.4 3.6 8 8 8h48v48c0 4.4 3.6 8 8 8h32c4.4 0 8-3.6 8-8v-48h48c4.4 0 8-3.6 8-8v-32c0-4.4-3.6-8-8-8zm-336 0H40v-48c0-4.4-3.6-8-8-8H0c-4.4 0-8 3.6-8 8v48h-48c-4.4 0-8 3.6-8 8v32c0 4.4 3.6 8 8 8h48v48c0 4.4 3.6 8 8 8h32c4.4 0 8-3.6 8-8v-48h48c4.4 0 8-3.6 8-8v-32c0-4.4-3.6-8-8-8z" fill="#000" opacity="0.8"/>
+        <text x="0" y="12" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="7" font-weight="600" fill="#000">SQS</text>
+      </g>
+
+      <!-- PyTorch -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1;0" begin="5.5s" dur="0.5s" keyTimes="0;0.15;0.85;1" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate"
+          values="100,-150; 100,-90; 100,-90; 0,0"
+          begin="5.5s" dur="0.5s" keyTimes="0;0.3;0.85;1" fill="freeze"/>
+
+        <polygon points="0,0 26,-13 26,13 0,26" fill="#c43e24" opacity="0.8"/>
+        <polygon points="0,0 0,26 -26,13 -26,-13" fill="#9d311c" opacity="0.8"/>
+        <polygon points="0,0 26,-13 0,-26 -26,-13" fill="#ee4c2c" opacity="0.8"/>
+
+        <!-- PyTorch icon -->
+        <svg x="-4.5" y="-22" width="9" height="9" viewBox="0 0 24 24">
+          <path d="M12.005 0L4.952 7.053a9.865 9.865 0 000 14.022 9.866 9.866 0 0014.022 0c3.984-3.9 3.986-10.205.085-14.023l-1.744 1.743c2.904 2.905 2.904 7.634 0 10.538s-7.634 2.904-10.538 0-2.904-7.634 0-10.538l4.647-4.646V0zm.53 3.491a.426.426 0 100 .852.426.426 0 000-.852zm4.718-.37v3.608h-1.371V3.12h1.371z" fill="#EE4C2C"/>
+        </svg>
+        <text x="0" y="13" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="6" font-weight="600" fill="#fff">PyTorch</text>
+      </g>
+    </g>
+
+    <!-- ORBITING PARTICLES SYSTEM: Technologies orbit around center (5s build-up, then continuous orbit) -->
+    <defs>
+      <filter id="icon-glow">
+        <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <g id="orbiting-system" opacity="0">
+      <animate attributeName="opacity" values="0;1" begin="5s" dur="0.8s" fill="freeze"/>
+
+      <!-- Center text (fixed, no rotation) -->
+      <g id="center-text">
+        <text x="0" y="-10" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="2">
+          SOFTWARE
+          <animate attributeName="opacity" values="0.85;1;0.85" begin="6s" dur="4s" repeatCount="indefinite"/>
+        </text>
+        <text x="0" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="2">
+          ENGINEER
+          <animate attributeName="opacity" values="0.85;1;0.85" begin="6s" dur="4s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <!-- Orbit paths (subtle dotted circles) -->
+      <circle cx="0" cy="0" r="80" fill="none" stroke="#30363d" stroke-width="1" stroke-dasharray="2,4" opacity="0.15"/>
+      <circle cx="0" cy="0" r="130" fill="none" stroke="#30363d" stroke-width="1" stroke-dasharray="2,4" opacity="0.15"/>
+      <circle cx="0" cy="0" r="180" fill="none" stroke="#30363d" stroke-width="1" stroke-dasharray="2,4" opacity="0.15"/>
+
+      <!-- INNER ORBIT: Languages (radius 80px, 20s rotation, clockwise) -->
+      <g id="inner-orbit">
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0; 360 0 0" begin="5s" dur="20s" repeatCount="indefinite"/>
+
+        <!-- Java (0°) -->
+        <g transform="translate(80, 0)">
+          <!-- Java icon from Simple Icons -->
+          <svg x="-10" y="-10" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573" fill="#ED8B00" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.2s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="28" text-anchor="middle" font-size="8" font-weight="600" fill="#ED8B00">Java</text>
+          <animateTransform attributeName="transform" type="rotate" values="0 0 0; -360 0 0" begin="5s" dur="20s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- JS (90°) -->
+        <g transform="rotate(90) translate(80, 0)">
+          <svg x="-10" y="-10" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z" fill="#F7DF1E" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.4s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="28" text-anchor="middle" font-size="8" font-weight="600" fill="#F7DF1E">JS</text>
+          <animateTransform attributeName="transform" type="rotate" values="-90 0 0; -450 0 0" begin="5s" dur="20s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- TypeScript (180°) -->
+        <g transform="rotate(180) translate(80, 0)">
+          <svg x="-10" y="-10" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z" fill="#3178C6" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.6s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="28" text-anchor="middle" font-size="8" font-weight="600" fill="#3178C6">TS</text>
+          <animateTransform attributeName="transform" type="rotate" values="-180 0 0; -540 0 0" begin="5s" dur="20s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Python (270°) -->
+        <g transform="rotate(270) translate(80, 0)">
+          <svg x="-10" y="-10" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z" fill="#3776AB" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.8s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="28" text-anchor="middle" font-size="8" font-weight="600" fill="#3776AB">Py</text>
+          <animateTransform attributeName="transform" type="rotate" values="-270 0 0; -630 0 0" begin="5s" dur="20s" repeatCount="indefinite" additive="sum"/>
+        </g>
+      </g>
+
+      <!-- MID ORBIT: Frontend/Backend (radius 130px, 30s rotation, counter-clockwise) -->
+      <g id="mid-orbit">
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0; -360 0 0" begin="5s" dur="30s" repeatCount="indefinite"/>
+
+        <!-- React (0°) -->
+        <g transform="translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z" fill="#61DAFB" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.1s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#61DAFB">React</text>
+          <animateTransform attributeName="transform" type="rotate" values="0 0 0; 360 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Vue (60°) -->
+        <g transform="rotate(60) translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" fill="#4FC08D" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.3s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#4FC08D">Vue</text>
+          <animateTransform attributeName="transform" type="rotate" values="-60 0 0; 300 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Spring (120°) -->
+        <g transform="rotate(120) translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M21.8537 1.4158a10.4504 10.4504 0 0 1-1.284 2.2471A11.9666 11.9666 0 1 0 3.8518 20.7757l.4445.3951a11.9543 11.9543 0 0 0 19.6316-8.2971c.3457-1.5362.2285-3.1663-.7915-4.5851-1.0513-1.4621-2.4907-2.5255-4.2663-3.2494a.4126.4126 0 0 0-.3189.0303c-.0912.0536-.1335.1585-.0951.2671.8561 2.4572.5052 5.0691-1.7749 6.6522-2.0738 1.4394-4.6088 1.6385-7.013 1.2843-.5423-.08-1.0838-.1901-1.6189-.3135 2.3976.8917 5.0991.8512 7.4483-.3341 1.8811-1.0162 2.9673-2.8595 3.3399-4.9636.0247-.1317.0483-.2636.0716-.3955 1.1937.5596 2.2368 1.3643 3.0894 2.3832 1.3505 1.8059 1.7107 3.4977 1.4072 5.2733-.3341 1.9562-1.401 3.5678-2.9742 4.9247-1.7534 1.5122-3.8419 2.3684-6.117 2.6468a9.5456 9.5456 0 0 1-3.6583-.2181 9.1468 9.1468 0 0 1-5.7355-4.5015 9.3114 9.3114 0 0 1-1.0423-6.6522A9.4527 9.4527 0 0 1 8.1715 4.0363a9.5402 9.5402 0 0 1 6.6711-.7636c.096.0216.1907.0445.2857.0683a.1205.1205 0 0 0 .1237-.0452.1185.1185 0 0 0 0-.1422 10.4506 10.4506 0 0 1-5.5096-3.6543A10.5551 10.5551 0 0 1 8.3854.7701C8.3532.7312 8.3119.7001 8.2654.6805a.2191.2191 0 0 0-.2264.0307 11.964 11.964 0 0 0-6.3358 8.5149 11.9716 11.9716 0 0 0 2.3314 9.0169c.2038.2628.4187.5169.6446.7621a11.9642 11.9642 0 0 0 10.2542 4.3084 11.9664 11.9664 0 0 0 10.7206-8.1048 11.9664 11.9664 0 0 0-3.9896-13.5829z" fill="#6DB33F" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#6DB33F">Spring</text>
+          <animateTransform attributeName="transform" type="rotate" values="-120 0 0; 240 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- NestJS (180°) -->
+        <g transform="rotate(180) translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M14.131.047c-.173 0-.334.037-.483.087.316.21.49.49.576.806.007.043.019.074.025.117a.681.681 0 0 1 .013.112c.024.545-.143.614-.26.936-.18.415-.13.861.086 1.22a.74.74 0 0 0 .074.137c-.235-1.568 1.073-1.803 1.314-2.293.019-.428-.334-.806-.748-.903a1.08 1.08 0 0 0-.597-.22zm-2.122.089c-.025.004-.049.009-.074.013a1.024 1.024 0 0 0-.925.891c-.016.118-.019.237-.015.356.015.412.12.812.331 1.15.158.254.347.479.562.671.023.019.034.022.058.035-.198-.286-.404-.645-.543-.984-.195-.425-.297-.923-.26-1.392.003-.104-.006-.204-.025-.305a.832.832 0 0 0-.106-.357.7.7 0 0 0-.003-.078zm-1.471.08a.811.811 0 0 0-.463.31c-.167.244-.223.538-.248.834-.049.557-.018 1.11.057 1.655.023.157.05.314.079.47.007.043.016.077.023.117a.66.66 0 0 0 .032.111c-.021-.133-.042-.266-.06-.4a3.78 3.78 0 0 1-.062-.883c.008-.483.06-1.003.28-1.42a1.13 1.13 0 0 1 .397-.433c-.031-.01-.053-.016-.073-.024-.02-.007-.036-.02-.052-.03a.486.486 0 0 0-.103-.062.44.44 0 0 0-.107-.025.474.474 0 0 0-.1-.019zm8.726 2.137a1.562 1.562 0 0 0-1.067.441 1.563 1.563 0 0 0-.463 1.123v.97c0 .351-.134.686-.377.943a1.31 1.31 0 0 1-.934.389h-2.38c-.74 0-1.333-.595-1.333-1.334 0-.74.594-1.334 1.333-1.334h1.71v-.97h-1.71c-1.272 0-2.303 1.032-2.303 2.303 0 1.272 1.031 2.303 2.303 2.303h2.38c1.272 0 2.303-1.031 2.303-2.303v-.97c0-.352.134-.687.377-.943a1.31 1.31 0 0 1 .934-.389h1.71v1.334h-1.71zm-8.726 0v1.334h1.71c.352 0 .686.134.943.377.258.243.389.578.389.934v.97c0 1.272-1.031 2.303-2.303 2.303h-2.38c-1.272 0-2.303-1.031-2.303-2.303v-.97c0-.352-.134-.687-.377-.943a1.31 1.31 0 0 1-.934-.389h-1.71v-.97h1.71c.74 0 1.333.594 1.333 1.334 0 .74-.593 1.334-1.333 1.334h-1.71v1.334h1.71c1.272 0 2.303-1.032 2.303-2.303v-.97c0-1.272 1.031-2.303 2.303-2.303h2.38z" fill="#E0234E" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.7s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#E0234E">Nest</text>
+          <animateTransform attributeName="transform" type="rotate" values="-180 0 0; 180 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Express (240°) -->
+        <g transform="rotate(240) translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M24 18.588a1.529 1.529 0 0 1-1.895-.72l-3.45-4.771-.5-.667-4.003 5.444a1.466 1.466 0 0 1-1.802.708l5.158-6.92-4.798-6.251a1.595 1.595 0 0 1 1.9.666l3.576 4.83 3.596-4.81a1.435 1.435 0 0 1 1.788-.668L21.708 7.9l-2.522 3.283a.666.666 0 0 0 0 .994l4.804 6.412zM.002 11.576l.42-2.075c1.154-4.103 5.858-5.81 9.094-3.27 1.895 1.489 2.368 3.597 2.275 5.973H1.116C.943 16.447 4.005 19.009 7.92 17.7a4.078 4.078 0 0 0 2.582-2.876c.207-.666.548-.78 1.174-.588a5.417 5.417 0 0 1-2.589 3.957 6.272 6.272 0 0 1-7.306-.933 6.575 6.575 0 0 1-1.64-3.858c0-.235-.08-.455-.134-.666A88.33 88.33 0 0 1 0 11.577zm1.127-.286h9.654c-.06-3.076-2.001-5.258-4.59-5.278-2.882-.04-4.944 2.094-5.071 5.264z" fill="#8b949e" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.9s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#8b949e">Express</text>
+          <animateTransform attributeName="transform" type="rotate" values="-240 0 0; 120 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- jQuery (300°) -->
+        <g transform="rotate(300) translate(130, 0)">
+          <svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M1.534 5.874c-2.123 3.05-1.86 7.017-.237 10.256.037.079.078.154.118.229.023.052.049.1.077.149.013.028.031.057.047.082.026.052.054.102.081.152l.157.266c.03.049.057.097.09.146.056.094.12.187.178.281.018.027.033.055.051.081.044.067.09.132.135.198.028.04.055.08.081.119.044.063.089.124.135.183.035.047.068.094.106.14.044.06.094.117.14.175.042.052.083.106.127.156.045.053.094.102.14.152l.16.156c.054.05.106.102.158.15.013.012.023.024.036.037.047.045.1.088.148.133.015.012.027.025.041.037.055.044.11.09.165.132l.124.09c.048.036.1.07.147.106.013.009.022.018.035.027.065.042.13.084.196.125.025.015.048.03.072.043.057.035.117.066.175.1.028.015.055.029.081.043l.178.09c.028.014.056.025.082.038.078.036.155.072.233.106.034.014.063.027.097.04.09.038.18.076.27.112.031.01.057.022.088.032.116.044.234.085.351.123l.05.018c.09.028.18.057.27.082.04.012.083.02.125.031.109.03.219.055.329.08l.065.014c.117.024.235.043.352.061.034.005.067.01.1.014.1.015.199.026.297.037.044.005.09.007.133.01.098.008.196.018.294.024.032.002.065.003.097.005.136.008.272.012.408.012.08 0 .16-.003.24-.006h.012c.086 0 .172-.005.258-.01h.004c.098-.005.196-.005.294-.013.024 0 .049-.002.072-.004.08-.005.159-.007.238-.015.025-.002.049-.005.073-.008.081-.009.162-.016.242-.028.027-.004.051-.008.078-.012.085-.013.17-.023.256-.039.024-.004.047-.009.07-.013.09-.017.18-.035.269-.056.022-.006.045-.009.067-.015.097-.023.193-.049.29-.076.019-.005.039-.007.058-.012.098-.029.196-.061.294-.092.019-.008.037-.014.056-.021.09-.031.18-.063.27-.097.024-.01.05-.017.073-.028.089-.035.178-.073.267-.111l.069-.03c.087-.04.172-.083.259-.125.027-.014.055-.026.081-.04.091-.048.18-.1.27-.15.023-.014.05-.026.073-.041.089-.053.177-.108.264-.163.024-.015.046-.031.069-.047.093-.06.184-.123.275-.185.021-.015.046-.028.067-.043.09-.065.182-.133.27-.2.02-.014.04-.029.058-.044.094-.073.185-.148.276-.223.016-.014.032-.029.049-.043.087-.075.173-.15.257-.227.021-.02.04-.038.06-.058.087-.08.17-.162.254-.244.017-.016.034-.032.05-.05.08-.08.16-.16.238-.242.02-.02.038-.04.058-.06.075-.08.153-.16.226-.241l.07-.08c.078-.087.153-.173.228-.261.017-.02.033-.04.05-.06.068-.08.139-.162.205-.244.021-.026.04-.053.061-.08.07-.087.142-.172.21-.26.018-.024.036-.047.054-.071.065-.085.133-.169.196-.256l.063-.09c.065-.09.129-.182.192-.273.016-.025.032-.05.049-.075.063-.095.126-.191.187-.287.014-.022.028-.045.042-.067.062-.1.122-.2.182-.302.014-.024.028-.048.042-.072.059-.104.116-.208.172-.312.013-.026.028-.051.041-.077.055-.104.109-.21.162-.315.013-.028.024-.055.037-.083.051-.107.104-.214.152-.322.012-.029.023-.059.035-.088.047-.107.095-.214.14-.322.01-.028.02-.057.03-.086.044-.106.087-.214.13-.322.01-.03.02-.06.03-.09.042-.107.083-.214.123-.322.01-.032.02-.064.03-.097.038-.106.075-.213.111-.32l.03-.096c.035-.108.07-.216.103-.325.01-.034.02-.068.029-.103.031-.108.062-.216.091-.325.01-.037.018-.074.028-.111.027-.108.056-.216.081-.325.008-.037.016-.074.024-.112.025-.107.048-.214.071-.322.007-.039.015-.078.022-.117.021-.107.040-.215.06-.322.006-.04.012-.08.018-.12.017-.107.032-.214.047-.322.005-.042.01-.084.015-.126.013-.107.025-.215.036-.323.003-.044.008-.088.011-.132.01-.108.017-.216.024-.324.002-.046.005-.092.007-.139.007-.107.01-.214.013-.322v-.154c.002-.107 0-.214-.004-.322v-.157c-.004-.107-.01-.214-.019-.321-.002-.053-.005-.106-.008-.158-.008-.107-.02-.214-.032-.32-.004-.054-.008-.108-.013-.162-.012-.107-.025-.213-.04-.32-.005-.055-.011-.109-.017-.164-.015-.105-.032-.211-.05-.316-.007-.057-.014-.113-.022-.17-.017-.105-.036-.209-.056-.314-.008-.058-.017-.116-.026-.174-.019-.103-.04-.206-.062-.308-.01-.06-.02-.12-.03-.18-.022-.102-.046-.203-.07-.305-.012-.062-.024-.123-.037-.185-.024-.1-.05-.199-.076-.298-.014-.063-.027-.126-.042-.19-.026-.098-.054-.195-.082-.292-.016-.065-.031-.13-.048-.194-.028-.095-.058-.19-.088-.284-.019-.067-.036-.134-.056-.2-.03-.092-.062-.184-.094-.275-.021-.068-.041-.136-.062-.204-.032-.09-.065-.178-.1-.267-.023-.069-.046-.138-.07-.207-.034-.087-.07-.173-.106-.258-.025-.07-.05-.14-.076-.21-.036-.084-.073-.167-.112-.25-.027-.071-.054-.142-.082-.212-.039-.081-.08-.162-.12-.242-.03-.072-.058-.144-.088-.215-.041-.078-.083-.155-.126-.232-.033-.073-.063-.146-.096-.219-.044-.074-.09-.148-.135-.222-.035-.074-.068-.148-.104-.222-.047-.071-.096-.142-.144-.212-.038-.075-.074-.149-.113-.223-.05-.068-.102-.135-.153-.2-.041-.075-.08-.15-.122-.224-.054-.064-.109-.128-.164-.191-.044-.076-.087-.15-.132-.225-.058-.06-.117-.12-.176-.18-.047-.076-.093-.152-.141-.227-.063-.055-.126-.11-.19-.165-.05-.076-.1-.152-.152-.227-.067-.05-.135-.101-.203-.15-.054-.076-.107-.152-.162-.227-.073-.044-.147-.09-.221-.133-.058-.076-.115-.152-.174-.227-.08-.038-.16-.078-.241-.115-.063-.076-.125-.152-.189-.226-.087-.032-.174-.065-.261-.097-.069-.075-.139-.15-.209-.225-.093-.027-.187-.053-.281-.078-.076-.074-.153-.148-.231-.221-.099-.021-.199-.04-.299-.059-.084-.072-.169-.144-.255-.215-.105-.015-.212-.028-.318-.04-.092-.07-.185-.139-.279-.208-.112-.008-.225-.014-.338-.018-.1-.066-.202-.133-.305-.197-.119 0-.238.001-.356.004-.108-.063-.217-.125-.326-.185-.125.007-.252.016-.378.027-.114-.057-.228-.113-.343-.168-.13.014-.26.03-.39.049-.12-.052-.239-.102-.36-.15-.135.021-.27.046-.405.073-.125-.046-.251-.09-.377-.133-.142.027-.283.058-.424.092-.13-.04-.261-.077-.392-.113-.147.035-.293.073-.439.112-.136-.033-.271-.065-.407-.095-.151.044-.302.09-.452.139-.141-.027-.282-.052-.423-.076-.155.052-.309.107-.463.164-.145-.02-.29-.04-.435-.057-.158.06-.316.123-.473.189-.148-.014-.297-.027-.445-.038-.162.068-.323.139-.484.213-.151-.007-.302-.013-.453-.016-.165.076-.33.156-.494.239-.153 0-.306-.001-.459.003-.168.084-.335.173-.501.265-.155.008-.31.018-.464.031-.171.092-.341.189-.51.291-.156.016-.312.035-.467.057-.173.1-.345.205-.517.315-.158.025-.316.052-.473.082-.175.109-.349.223-.522.34-.159.035-.318.073-.476.113-.177.118-.354.24-.53.367-.159.045-.318.095-.476.146-.178.127-.356.258-.533.393-.159.056-.318.116-.476.18-.179.137-.357.277-.534.422-.158.068-.316.14-.473.214-.179.146-.357.296-.534.45-.157.08-.314.163-.47.248-.179.155-.357.314-.534.477-.155.093-.31.188-.464.284-.178.164-.356.332-.533.504-.153.106-.305.214-.457.322-.177.173-.354.349-.53.53-.15.119-.3.24-.449.363-.175.182-.349.367-.522.556-.145.132-.29.266-.434.401-.172.191-.343.386-.513.583-.141.145-.281.292-.42.44-.168.2-.336.403-.502.61-.136.157-.271.317-.405.478-.164.209-.327.421-.489.636-.131.17-.262.341-.391.514-.159.217-.316.438-.472.66-.126.183-.251.367-.375.553-.153.225-.305.453-.455.683-.121.196-.241.393-.36.592-.147.234-.293.47-.437.709-.115.209-.23.419-.343.63-.141.242-.28.487-.418.733-.109.223-.217.446-.324.672-.134.25-.267.503-.398.758-.105.236-.208.474-.31.713-.127.258-.253.518-.377.779-.1.249-.198.5-.296.752-.119.266-.238.533-.354.803-.094.262-.187.525-.279.79-.113.273-.223.549-.333.825-.088.275-.175.552-.261.83-.106.281-.21.563-.313.847-.082.288-.163.577-.243.867-.099.289-.196.579-.292.871-.077.301-.153.603-.227.906-.092.297-.182.596-.271.896-.072.314-.143.629-.213.946-.084.305-.167.612-.249.92-.067.327-.132.655-.196.984-.077.313-.152.627-.226.943-.061.34-.121.681-.179 1.023-.069.321-.137.643-.203.966-.055.353-.108.707-.16 1.062-.061.329-.121.659-.179.99-.05.366-.098.733-.145 1.101-.053.338-.105.676-.155 1.016-.044.379-.087.758-.128 1.138-.045.347-.089.694-.131 1.043-.038.392-.074.785-.109 1.178-.037.356-.073.712-.107 1.07-.031.405-.061.81-.09 1.216-.029.366-.057.732-.084 1.1-.024.418-.047.837-.068 1.257-.022.376-.043.753-.062 1.13-.017.431-.033.863-.047 1.296-.015.387-.029.774-.041 1.162-.01.444-.019.888-.027 1.333-.008.398-.015.796-.021 1.195-.004.457-.007.914-.009 1.372 0 .41-.001.82 0 1.23.003.469.008.938.014 1.407.005.423.011.845.019 1.268.008.481.019.962.03 1.444.012.436.025.872.04 1.308.015.493.032.986.05 1.48.019.448.039.896.06 1.345.022.505.046 1.01.071 1.516.025.46.052.92.08 1.381.029.517.06 1.035.093 1.552.032.473.066.946.101 1.42.036.529.073 1.058.112 1.588.039.486.08.972.122 1.458.043.541.088 1.082.134 1.624.047.498.095.997.145 1.495.05.553.102 1.107.156 1.66.054.511.11 1.022.167 1.533.058.565.117 1.13.178 1.695.061.524.124 1.047.188 1.571.065.577.132 1.154.2 1.731.068.537.138 1.073.209 1.61.072.589.146 1.178.222 1.767.076.55.153 1.1.232 1.65.079.601.16 1.202.243 1.803.083.563.168 1.125.255 1.688.087.613.176 1.226.267 1.839.091.576.184 1.152.278 1.728.095.625.192 1.25.291 1.875.099.589.2 1.178.303 1.767.103.637.208 1.274.315 1.911.107.602.216 1.204.327 1.806.111.649.224 1.298.339 1.947.115.615.232 1.23.351 1.845.119.661.24 1.322.364 1.983.124.628.25 1.256.378 1.884.128.673.258 1.346.39 2.019.133.641.268 1.282.405 1.923.137.685.277 1.37.419 2.055.143.654.288 1.308.435 1.962.148.697.298 1.394.45 2.091.153.667.308 1.334.465 2.001.158.709.319 1.418.482 2.127.164.68.33 1.36.498 2.04.169.721.34 1.442.513 2.163.174.693.351 1.386.53 2.079.18.733.362 1.466.547 2.199.185.706.373 1.412.562 2.118.191.745.384 1.49.58 2.235.196.719.394 1.438.594 2.157.201.757.405 1.514.611 2.271.207.732.416 1.464.627 2.196.212.769.427 1.538.643 2.307.218.745.438 1.49.66 2.235.223.781.449 1.562.676 2.343.229.758.46 1.516.693 2.274.234.793.471 1.586.71 2.379.24.771.482 1.542.726 2.313.245.805.493 1.61.743 2.415.251.784.505 1.568.76 2.352.257.817.516 1.634.777 2.451.263.797.528 1.594.795 2.391.268.829.539 1.658.812 2.487.274.81.551 1.62.829 2.43.28.841.562 1.682.847 2.523.286.823.574 1.646.864 2.469.291.853.585 1.706.881 2.559.297.836.597 1.672.898 2.508.303.865.608 1.73.916 2.595.309.849.62 1.698.933 2.547.314.877.631 1.754.95 2.631.32.862.643 1.724.968 2.586.326.889.654 1.778.985 2.667.332.875.666 1.75 1.002 2.625.337.901.677 1.802 1.019 2.703.343.888.689 1.776 1.037 2.664.349.913.7 1.826 1.054 2.739.355.901.712 1.802 1.071 2.703.36.925.723 1.85 1.088 2.775.367.914.736 1.828 1.107 2.742.372.937.746 1.874 1.123 2.811.378.927.759 1.854 1.142 2.781.384.949.77 1.898 1.159 2.847.39.94.782 1.88 1.177 2.82.395.961.793 1.922 1.193 2.883.401.953.805 1.906 1.211 2.859.407.973.817 1.946 1.229 2.919.413.966.828 1.932 1.246 2.898.419.985.84 1.97 1.264 2.955.424.979.851 1.958 1.28 2.937.43.997.863 1.994 1.298 2.991.436.992.874 1.984 1.315 2.976.442 1.009.886 2.018 1.333 3.027.447 1.005.897 2.01 1.349 3.015.453 1.021.909 2.042 1.367 3.063.459 1.018.92 2.036 1.384 3.054.465 1.033.932 2.066 1.402 3.099.47 1.031.943 2.062 1.418 3.093.476 1.045.955 2.09 1.436 3.135.482 1.044.966 2.088 1.453 3.132.488 1.057 1.978 3.099 1.471 4.146-.507 1.047-2.029 2.089-3.062 2.566-1.032.477-2.065.953-3.098 1.428-1.046.481-2.092.961-3.139 1.44-1.058.487-2.117.973-3.177 1.458-1.072.492-2.145.982-3.219 1.471-1.085.494-2.171.987-3.258 1.479-1.098.497-2.197.992-3.297 1.486-1.111.5-2.223.998-3.336 1.495-1.124.503-2.249 1.004-3.375 1.504-1.137.506-2.275 1.011-3.414 1.514-1.15.509-2.301 1.017-3.453 1.523-1.163.512-2.327 1.023-3.492 1.533-1.176.516-2.353 1.03-3.531 1.543-1.189.519-2.379 1.037-3.57 1.553-1.202.522-2.405 1.043-3.609 1.563-1.215.526-2.431 1.05-3.648 1.573-1.228.529-2.457 1.057-3.687 1.583-1.241.533-2.483 1.064-3.726 1.594-1.254.537-2.509 1.072-3.765 1.606-1.267.54-2.535 1.079-3.804 1.616-1.28.544-2.561 1.087-3.843 1.628-1.293.548-2.587 1.094-3.882 1.639-1.306.552-2.613 1.102-3.921 1.651-1.319.555-2.639 1.109-3.96 1.661-1.332.559-2.665 1.116-3.999 1.672-1.346.563-2.691 1.124-4.038 1.684-1.358.567-2.717 1.132-4.077 1.696-1.371.57-2.743 1.139-4.116 1.706-1.385.574-2.769 1.147-4.155 1.718-1.397.578-2.795 1.154-4.194 1.729-1.41.582-2.821 1.162-4.233 1.74-1.424.586-2.848 1.17-4.273 1.752-1.436.59-2.873 1.178-4.312 1.765-1.45.594-2.9 1.186-4.351 1.776-1.462.598-2.925 1.194-4.39 1.788-1.477.602-2.955 1.202-4.434 1.8-1.49.606-2.981 1.21-4.473 1.812-1.503.61-3.007 1.218-4.512 1.824-1.517.614-3.035 1.226-4.554 1.836-1.53.618-3.061 1.234-4.593 1.848-1.544.622-3.088 1.242-4.634 1.86-1.557.626-3.115 1.25-4.674 1.872-1.57.63-3.141 1.258-4.714 1.884-1.584.634-3.168 1.266-4.754 1.896-1.597.638-3.195 1.274-4.794 1.908-1.61.642-3.221 1.282-4.833 1.92-1.624.646-3.248 1.29-4.873 1.932-1.637.65-3.275 1.298-4.914 1.944-1.65.654-3.301 1.306-4.953 1.956-1.664.658-3.328 1.314-4.993 1.968-1.677.662-3.355 1.322-5.033 1.98-1.69.666-3.381 1.33-5.073 1.992-1.704.67-3.409 1.338-5.114 2.004-1.717.674-3.435 1.346-5.154 2.016-1.73.678-3.461 1.354-5.193 2.028-1.743.682-3.488 1.362-5.233 2.04-1.757.686-3.515 1.37-5.274 2.052-1.77.69-3.541 1.378-5.313 2.064-1.783.694-3.567 1.386-5.352 2.076-1.797.698-3.594 1.394-5.392 2.088-1.81.702-3.621 1.402-5.433 2.1-1.823.706-3.647 1.41-5.472 2.112-1.837.71-3.674 1.418-5.512 2.124-1.85.714-3.701 1.426-5.553 2.136-1.863.718-3.727 1.434-5.592 2.148-1.877.722-3.754 1.442-5.632 2.16-1.89.726-3.781 1.45-5.673 2.172-1.904.73-3.809 1.458-5.714 2.184-1.917.734-3.835 1.466-5.754 2.196-1.931.738-3.862 1.474-5.794 2.208-1.944.742-3.889 1.482-5.835 2.22-1.957.746-3.915 1.49-5.874 2.232-1.971.75-3.942 1.498-5.914 2.244-1.984.754-3.969 1.506-5.954 2.256-1.998.758-3.996 1.514-5.995 2.268-2.01.762-4.022 1.522-6.034 2.28-2.024.766-4.049 1.53-6.074 2.292-2.038.77-4.076 1.538-6.115 2.304-2.05.774-4.102 1.546-6.154 2.316-2.064.778-4.129 1.554-6.194 2.328-2.077.782-4.156 1.562-6.235 2.34-2.091.786-4.182 1.57-6.274 2.352-2.103.79-4.208 1.578-6.313 2.364-2.117.794-4.235 1.586-6.354 2.376-2.13.798-4.261 1.594-6.393 2.388-2.144.802-4.288 1.602-6.433 2.4-2.157.806-4.315 1.61-6.474 2.412-2.17.81-4.341 1.618-6.513 2.424-2.184.814-4.369 1.626-6.554 2.436-2.197.818-4.395 1.634-6.594 2.448-2.21.822-4.422 1.642-6.634 2.46-2.224.826-4.448 1.65-6.673 2.472-2.237.83-4.475 1.658-6.714 2.484-2.25.834-4.501 1.666-6.753 2.496-2.263.838-4.528 1.674-6.793 2.508-2.277.842-4.554 1.682-6.832 2.52-2.29.846-4.581 1.69-6.873 2.532-2.304.85-4.608 1.698-6.913 2.544-2.317.854-4.635 1.706-6.953 2.556-2.33.858-4.661 1.714-6.993 2.568-2.344.862-4.688 1.722-7.033 2.58-2.357.866-4.714 1.73-7.073 2.592-2.371.87-4.742 1.738-8.113 2.604z" fill="#0769AD" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.1s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="26" text-anchor="middle" font-size="7" font-weight="600" fill="#0769AD">jQuery</text>
+          <animateTransform attributeName="transform" type="rotate" values="-300 0 0; 60 0 0" begin="5s" dur="30s" repeatCount="indefinite" additive="sum"/>
+        </g>
+      </g>
+
+      <!-- OUTER ORBIT: Infrastructure + Data (radius 180px, 40s rotation, clockwise) -->
+      <g id="outer-orbit">
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0; 360 0 0" begin="5s" dur="40s" repeatCount="indefinite"/>
+
+        <!-- AWS (0°) -->
+        <g transform="translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 0 1-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 0 1-.287-.375 6.18 6.18 0 0 1-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 0 1-.28.104.488.488 0 0 1-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 0 1 .224-.167c.279-.144.614-.264 1.005-.36C2.982 4.104 3.398 4.056 3.838 4.056c1.229 0 2.138.28 2.73.831.584.552.878 1.388.878 2.503v3.646zm-3.235 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.523.128-.16.224-.335.272-.535.047-.2.08-.431.08-.703v-.335a6.66 6.66 0 0 0-.735-.136 6.02 6.02 0 0 0-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.918 0 .375.095.655.295.838.191.191.494.288.838.288zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 0 1-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 0 1 .32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 0 1 .311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 0 1-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 0 1-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 0 1-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 0 0 .415-.758.777.777 0 0 0-.215-.559c-.144-.151-.415-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.814a1.902 1.902 0 0 1-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.407.32-.088.655-.127 1.006-.127.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 0 1 .24.2.43.43 0 0 1 .071.263v.375c0 .168-.064.256-.184.256-.063 0-.167-.024-.303-.08-.463-.216-1.006-.32-1.613-.32-.455 0-.815.072-1.062.216-.248.144-.375.367-.375.671 0 .216.08.407.24.567.159.16.453.319.878.463l1.134.36c.574.183.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.654-.207.933-.144.279-.336.51-.583.703-.248.191-.543.336-.886.423-.36.095-.742.143-1.142.143z" fill="#FF9900" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.2s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#FF9900">AWS</text>
+          <animateTransform attributeName="transform" type="rotate" values="0 0 0; -360 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Docker (45°) -->
+        <g transform="rotate(45) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.03-1.01.07-.458-1.515-1.54-2.29-2.388-2.808-.179-.111-.46-.197-.644-.172l-.175.03c-.118.089-.187.25-.291.44-.241.483-.33 1.054-.33 1.606 0 .67.187 1.292.465 1.862-.135.085-.39.225-.576.337-.674.418-1.427.66-2.185.71-.08 0-.16.015-.24.015H.567a.562.562 0 00-.556.57 6.49 6.49 0 00.832 3.372c.714 1.334 1.838 2.337 3.236 2.897 1.333.536 2.69.803 4.033.803 1.018 0 2.012-.108 2.963-.318a13.086 13.086 0 004.006-1.456c1.216-.73 2.264-1.713 3.119-2.924 1.082-1.54 1.676-3.195 2.016-4.507l.015-.08c.125-.377.275-.807.402-1.237l.023-.084c.064-.198.113-.416.08-.634-.033-.22-.197-.425-.394-.572" fill="#2496ED" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.4s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#2496ED">Docker</text>
+          <animateTransform attributeName="transform" type="rotate" values="-45 0 0; -405 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Kubernetes (90°) -->
+        <g transform="rotate(90) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.01 1.442l2.147 1.523.004-.002zm.76 2.75l.723.349.722-.347.18-.78-.5-.623h-.804l-.5.623.179.779zm1.5-3.095a.44.44 0 0 0 .7.336l.008.003 2.134-1.513a5.188 5.188 0 0 0-2.992-1.442l.148 2.615.002.001zm10.876 5.97l-5.773 7.181a1.6 1.6 0 0 1-1.248.594l-9.261.003a1.6 1.6 0 0 1-1.247-.596l-5.776-7.18a1.583 1.583 0 0 1-.307-1.34L2.1 5.573c.108-.47.425-.864.863-1.073L11.305.513a1.606 1.606 0 0 1 1.385 0l8.345 3.985c.438.209.755.604.863 1.073l2.062 8.955c.108.47-.005.963-.308 1.34zm-3.289-2.057c-.042-.01-.103-.026-.145-.04-.174-.058-.338-.22-.338-.4 0-.005-.007-.193-.011-.2-.006-.016-.134-.115-.196-.16-.008-.006-.208-.136-.213-.14-.107-.077-.3-.17-.448-.174-.005 0-.01-.007-.018-.01a.625.625 0 0 1-.59-.596l-.001-.004-.004-.03c-.004-.1-.01-.25-.015-.348a.55.55 0 0 0-.555-.516h-.007c-.102 0-.26.008-.36.013l-.031.005-.013.001a.625.625 0 0 1-.608-.587c-.003-.14-.098-.331-.173-.437-.005-.007-.14-.213-.146-.22-.015-.016-.111-.137-.165-.197-.006-.007-.193-.2-.2-.205-.179-.17-.404-.261-.585-.261-.006 0-.024 0-.03.002-.205.006-.437.17-.585.327-.009.009-.191.191-.199.197-.053.06-.149.182-.163.198-.009.01-.14.212-.147.22-.073.105-.168.296-.17.434a.626.626 0 0 1-.614.59l-.005.001-.025.004c-.1.005-.258.012-.36.012a.551.551 0 0 0-.555.516c-.005.1-.01.249-.015.349l-.001.003a.625.625 0 0 1-.59.596c-.008.003-.013.01-.019.01-.146.003-.34.097-.446.173-.005.004-.206.135-.214.14-.062.046-.19.145-.196.16-.004.008-.011.195-.011.2 0 .181-.164.343-.338.4-.042.014-.103.03-.145.04l-.099.018c-.248.046-.458.2-.537.396a.544.544 0 0 0 .031.546c.052.093.127.18.212.257l.02.017a.636.636 0 0 1-.06.881c-.014.013-.13.119-.145.133-.063.057-.15.133-.196.176-.023.022-.114.105-.132.121-.137.123-.24.291-.27.442a.544.544 0 0 0 .247.572c.096.054.2.09.308.103.01.001.01.002.02.003.177.025.421.054.554.054.005 0 .01-.007.015-.007a.624.624 0 0 1 .61.608l.001.003.005.028c.005.099.01.252.015.35a.551.551 0 0 0 .555.518c.102 0 .26-.008.36-.013l.025-.004.005-.001a.626.626 0 0 1 .615.59c.003.139.098.331.173.437.005.006.14.212.146.22.016.016.111.136.165.197.006.006.193.199.2.204.18.17.405.262.585.262.005 0 .024 0 .03-.002.205-.007.437-.17.585-.327.01-.009.192-.192.199-.198.054-.06.15-.182.164-.198.009-.01.14-.212.147-.22.074-.105.169-.296.172-.435a.625.625 0 0 1 .613-.588l.006-.002.025-.004c.1-.005.258-.012.36-.012a.551.551 0 0 0 .555-.516c.005-.1.01-.25.015-.35l.001-.002a.626.626 0 0 1 .59-.597c.008-.003.013-.01.019-.01.146-.004.34-.097.446-.173.005-.004.206-.135.214-.14.062-.045.19-.144.196-.16.004-.008.011-.195.011-.2 0-.18.164-.342.338-.4.042-.013.103-.03.145-.04l.099-.017c.248-.047.458-.2.537-.397a.544.544 0 0 0-.031-.545.792.792 0 0 0-.212-.258l-.02-.017a.636.636 0 0 1 .06-.881c.014-.013.13-.118.145-.132.063-.058.15-.134.196-.176.023-.023.114-.106.132-.122.137-.123.24-.29.27-.442a.544.544 0 0 0-.247-.571.792.792 0 0 0-.308-.104c-.01 0-.01-.002-.02-.002-.177-.025-.421-.055-.554-.055-.005 0-.01.008-.015.008a.624.624 0 0 1-.61-.608l-.001-.004-.005-.027c-.005-.1-.01-.252-.015-.35a.551.551 0 0 0-.555-.518l-.168.006zm-9.428 4.274a5.35 5.35 0 0 1-.015-2.878l-.012-.004a5.32 5.32 0 0 1 .36-1.038l-.003-.005a5.295 5.295 0 0 1 1.062-1.729l-.004-.005a5.335 5.335 0 0 1 1.667-1.24l.003.003a5.295 5.295 0 0 1 1.029-.36l-.005-.003a5.35 5.35 0 0 1 2.878-.014l.004-.012a5.32 5.32 0 0 1 1.038.36l.005-.003a5.295 5.295 0 0 1 1.729 1.061l.005-.003a5.335 5.335 0 0 1 1.24 1.668l-.003.002a5.295 5.295 0 0 1 .36 1.03l.003-.004a5.35 5.35 0 0 1 .015 2.878l.012.004a5.32 5.32 0 0 1-.36 1.038l.003.005a5.295 5.295 0 0 1-1.062 1.729l.004.004a5.335 5.335 0 0 1-1.667 1.24l-.003-.003a5.295 5.295 0 0 1-1.029.36l.005.003a5.35 5.35 0 0 1-2.878.015l-.004.011a5.32 5.32 0 0 1-1.038-.36l-.005.003a5.295 5.295 0 0 1-1.729-1.061l-.005.003a5.335 5.335 0 0 1-1.24-1.667l.003-.003a5.295 5.295 0 0 1-.36-1.03l-.003.005zm10.39-2.03a.44.44 0 0 0-.146.76l-.002.01 1.964 1.754a5.166 5.166 0 0 1-.728 3.255l-2.513-.725-.002.009a.44.44 0 0 0-.173.756l-.002.011 1.513 2.134a5.188 5.188 0 0 1-2.992 1.442l-.148-2.615-.001-.002a.44.44 0 0 0-.7-.336l-.008-.003-2.134 1.513a5.144 5.144 0 0 1-3.01-1.442l2.147-1.524.004.003a.44.44 0 0 0 .7.336l.009-.003.002-.01.15-2.62a5.144 5.144 0 0 1-3.01-1.442l2.134 1.514.008.003a.44.44 0 0 0 .699-.337l.01-.005-.15-2.62a5.143 5.143 0 0 0 .731-3.255l2.513.726.002-.01a.44.44 0 0 0 .173-.755l.002-.011-1.514-2.135a5.188 5.188 0 0 1 2.993-1.442l.148 2.616.001.002a.44.44 0 0 0 .7.336l.008.003 2.134-1.514a5.144 5.144 0 0 1 3.01 1.442l-2.147 1.524-.004-.003z" fill="#326CE5" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.6s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#326CE5">K8s</text>
+          <animateTransform attributeName="transform" type="rotate" values="-90 0 0; -450 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Kafka (135°) -->
+        <g transform="rotate(135) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.509 13.481a3.67 3.67 0 0 1-2.482 3.465 3.672 3.672 0 0 1-4.101-1.09 3.67 3.67 0 0 1-.644-3.756l-2.942-1.698a3.67 3.67 0 0 1-2.942.644 3.67 3.67 0 0 1-2.834-2.834 3.67 3.67 0 0 1 2.185-4.28 3.67 3.67 0 0 1 4.28 2.184 3.67 3.67 0 0 1 .644 3.756l2.942 1.698a3.67 3.67 0 0 1 2.942-.644 3.67 3.67 0 0 1 2.834 2.834 3.67 3.67 0 0 1-.882 3.721z" fill="#8b949e" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="2.8s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#8b949e">Kafka</text>
+          <animateTransform attributeName="transform" type="rotate" values="-135 0 0; -495 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- MySQL (180°) -->
+        <g transform="rotate(180) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.04-.047-.046-.094-.08-.14-.04-.067-.126-.1-.18-.153zM5.77 18.695h-.927a50.854 50.854 0 00-.27-4.41h-.008l-1.41 4.41H2.45l-1.4-4.41h-.01a72.892 72.892 0 00-.195 4.41H0c.055-1.966.192-3.81.41-5.53h1.15l1.335 4.064h.008l1.347-4.064h1.095c.242 2.015.384 3.86.428 5.53zm4.017-4.08c-.378 2.045-.876 3.533-1.492 4.46-.482.716-1.01 1.073-1.583 1.073-.153 0-.34-.046-.566-.138v-.494c.11.017.24.026.386.026.268 0 .483-.075.647-.222.197-.18.295-.382.295-.605 0-.155-.077-.47-.23-.944L6.23 14.615h.91l.727 2.36c.164.536.233.91.205 1.123.4-1.064.678-2.227.835-3.483zm12.325 4.08h-2.63v-5.53h.885v4.85h1.745zm-3.32.135l-1.016-.5c.09-.076.177-.158.255-.25.433-.506.648-1.258.648-2.253 0-1.83-.718-2.746-2.155-2.746-.704 0-1.254.232-1.65.697-.43.508-.646 1.256-.646 2.245 0 .972.19 1.686.574 2.14.35.41.877.615 1.583.615.264 0 .506-.033.725-.098l1.325.772.36-.622zM15.5 17.588c-.225-.36-.337-.94-.337-1.736 0-1.393.424-2.09 1.27-2.09.443 0 .77.167.977.5.224.362.336.936.336 1.723 0 1.404-.424 2.108-1.27 2.108-.445 0-.77-.167-.978-.5zm-1.658-.425c0 .47-.172.856-.516 1.156-.344.3-.803.45-1.384.45-.543 0-1.064-.172-1.573-.515l.237-.476c.438.22.833.328 1.19.328.332 0 .593-.073.783-.22a.754.754 0 00.3-.615c0-.33-.23-.61-.648-.845-.388-.213-1.163-.657-1.163-.657-.422-.307-.632-.636-.632-1.177 0-.45.157-.81.47-1.085.315-.278.72-.415 1.22-.415.512 0 .98.136 1.4.41l-.213.476a2.726 2.726 0 00-1.064-.23c-.283 0-.502.068-.654.206a.685.685 0 00-.248.524c0 .328.234.61.666.85.393.215 1.187.67 1.187.67.433.305.648.63.648 1.168zm9.382-5.852c-.535-.014-.95.04-1.297.188-.1.04-.26.04-.274.167.055.053.063.14.11.214.08.134.218.313.346.407.14.11.28.216.427.31.26.16.555.255.81.416.145.094.293.213.44.313.073.05.12.14.214.172v-.02c-.046-.06-.06-.147-.105-.214-.067-.067-.134-.127-.2-.193a3.223 3.223 0 00-.695-.675c-.214-.146-.682-.35-.77-.595l-.013-.014c.146-.013.32-.066.46-.106.227-.06.435-.047.67-.106.106-.027.213-.06.32-.094v-.06c-.12-.12-.21-.283-.334-.395a8.867 8.867 0 00-1.104-.823c-.21-.134-.476-.22-.697-.334-.08-.04-.214-.06-.26-.127-.12-.146-.19-.34-.275-.514a17.69 17.69 0 01-.547-1.163c-.12-.262-.193-.523-.34-.763-.69-1.137-1.437-1.826-2.586-2.5-.247-.14-.543-.2-.856-.274-.167-.008-.334-.02-.5-.027-.11-.047-.216-.174-.31-.235-.38-.24-1.364-.76-1.644-.072-.18.434.267.862.422 1.082.115.153.26.328.34.5.047.116.06.235.107.356.106.294.207.622.347.897.073.14.153.287.247.413.054.073.146.107.167.227-.094.136-.1.334-.154.5-.24.757-.146 1.693.194 2.25.107.166.362.534.703.393.3-.12.234-.5.32-.835.02-.08.007-.133.048-.187v.015c.094.188.188.367.274.555.206.328.566.664.867.895.16.12.287.328.487.402v-.02h-.015c-.043-.058-.1-.086-.154-.133a3.445 3.445 0 01-.35-.4 8.76 8.76 0 01-.747-1.218c-.11-.21-.202-.436-.29-.643-.04-.08-.04-.2-.107-.24-.1.146-.247.273-.32.453-.127.288-.14.642-.188 1.01-.027.007-.014 0-.027.014-.214-.052-.287-.274-.367-.46-.2-.475-.233-1.238-.06-1.785.047-.14.247-.582.167-.716-.042-.127-.174-.2-.247-.303a2.478 2.478 0 01-.24-.427c-.16-.374-.24-.788-.414-1.162-.08-.173-.22-.354-.334-.513-.127-.18-.267-.307-.368-.52-.033-.073-.08-.194-.027-.274.014-.054.042-.075.094-.09.088-.072.335.022.422.062.247.1.455.194.662.334.094.066.195.193.315.226h.14c.214.047.455.014.655.073.355.114.675.28.962.46a5.953 5.953 0 012.085 2.286c.08.154.115.295.188.455.14.33.313.663.455.982.14.315.275.636.476.897.1.14.502.213.682.286.133.06.34.115.46.188.23.14.454.3.67.454.11.076.443.243.463.378z" fill="#4479A1" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#4479A1">MySQL</text>
+          <animateTransform attributeName="transform" type="rotate" values="-180 0 0; -540 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Redis (225°) -->
+        <g transform="rotate(225) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M10.5 2.661l.54.997-1.797.644 2.409.218.748 1.246c.783-.2 1.558-.39 2.333-.575l.748-1.246 2.409-.218-1.797-.644.54-.997L23.97 4.89l.03 1.996-1.095 1.497-.507 3.486 2.342.883.507-3.486L24 7.331V3.335L10.5 0v2.661zm-4.012.827l.54.996-1.797.644 2.409.218.748 1.246c.783-.2 1.558-.39 2.332-.575l.748-1.246 2.41-.218-1.797-.644.54-.996L19.958 5.717l.03 1.996-1.095 1.497-.507 3.486 2.342.883.507-3.486-.749-1.935V3.335L6.488.827v2.661zm4.012 9.098L0 15.506l4.253.915.748 1.246c.783-.2 1.558-.39 2.333-.575l.748-1.246L10.5 15.506zm-6.488 6.803L0 22.828l3.344 1.162 3.344-1.162 1.095-1.498 2.409-.218-1.797-.644.54-.997-6.488-2.161.03 1.996-1.095 1.497-.507 3.486 2.342.883.507-3.486-.749-1.935-.03-1.996z" fill="#DC382D" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.2s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#DC382D">Redis</text>
+          <animateTransform attributeName="transform" type="rotate" values="-225 0 0; -585 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- GitHub Actions (270°) -->
+        <g transform="rotate(270) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M10.984 13.836a.5.5 0 0 1-.353-.146L7.647 10.7a.5.5 0 1 1 .706-.708l2.631 2.632 3.15-3.151a.5.5 0 0 1 .708.708l-3.505 3.505a.5.5 0 0 1-.353.146zm7.518-9.5a.5.5 0 0 0 .353-.147l1.792-1.792A1.5 1.5 0 0 0 18.525.275L16.733 2.067a.5.5 0 0 0 .353.854h1.416zm-7.518 2a.5.5 0 0 0 .353-.147l1.792-1.792A1.5 1.5 0 0 0 11.007 2.275L9.215 4.067a.5.5 0 0 0 .353.854h1.416zM23.5 9.75a.5.5 0 0 0-.5-.5h-1.416a.5.5 0 0 0-.353.854l1.792 1.792a1.5 1.5 0 0 0 2.122-2.122L23.353 8.25a.5.5 0 0 0-.353-.146V9.75zm-15 2a.5.5 0 0 0-.5-.5H6.584a.5.5 0 0 0-.353.854l1.792 1.792a1.5 1.5 0 0 0 2.122-2.122L8.353 10.25a.5.5 0 0 0-.353-.146V11.75zm-6-6a.5.5 0 0 0 .5.5h1.416a.5.5 0 0 0 .353-.854L2.977 4.604a1.5 1.5 0 0 0-2.122 2.122L2.647 8.518a.5.5 0 0 0 .353.146V5.75zm15 8a.5.5 0 0 0 .5.5h1.416a.5.5 0 0 0 .353-.854l-1.792-1.792a1.5 1.5 0 0 0-2.122 2.122l1.792 1.792a.5.5 0 0 0 .353.146v-1.914z" fill="#2088FF" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.4s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#2088FF">Actions</text>
+          <animateTransform attributeName="transform" type="rotate" values="-270 0 0; -630 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+
+        <!-- Terraform (315°) -->
+        <g transform="rotate(315) translate(180, 0)">
+          <svg x="-8" y="-8" width="16" height="16" viewBox="0 0 24 24">
+            <path d="M14.78 0h5.95v10.34l-5.95-3.43V0zM8.41 3.43v10.34l5.95 3.43V6.86l-5.95-3.43zm0 13.77v10.34l5.95-3.43V13.77L8.41 17.2zM2.05 6.86v10.34l5.95 3.43V10.29L2.05 6.86z" fill="#7B42BC" opacity="0.9"/>
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.6s" repeatCount="indefinite"/>
+          </svg>
+          <text x="0" y="24" text-anchor="middle" font-size="6.5" font-weight="600" fill="#7B42BC">Terraform</text>
+          <animateTransform attributeName="transform" type="rotate" values="-315 0 0; -675 0 0" begin="5s" dur="40s" repeatCount="indefinite" additive="sum"/>
+        </g>
+      </g>
+
+    </g>
+
   </g>
 
-  <!-- ═══════════ BOTTOM WAVE ═══════════ -->
-  <path fill="#161b22" opacity="0.4">
-    <animate attributeName="d" dur="12s" repeatCount="indefinite" values="
-      M0,835 C133,820 267,850 400,835 C533,820 667,850 800,835 L800,860 L0,860 Z;
-      M0,835 C133,850 267,820 400,835 C533,850 667,820 800,835 L800,860 L0,860 Z;
-      M0,835 C133,820 267,850 400,835 C533,820 667,850 800,835 L800,860 L0,860 Z
-    "/>
-  </path>
-  <path fill="#0d1117" opacity="0.3">
-    <animate attributeName="d" dur="8s" repeatCount="indefinite" values="
-      M0,845 C133,855 267,835 400,845 C533,855 667,835 800,845 L800,860 L0,860 Z;
-      M0,845 C133,835 267,855 400,845 C533,835 667,855 800,845 L800,860 L0,860 Z;
-      M0,845 C133,855 267,835 400,845 C533,855 667,835 800,845 L800,860 L0,860 Z
-    "/>
-  </path>
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- RIGHT SECTION: TEXT & TECH STACK -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <g id="right-section" transform="translate(550, 100)">
+
+    <!-- Header -->
+    <text x="0" y="0" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="60" fill="#ffffff" letter-spacing="1">Geunho Bang</text>
+    <text x="0" y="35" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="18" fill="#8b949e">Software Engineer · Commerce Platform · 3M+ Users</text>
+
+    <!-- Divider -->
+    <line x1="0" y1="55" x2="400" y2="55" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+
+    <!-- LANGUAGES -->
+    <text x="0" y="95" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">LANGUAGES</text>
+    <g transform="translate(0, 105)">
+      <g transform="translate(0,0)">
+        <rect width="56" height="28" rx="4" fill="#ED8B00"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="34" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Java</text>
+      </g>
+      <g transform="translate(58,0)">
+        <rect width="85" height="28" rx="4" fill="#F7DF1E"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067z" fill="#000" opacity="0.95"/>
+        </svg>
+        <text x="50.5" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#000">JavaScript</text>
+      </g>
+      <g transform="translate(151,0)">
+        <rect width="90" height="28" rx="4" fill="#3178C6"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="53" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">TypeScript</text>
+      </g>
+      <g transform="translate(249,0)">
+        <rect width="65" height="28" rx="4" fill="#3776AB"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="40.5" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Python</text>
+      </g>
+    </g>
+
+    <!-- FRONTEND -->
+    <text x="0" y="165" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">FRONTEND</text>
+    <g transform="translate(0, 175)">
+      <rect width="58" height="28" rx="4" fill="#61DAFB"/>
+      <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z" fill="#000" opacity="0.95"/>
+      </svg>
+      <text x="33" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#000">React</text>
+      <g transform="translate(66,0)">
+        <rect width="50" height="28" rx="4" fill="#4FC08D"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="29" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Vue</text>
+      </g>
+      <g transform="translate(124,0)">
+        <rect width="62" height="28" rx="4" fill="#0769AD"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M1.534 5.874c-2.123 3.05-1.86 7.017-.237 10.256.037.079.078.154.118.229.023.052.049.1.077.149.013.028.031.057.047.082.026.052.054.102.081.152l.157.266c.03.049.057.097.09.146.056.094.12.187.178.281.018.027.033.055.051.081.044.067.09.132.135.198.028.04.055.08.081.119.044.063.089.124.135.183.035.047.068.094.106.14.044.06.094.117.14.175.042.052.083.106.127.156.045.053.094.102.14.152l.16.156c.054.05.106.102.158.15.013.012.023.024.036.037.047.045.1.088.148.133.015.012.027.025.041.037.055.044.11.09.165.132l.124.09c.048.036.1.07.147.106.013.009.022.018.035.027.065.042.13.084.196.125.025.015.048.03.072.043.057.035.117.066.175.1.028.015.055.029.081.043l.178.09c.028.014.056.025.082.038.078.036.155.072.233.106.034.014.063.027.097.04.09.038.18.076.27.112.031.01.057.022.088.032.116.044.234.085.351.123l.05.018c.09.028.18.057.27.082.04.012.083.02.125.031.109.03.219.055.329.08l.065.014c.117.024.235.043.352.061.034.005.067.01.1.014.1.015.199.026.297.037.044.005.09.007.133.01.098.008.196.018.294.024.032.002.065.003.097.005.136.008.272.012.408.012.08 0 .16-.003.24-.006h.012c.086 0 .172-.005.258-.01h.004c.098-.005.196-.005.294-.013.024 0 .049-.002.072-.004.08-.005.159-.007.238-.015.025-.002.049-.005.073-.008.081-.009.162-.016.242-.028.027-.004.051-.008.078-.012.085-.013.17-.023.256-.039.024-.004.047-.009.07-.013.09-.017.18-.035.269-.056.022-.006.045-.009.067-.015.097-.023.193-.049.29-.076.019-.005.039-.007.058-.012.098-.029.196-.061.294-.092.019-.008.037-.014.056-.021.09-.031.18-.063.27-.097.024-.01.05-.017.073-.028.089-.035.178-.073.267-.111l.069-.03c.087-.04.172-.083.259-.125.027-.014.055-.026.081-.04.091-.048.18-.1.27-.15.023-.014.05-.026.073-.041.089-.053.177-.108.264-.163.024-.015.046-.031.069-.047.093-.06.184-.123.275-.185.021-.015.046-.028.067-.043.09-.065.182-.133.27-.2.02-.014.04-.029.058-.044.094-.073.185-.148.276-.223.016-.014.032-.029.049-.043.087-.075.173-.15.257-.227.021-.02.04-.038.06-.058.087-.08.17-.162.254-.244.017-.016.034-.032.05-.05.08-.08.16-.16.238-.242.02-.02.038-.04.058-.06.075-.08.153-.16.226-.241l.07-.08c.078-.087.153-.173.228-.261.017-.02.033-.04.05-.06.068-.08.139-.162.205-.244.021-.026.04-.053.061-.08.07-.087.142-.172.21-.26.018-.024.036-.047.054-.071.065-.085.133-.169.196-.256l.063-.09c.065-.09.129-.182.192-.273.016-.025.032-.05.049-.075.063-.095.126-.191.187-.287.014-.022.028-.045.042-.067.062-.1.122-.2.182-.302.014-.024.028-.048.042-.072.059-.104.116-.208.172-.312.013-.026.028-.051.041-.077.055-.104.109-.21.162-.315.013-.028.024-.055.037-.083.051-.107.104-.214.152-.322.012-.029.023-.059.035-.088.047-.107.095-.214.14-.322.01-.028.02-.057.03-.086.044-.106.087-.214.13-.322.01-.03.02-.06.03-.09.042-.107.083-.214.123-.322.01-.032.02-.064.03-.097.038-.106.075-.213.111-.32l.03-.096c.035-.108.07-.216.103-.325.01-.034.02-.068.029-.103.031-.108.062-.216.091-.325.01-.037.018-.074.028-.111.027-.108.056-.216.081-.325.008-.037.016-.074.024-.112.025-.107.048-.214.071-.322.007-.039.015-.078.022-.117.021-.107.04-.215.06-.322.006-.04.012-.08.018-.12.017-.107.032-.214.047-.322.005-.042.01-.084.015-.126.013-.107.025-.215.036-.323.003-.044.008-.088.011-.132.01-.108.017-.216.024-.324.002-.046.005-.092.007-.139.007-.107.01-.214.013-.322v-.154c.002-.107 0-.214-.004-.322v-.157c-.004-.107-.01-.214-.019-.321-.002-.053-.005-.106-.008-.158-.008-.107-.02-.214-.032-.32-.004-.054-.008-.108-.013-.162-.012-.107-.025-.213-.04-.32-.005-.055-.011-.109-.017-.164-.015-.105-.032-.211-.05-.316-.007-.057-.014-.113-.022-.17-.017-.105-.036-.209-.056-.314-.008-.058-.017-.116-.026-.174-.019-.103-.04-.206-.062-.308-.01-.06-.02-.12-.03-.18-.022-.102-.046-.203-.07-.305-.012-.062-.024-.123-.037-.185-.024-.1-.05-.199-.076-.298-.014-.063-.027-.126-.042-.19-.026-.098-.054-.195-.082-.292-.016-.065-.031-.13-.048-.194-.028-.095-.058-.19-.088-.284-.019-.067-.036-.134-.056-.2-.03-.092-.062-.184-.094-.275-.021-.068-.041-.136-.062-.204-.032-.09-.065-.178-.1-.267-.023-.069-.046-.138-.07-.207-.034-.087-.07-.173-.106-.258-.025-.07-.05-.14-.076-.21-.036-.084-.073-.167-.112-.25-.027-.071-.054-.142-.082-.212-.039-.081-.08-.162-.12-.242-.03-.072-.058-.144-.088-.215-.041-.078-.083-.155-.126-.232-.033-.073-.063-.146-.096-.219-.044-.074-.09-.148-.135-.222-.035-.074-.068-.148-.104-.222-.047-.071-.096-.142-.144-.212-.038-.075-.074-.149-.113-.223-.05-.068-.102-.135-.153-.2-.041-.075-.08-.15-.122-.224-.054-.064-.109-.128-.164-.191-.044-.076-.087-.15-.132-.225-.058-.06-.117-.12-.176-.18-.047-.076-.093-.152-.141-.227-.063-.055-.126-.11-.19-.165-.05-.076-.1-.152-.152-.227-.067-.05-.135-.101-.203-.15-.054-.076-.107-.152-.162-.227-.073-.044-.147-.09-.221-.133-.058-.076-.115-.152-.174-.227-.08-.038-.16-.078-.241-.115-.063-.076-.125-.152-.189-.226-.087-.032-.174-.065-.261-.097-.069-.075-.139-.15-.209-.225-.093-.027-.187-.053-.281-.078-.076-.074-.153-.148-.231-.221-.099-.021-.199-.04-.299-.059-.084-.072-.169-.144-.255-.215-.105-.015-.212-.028-.318-.04-.092-.07-.185-.139-.279-.208-.112-.008-.225-.014-.338-.018-.1-.066-.202-.133-.305-.197-.119 0-.238.001-.356.004-.108-.063-.217-.125-.326-.185-.125.007-.252.016-.378.027-.114-.057-.228-.113-.343-.168-.13.014-.26.03-.39.049-.12-.052-.239-.102-.36-.15-.135.021-.27.046-.405.073-.125-.046-.251-.09-.377-.133-.142.027-.283.058-.424.092-.13-.04-.261-.077-.392-.113-.147.035-.293.073-.439.112-.136-.033-.271-.065-.407-.095-.151.044-.302.09-.452.139-.141-.027-.282-.052-.423-.076-.155.052-.309.107-.463.164-.145-.02-.29-.04-.435-.057-.158.06-.316.123-.473.189-.148-.014-.297-.027-.445-.038-.162.068-.323.139-.484.213-.151-.007-.302-.013-.453-.016-.165.076-.33.156-.494.239-.153 0-.306-.001-.459.003-.168.084-.335.173-.501.265-.155.008-.31.018-.464.031-.171.092-.341.189-.51.291-.156.016-.312.035-.467.057-.173.1-.345.205-.517.315-.158.025-.316.052-.473.082-.175.109-.349.223-.522.34-.159.035-.318.073-.476.113-.177.118-.354.24-.53.367-.159.045-.318.095-.476.146-.178.127-.356.258-.533.393-.159.056-.318.116-.476.18-.179.137-.357.277-.534.422-.158.068-.316.14-.473.214-.179.146-.357.296-.534.45-.155.08-.314.163-.47.248-.179.155-.357.314-.534.477-.153.093-.31.188-.464.284-.178.164-.356.332-.533.504-.15.106-.305.214-.457.322-.177.173-.354.349-.53.53-.145.119-.3.24-.449.363-.175.182-.349.367-.522.556-.14.132-.29.266-.434.401-.172.191-.343.386-.513.583-.135.145-.281.292-.42.44-.168.2-.336.403-.502.61-.13.157-.271.317-.405.478-.164.209-.327.421-.489.636-.126.17-.262.341-.391.514-.159.217-.316.438-.472.66-.121.183-.251.367-.375.553-.153.225-.305.453-.455.683-.116.196-.241.393-.36.592-.147.234-.293.47-.437.709-.11.209-.23.419-.343.63-.141.242-.28.487-.418.733-.105.223-.217.446-.324.672-.134.25-.267.503-.398.758-.1.236-.208.474-.31.713-.127.258-.253.518-.377.779-.095.249-.198.5-.296.752-.119.266-.238.533-.354.803-.089.262-.187.525-.279.79-.113.273-.223.549-.333.825-.083.275-.175.552-.261.83-.106.281-.21.563-.313.847-.077.288-.163.577-.243.867-.099.289-.196.579-.292.871-.072.301-.153.603-.227.906-.092.297-.182.596-.271.896-.067.314-.143.629-.213.946-.084.305-.167.612-.249.92-.062.327-.132.655-.196.984-.077.313-.152.627-.226.943-.056.34-.121.681-.179 1.023-.069.321-.137.643-.203.966-.05.353-.108.707-.16 1.062-.061.329-.121.659-.179.99-.045.366-.098.733-.145 1.101-.053.338-.105.676-.155 1.016-.039.379-.087.758-.128 1.138-.045.347-.089.694-.131 1.043-.033.392-.074.785-.109 1.178-.037.356-.073.712-.107 1.07-.026.405-.061.81-.09 1.216-.029.366-.057.732-.084 1.1-.02.418-.047.837-.068 1.257-.022.376-.043.753-.062 1.13-.013.431-.033.863-.047 1.296-.015.387-.029.774-.041 1.162-.006.444-.019.888-.027 1.333-.008.398-.015.796-.021 1.195 0 .457-.007.914-.009 1.372 0 .41-.001.82 0 1.23.003.469.008.938.014 1.407.005.423.011.845.019 1.268.008.481.019.962.03 1.444.012.436.025.872.04 1.308.015.493.032.986.05 1.48.019.448.039.896.06 1.345.022.505.046 1.01.071 1.516.025.46.052.92.08 1.381.029.517.06 1.035.093 1.552.032.473.066.946.101 1.42.036.529.073 1.058.112 1.588.039.486.08.972.122 1.458.043.541.088 1.082.134 1.624.047.498.095.997.145 1.495.05.553.102 1.107.156 1.66.054.511.11 1.022.167 1.533.058.565.117 1.13.178 1.695.061.524.124 1.047.188 1.571.065.577.132 1.154.2 1.731.068.537.138 1.073.209 1.61.072.589.146 1.178.222 1.767.076.55.153 1.1.232 1.65.079.601.16 1.202.243 1.803.083.563.168 1.125.255 1.688.087.613.176 1.226.267 1.839.091.576.184 1.152.278 1.728.095.625.192 1.25.291 1.875.099.589.2 1.178.303 1.767.103.637.208 1.274.315 1.911.107.602.216 1.204.327 1.806.111.649.224 1.298.339 1.947.115.615.232 1.23.351 1.845.119.661.24 1.322.364 1.983.124.628.25 1.256.378 1.884.128.673.258 1.346.39 2.019.133.641.268 1.282.405 1.923.137.685.277 1.37.419 2.055.143.654.288 1.308.435 1.962.148.697.298 1.394.45 2.091.153.667.308 1.334.465 2.001.158.709.319 1.418.482 2.127.164.68.33 1.36.498 2.04.169.721.34 1.442.513 2.163.174.693.351 1.386.53 2.079.18.733.362 1.466.547 2.199.185.706.373 1.412.562 2.118.191.745.384 1.49.58 2.235.196.719.394 1.438.594 2.157.201.757.405 1.514.611 2.271.207.732.416 1.464.627 2.196.212.769.427 1.538.643 2.307.218.745.438 1.49.66 2.235.223.781.449 1.562.676 2.343.229.758.46 1.516.693 2.274.234.793.471 1.586.71 2.379.24.771.482 1.542.726 2.313.245.805.493 1.61.743 2.415.251.784.505 1.568.76 2.352.257.817.516 1.634.777 2.451.263.797.528 1.594.795 2.391.268.829.539 1.658.812 2.487.274.81.551 1.62.829 2.43.28.841.562 1.682.847 2.523.286.823.574 1.646.864 2.469.291.853.585 1.706.881 2.559.297.836.597 1.672.898 2.508.303.865.608 1.73.916 2.595.309.849.62 1.698.933 2.547.314.877.631 1.754.95 2.631.32.862.643 1.724.968 2.586.326.889.654 1.778.985 2.667.332.875.666 1.75 1.002 2.625.337.901.677 1.802 1.019 2.703.343.888.689 1.776 1.037 2.664.349.913.7 1.826 1.054 2.739.355.901.712 1.802 1.071 2.703.36.925.723 1.85 1.088 2.775.367.914.736 1.828 1.107 2.742.372.937.746 1.874 1.123 2.811.378.927.759 1.854 1.142 2.781.384.949.77 1.898 1.159 2.847.39.94.782 1.88 1.177 2.82.395.961.793 1.922 1.193 2.883.401.953.805 1.906 1.211 2.859.407.973.817 1.946 1.229 2.919.413.966.828 1.932 1.246 2.898.419.985.84 1.97 1.264 2.955.424.979.851 1.958 1.28 2.937.43.997.863 1.994 1.298 2.991.436.992.874 1.984 1.315 2.976.442 1.009.886 2.018 1.333 3.027.447 1.005.897 2.01 1.349 3.015.453 1.021.909 2.042 1.367 3.063.459 1.018.92 2.036 1.384 3.054.465 1.033.932 2.066 1.402 3.099.47 1.031.943 2.062 1.418 3.093.476 1.045.955 2.09 1.436 3.135.482 1.044.966 2.088 1.453 3.132.488 1.057.978 2.114 1.471 3.171.493 1.069.988 2.138 1.486 3.207.498 1.081 1.999 3.162 1.493 4.243" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="35" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">jQuery</text>
+      </g>
+      <g transform="translate(194,0)">
+        <rect width="85" height="28" rx="4" fill="#000000"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M9.1 4.948h3.684v15.12h-3.684zm-5.58 0h3.684v15.12H3.52zm11.16 0h3.684v15.12h-3.684zm5.58 0h3.684v15.12h-3.684z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="50.5" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Handlebars</text>
+      </g>
+    </g>
+
+    <!-- BACKEND -->
+    <text x="0" y="235" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">BACKEND</text>
+    <g transform="translate(0, 245)">
+      <rect width="60" height="28" rx="4" fill="#6DB33F"/>
+      <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M21.8537 1.4158a10.4504 10.4504 0 0 1-1.284 2.2471A11.9666 11.9666 0 1 0 3.8518 20.7757l.4445.3951a11.9543 11.9543 0 0 0 19.6316-8.2971c.3457-1.5362.2285-3.1663-.7915-4.5851-1.0513-1.4621-2.4907-2.5255-4.2663-3.2494a.4126.4126 0 0 0-.3189.0303c-.0912.0536-.1335.1585-.0951.2671.8561 2.4572.5052 5.0691-1.7749 6.6522-2.0738 1.4394-4.6088 1.6385-7.013 1.2843-.5423-.08-1.0838-.1901-1.6189-.3135 2.3976.8917 5.0991.8512 7.4483-.3341 1.8811-1.0162 2.9673-2.8595 3.3399-4.9636.0247-.1317.0483-.2636.0716-.3955 1.1937.5596 2.2368 1.3643 3.0894 2.3832 1.3505 1.8059 1.7107 3.4977 1.4072 5.2733-.3341 1.9562-1.401 3.5678-2.9742 4.9247-1.7534 1.5122-3.8419 2.3684-6.117 2.6468a9.5456 9.5456 0 0 1-3.6583-.2181 9.1468 9.1468 0 0 1-5.7355-4.5015 9.3114 9.3114 0 0 1-1.0423-6.6522A9.4527 9.4527 0 0 1 8.1715 4.0363a9.5402 9.5402 0 0 1 6.6711-.7636c.096.0216.1907.0445.2857.0683a.1205.1205 0 0 0 .1237-.0452.1185.1185 0 0 0 0-.1422 10.4506 10.4506 0 0 1-5.5096-3.6543A10.5551 10.5551 0 0 1 8.3854.7701C8.3532.7312 8.3119.7001 8.2654.6805a.2191.2191 0 0 0-.2264.0307 11.964 11.964 0 0 0-6.3358 8.5149 11.9716 11.9716 0 0 0 2.3314 9.0169c.2038.2628.4187.5169.6446.7621a11.9642 11.9642 0 0 0 10.2542 4.3084 11.9664 11.9664 0 0 0 10.7206-8.1048 11.9664 11.9664 0 0 0-3.9896-13.5829z" fill="#fff" opacity="0.95"/>
+      </svg>
+      <text x="34" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Spring</text>
+      <g transform="translate(68,0)">
+        <rect width="64" height="28" rx="4" fill="#E0234E"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M14.131.047c-.173 0-.334.037-.483.087.316.21.49.49.576.806.007.043.019.074.025.117a.681.681 0 0 1 .013.112c.024.545-.143.614-.26.936-.18.415-.13.861.086 1.22a.74.74 0 0 0 .074.137c-.235-1.568 1.073-1.803 1.314-2.293.019-.428-.334-.806-.748-.903a1.08 1.08 0 0 0-.597-.22zm-2.122.089c-.025.004-.049.009-.074.013a1.024 1.024 0 0 0-.925.891c-.016.118-.019.237-.015.356.015.412.12.812.331 1.15.158.254.347.479.562.671.023.019.034.022.058.035-.198-.286-.404-.645-.543-.984-.195-.425-.297-.923-.26-1.392.003-.104-.006-.204-.025-.305a.832.832 0 0 0-.106-.357.7.7 0 0 0-.003-.078zm-1.471.08a.811.811 0 0 0-.463.31c-.167.244-.223.538-.248.834-.049.557-.018 1.11.057 1.655.023.157.05.314.079.47.007.043.016.077.023.117a.66.66 0 0 0 .032.111c-.021-.133-.042-.266-.06-.4a3.78 3.78 0 0 1-.062-.883c.008-.483.06-1.003.28-1.42a1.13 1.13 0 0 1 .397-.433c-.031-.01-.053-.016-.073-.024-.02-.007-.036-.02-.052-.03a.486.486 0 0 0-.103-.062.44.44 0 0 0-.107-.025.474.474 0 0 0-.1-.019zm8.726 2.137a1.562 1.562 0 0 0-1.067.441 1.563 1.563 0 0 0-.463 1.123v.97c0 .351-.134.686-.377.943a1.31 1.31 0 0 1-.934.389h-2.38c-.74 0-1.333-.595-1.333-1.334 0-.74.594-1.334 1.333-1.334h1.71v-.97h-1.71c-1.272 0-2.303 1.032-2.303 2.303 0 1.272 1.031 2.303 2.303 2.303h2.38c1.272 0 2.303-1.031 2.303-2.303v-.97c0-.352.134-.687.377-.943a1.31 1.31 0 0 1 .934-.389h1.71v1.334h-1.71zm-8.726 0v1.334h1.71c.352 0 .686.134.943.377.258.243.389.578.389.934v.97c0 1.272-1.031 2.303-2.303 2.303h-2.38c-1.272 0-2.303-1.031-2.303-2.303v-.97c0-.352-.134-.687-.377-.943a1.31 1.31 0 0 1-.934-.389h-1.71v-.97h1.71c.74 0 1.333.594 1.333 1.334 0 .74-.593 1.334-1.333 1.334h-1.71v1.334h1.71c1.272 0 2.303-1.032 2.303-2.303v-.97c0-1.272 1.031-2.303 2.303-2.303h2.38z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">NestJS</text>
+      </g>
+      <g transform="translate(140,0)">
+        <rect width="70" height="28" rx="4" fill="#353535"/>
+        <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+          <path d="M24 18.588a1.529 1.529 0 0 1-1.895-.72l-3.45-4.771-.5-.667-4.003 5.444a1.466 1.466 0 0 1-1.802.708l5.158-6.92-4.798-6.251a1.595 1.595 0 0 1 1.9.666l3.576 4.83 3.596-4.81a1.435 1.435 0 0 1 1.788-.668L21.708 7.9l-2.522 3.283a.666.666 0 0 0 0 .994l4.804 6.412zM.002 11.576l.42-2.075c1.154-4.103 5.858-5.81 9.094-3.27 1.895 1.489 2.368 3.597 2.275 5.973H1.116C.943 16.447 4.005 19.009 7.92 17.7a4.078 4.078 0 0 0 2.582-2.876c.207-.666.548-.78 1.174-.588a5.417 5.417 0 0 1-2.589 3.957 6.272 6.272 0 0 1-7.306-.933 6.575 6.575 0 0 1-1.64-3.858c0-.235-.08-.455-.134-.666A88.33 88.33 0 0 1 0 11.577zm1.127-.286h9.654c-.06-3.076-2.001-5.258-4.59-5.278-2.882-.04-4.944 2.094-5.071 5.264z" fill="#fff" opacity="0.95"/>
+        </svg>
+        <text x="39" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">Express</text>
+      </g>
+    </g>
+
+    <!-- INFRASTRUCTURE -->
+    <text x="0" y="305" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">INFRASTRUCTURE</text>
+    <g transform="translate(0, 315)">
+      <rect width="50" height="28" rx="4" fill="#FF9900"/>
+      <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 0 1-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 0 1-.287-.375 6.18 6.18 0 0 1-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.03-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 0 1-.28.104.488.488 0 0 1-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 0 1 .224-.167c.279-.144.614-.264 1.005-.36C2.982 4.104 3.398 4.056 3.838 4.056c1.229 0 2.138.28 2.73.831.584.552.878 1.388.878 2.503v3.646zm-3.235 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.523.128-.16.224-.335.272-.535.047-.2.08-.431.08-.703v-.335a6.66 6.66 0 0 0-.735-.136 6.02 6.02 0 0 0-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.918 0 .375.095.655.295.838.191.191.494.288.838.288zm6.41.862c-.144 0-.24-.024-.304-.08-.064-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 0 1-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 0 1 .32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 0 1 .311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 0 1-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 0 1-.303.08h-.687c-.151 0-.255-.024-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.14c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 0 1-.048-.224v-.407c0-.167.064-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 0 0 .415-.758.777.777 0 0 0-.215-.559c-.144-.151-.415-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.814a1.902 1.902 0 0 1-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.407.32-.088.655-.127 1.006-.127.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 0 1 .24.2.43.43 0 0 1 .071.263v.375c0 .168-.064.256-.184.256-.063 0-.167-.024-.303-.08-.463-.216-1.006-.32-1.613-.32-.455 0-.815.072-1.062.216-.248.144-.375.367-.375.671 0 .216.08.407.24.567.159.16.453.319.878.463l1.134.36c.574.183.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.654-.207.933-.144.279-.336.51-.583.703-.248.191-.543.336-.886.423-.36.095-.742.143-1.142.143z" fill="#000" opacity="0.95"/>
+      </svg>
+      <text x="29" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#000">AWS</text>
+      <g transform="translate(58,0)">
+        <rect width="64" height="24" rx="4" fill="#2496ED"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574" fill="#fff"/></svg>
+        <text x="36" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">Docker</text>
+      </g>
+      <g transform="translate(130,0)">
+        <rect width="45" height="24" rx="4" fill="#FF9900"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576" fill="#000"/></svg>
+        <text x="26.5" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#000">ECS</text>
+      </g>
+      <g transform="translate(183,0)">
+        <rect width="88" height="24" rx="4" fill="#326CE5"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606z" fill="#fff"/></svg>
+        <text x="48" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">Kubernetes</text>
+      </g>
+    </g>
+    <g transform="translate(0, 347)">
+      <rect width="115" height="24" rx="4" fill="#2088FF"/>
+      <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M10.984 13.836a.5.5 0 0 1-.353-.146L7.647 10.7a.5.5 0 1 1 .706-.708l2.631 2.632 3.15-3.151a.5.5 0 0 1 .708.708l-3.505 3.505a.5.5 0 0 1-.353.146z" fill="#fff"/></svg>
+      <text x="61.5" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">GitHub Actions</text>
+      <g transform="translate(123,0)">
+        <rect width="60" height="24" rx="4" fill="#FC6D26"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187" fill="#fff"/></svg>
+        <text x="34" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">GitLab</text>
+      </g>
+      <g transform="translate(191,0)">
+        <rect width="55" height="24" rx="4" fill="#009639"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M12 0L1.605 6v12L12 24l10.395-6V6L12 0zm0 1.41l9.172 5.295v10.59L12 22.59l-9.172-5.295V6.705L12 1.41z" fill="#fff"/></svg>
+        <text x="31.5" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">nginx</text>
+      </g>
+    </g>
+
+    <!-- DATA -->
+    <text x="0" y="407" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">DATA</text>
+    <g transform="translate(0, 417)">
+      <rect width="62" height="28" rx="4" fill="#4479A1"/>
+      <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.18.214.273.054.107.1.214.154.32l.014-.015c.094-.066.14-.172.14-.333-.006-.187-.027-.347-.102-.527-.033-.094-.08-.174-.16-.254-.013-.027-.013-.04-.027-.053-.093-.12-.199-.2-.326-.26a.756.756 0 0 0-.274-.06c-.014 0-.027 0-.04.007v.007c-.04 0-.073.013-.113.027-.067.027-.133.067-.186.12a.657.657 0 0 0-.153.2c-.027.054-.04.113-.054.18-.013.04-.013.08-.027.12-.013.053-.013.1-.02.16 0 .026-.007.053-.007.073v.007c-.007.073-.007.14-.007.213 0 .067 0 .127.007.187 0 .053.013.1.027.146.013.054.027.1.053.154.093.213.226.347.4.433.094.047.2.073.307.1.027 0 .053.007.073.013.027 0 .047.007.074.007.04 0 .073 0 .113.007.107-.007.213-.04.32-.093a.869.869 0 0 0 .254-.167c.067-.066.126-.146.18-.226.013-.027.033-.067.046-.1.014-.027.027-.066.04-.1.014-.033.027-.086.04-.133.007-.027.007-.067.013-.1.007-.027.007-.054.013-.074.007-.053.007-.106.007-.166 0-.027.007-.047.007-.074.013-.066.013-.133.013-.2 0-.08 0-.153-.013-.226a1.371 1.371 0 0 0-.06-.293 2.366 2.366 0 0 0-.226-.471c-.027-.04-.067-.093-.1-.133a.236.236 0 0 0-.08-.073c-.027-.013-.04-.027-.067-.027-.014 0-.027 0-.04-.007-.014 0-.027-.007-.054-.007a.855.855 0 0 0-.226 0c-.067.007-.127.027-.187.053-.173.08-.293.227-.347.427-.007.027-.013.053-.013.08zm.934 7.894c-.027 0-.053 0-.08.007a.274.274 0 0 0-.073.026c-.107.054-.133.16-.1.274.027.093.094.153.194.16.053.007.1 0 .153-.013.094-.027.14-.093.153-.187a.218.218 0 0 0-.08-.233.303.303 0 0 0-.167-.034zm-3.868-1.254c-.067 0-.133.007-.2.02a.988.988 0 0 0-.3.1c-.113.06-.213.146-.293.253-.027.04-.053.087-.073.134-.027.053-.04.113-.047.173-.013.107.013.2.08.28.1.133.24.187.394.187.093 0 .186-.02.266-.073.107-.067.16-.174.174-.294.006-.04.006-.086.006-.133a.724.724 0 0 0-.153-.413.59.59 0 0 0-.187-.167.366.366 0 0 0-.2-.053.73.73 0 0 0-.194-.013c-.053 0-.1.006-.153.013zm8.261-8.321c-.014 0-.027 0-.04.007-.014 0-.027.007-.047.007a.427.427 0 0 0-.24.12.488.488 0 0 0-.133.3c-.007.054-.007.114-.007.174 0 .066.007.133.013.2.007.066.027.133.053.193.014.04.04.08.067.12.04.053.093.093.16.12.053.02.113.026.173.026.027 0 .053-.006.08-.013a.657.657 0 0 0 .266-.113.48.48 0 0 0 .174-.24c.013-.04.02-.08.026-.127.007-.026.007-.053.014-.073.013-.107 0-.213-.054-.32-.053-.106-.16-.173-.293-.186a.397.397 0 0 0-.212-.007zm-4.336 0c-.013 0-.026 0-.04.007-.013 0-.026.007-.046.007a.428.428 0 0 0-.24.12.488.488 0 0 0-.134.3c-.006.054-.006.114-.006.174 0 .066.006.133.013.2.006.066.026.133.053.193.013.04.04.08.066.12.04.053.094.093.16.12.054.02.114.026.174.026.026 0 .053-.006.08-.013a.657.657 0 0 0 .266-.113.48.48 0 0 0 .173-.24c.014-.04.02-.08.027-.127.007-.026.007-.053.013-.073.014-.107 0-.213-.053-.32-.053-.106-.16-.173-.293-.186a.397.397 0 0 0-.213-.007zm8.668 8.321c-.027 0-.053 0-.08.007a.274.274 0 0 0-.073.026c-.107.054-.133.16-.1.274.027.093.094.153.194.16.053.007.1 0 .153-.013.094-.027.14-.093.153-.187a.218.218 0 0 0-.08-.233.303.303 0 0 0-.167-.034zm-3.868-1.254c-.066 0-.133.007-.2.02a.988.988 0 0 0-.3.1c-.113.06-.213.146-.293.253-.026.04-.053.087-.073.134-.026.053-.04.113-.046.173-.014.107.013.2.08.28.1.133.24.187.393.187.094 0 .187-.02.267-.073.107-.067.16-.174.173-.294.007-.04.007-.086.007-.133a.724.724 0 0 0-.154-.413.59.59 0 0 0-.186-.167.366.366 0 0 0-.2-.053.73.73 0 0 0-.194-.013c-.053 0-.1.006-.153.013z" fill="#fff" opacity="0.95"/>
+      </svg>
+      <text x="35" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#fff">MySQL</text>
+      <g transform="translate(70,0)">
+        <rect width="56" height="24" rx="4" fill="#DC382D"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M10.5 2.661l.54.997-1.797.644 2.409.218.748 1.246c.783-.2 1.558-.39 2.333-.575l.748-1.246 2.409-.218-1.797-.644.54-.997L23.97 4.89l.03 1.996" fill="#fff"/></svg>
+        <text x="32" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">Redis</text>
+      </g>
+      <g transform="translate(134,0)">
+        <rect width="56" height="24" rx="4" fill="#231F20"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.509 13.481a3.67 3.67 0 0 1-2.482 3.465" fill="#fff"/></svg>
+        <text x="32" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">Kafka</text>
+      </g>
+      <g transform="translate(198,0)">
+        <rect width="78" height="24" rx="4" fill="#FF6A00"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z" transform="scale(0.047)" fill="#fff"/></svg>
+        <text x="43" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">Debezium</text>
+      </g>
+    </g>
+    <g transform="translate(0, 449)">
+      <rect width="75" height="28" rx="4" fill="#FF9900"/>
+      <svg x="4" y="6" width="16" height="16" viewBox="0 0 24 24">
+        <path d="M16.125 5.272h-2.627v2.627h2.627V5.272zm-5.254 0H8.244v2.627h2.627V5.272zM5.617 7.9H2.99v2.627h2.627V7.9zm15.758 0h-2.627v2.627h2.627V7.9zm-10.508 0H8.244v2.627h2.623V7.9zm5.254 0h-2.627v2.627h2.627V7.9zM5.617 13.153H2.99v2.627h2.627v-2.627zm15.758 0h-2.627v2.627h2.627v-2.627zm-10.508 0H8.244v2.627h2.623v-2.627zm5.254 0h-2.627v2.627h2.627v-2.627zm-5.254 5.254H8.244v2.627h2.623v-2.627zm5.254 0h-2.627v2.627h2.627v-2.627z" fill="#000" opacity="0.95"/>
+      </svg>
+      <text x="41.5" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#000">AWS SQS</text>
+      <g transform="translate(83,0)">
+        <rect width="72" height="24" rx="4" fill="#EE4C2C"/>
+        <svg x="5" y="7" width="10" height="10" viewBox="0 0 24 24"><path d="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zm0 440c110.5 0 200-89.5 200-200S366.5 56 256 56 56 145.5 56 256s89.5 192 200 192z" transform="scale(0.047)" fill="#fff"/></svg>
+        <text x="40" y="16" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="500" fill="#fff">PyTorch</text>
+      </g>
+    </g>
+
+    <!-- FEATURED PROJECTS -->
+    <line x1="0" y1="505" x2="400" y2="505" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+    <text x="0" y="535" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#8b949e" letter-spacing="2" font-weight="600">FEATURED PROJECTS</text>
+
+    <!-- Project cards -->
+    <g transform="translate(0, 550)">
+      <rect width="195" height="32" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="10" y="14" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#58a6ff">CDC-Kafka-Debezium</text>
+      <text x="10" y="26" font-family="'Segoe UI',sans-serif" font-size="9" fill="#8b949e">CDC pipeline with Kafka</text>
+
+      <g transform="translate(205,0)">
+        <rect width="195" height="32" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+        <text x="10" y="14" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#58a6ff">concurrent-handler-lock</text>
+        <text x="10" y="26" font-family="'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Concurrency with Redis/DB</text>
+      </g>
+    </g>
+
+    <g transform="translate(0, 592)">
+      <rect width="195" height="32" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="10" y="14" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#58a6ff">terraform-ecs-example</text>
+      <text x="10" y="26" font-family="'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Infrastructure as Code</text>
+
+      <g transform="translate(205,0)">
+        <rect width="195" height="32" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+        <text x="10" y="14" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#58a6ff">Spring-Boot-MSA</text>
+        <text x="10" y="26" font-family="'Segoe UI',sans-serif" font-size="9" fill="#8b949e">MSA with observability</text>
+      </g>
+    </g>
+
+  </g>
 
 </svg>

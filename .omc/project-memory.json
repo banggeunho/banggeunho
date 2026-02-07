@@ -58,15 +58,21 @@
   },
   "hotPaths": [
     {
-      "path": "AGENTS.md",
-      "accessCount": 2,
-      "lastAccessed": 1770454897155,
+      "path": "assets/header.svg",
+      "accessCount": 178,
+      "lastAccessed": 1770463929374,
       "type": "file"
     },
     {
-      "path": "assets/header.svg",
+      "path": "docs/plans/2026-02-07-github-header-svg-redesign.md",
+      "accessCount": 4,
+      "lastAccessed": 1770456733998,
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
       "accessCount": 2,
-      "lastAccessed": 1770454904607,
+      "lastAccessed": 1770454897155,
       "type": "file"
     },
     {
@@ -88,6 +94,12 @@
       "type": "file"
     },
     {
+      "path": "~/.config/superpowers/worktrees/banggeunho/remote-main/portfolio/index.html",
+      "accessCount": 2,
+      "lastAccessed": 1770457720379,
+      "type": "file"
+    },
+    {
       "path": "",
       "accessCount": 1,
       "lastAccessed": 1770454849895,
@@ -103,6 +115,12 @@
       "path": "CLAUDE.md",
       "accessCount": 1,
       "lastAccessed": 1770455094007,
+      "type": "file"
+    },
+    {
+      "path": "assets/preview.html",
+      "accessCount": 1,
+      "lastAccessed": 1770457899957,
       "type": "file"
     }
   ],
