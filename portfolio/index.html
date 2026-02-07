@@ -55,6 +55,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="#skills">Skills</a></li>
       </ul>
       <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -62,23 +63,18 @@
     </div>
   </nav>
 
-  <!-- Hero + Tech Stack -->
+  <!-- Hero -->
   <section class="hero" id="hero">
-    <canvas id="hero-canvas"></canvas>
     <div class="hero-content">
       <p class="hero-greeting">Hello, I'm</p>
       <h1 class="hero-name">Geunho Bang</h1>
       <p class="hero-title">Backend Engineer</p>
-      <p class="hero-sub">Commerce Platform &middot; 3M+ Users</p>
-
-      <!-- Tech Stack inline (dynamically loaded) -->
-      <div class="hero-stack">
-        <!-- Skills loaded from data/skills.json -->
-      </div>
-
+      <p class="hero-description">
+        Building scalable commerce platforms serving 3M+ users with Spring, Kafka, and AWS
+      </p>
       <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">Projects</a>
-        <a href="https://github.com/banggeunho" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Contact Me</a>
       </div>
     </div>
     <div class="hero-scroll">
@@ -161,6 +157,16 @@
             <span>Email</span>
           </a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack (moved to bottom) -->
+  <section class="section section-alt" id="skills">
+    <div class="container">
+      <h2 class="section-title">Technologies & Tools</h2>
+      <div class="skills-categories">
+        <!-- Skills loaded from data/skills.json -->
       </div>
     </div>
   </section>
