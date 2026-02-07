@@ -100,6 +100,12 @@
       "type": "file"
     },
     {
+      "path": "portfolio/data/projects.json",
+      "accessCount": 7,
+      "lastAccessed": 1770472507190,
+      "type": "file"
+    },
+    {
       "path": "CLAUDE.md",
       "accessCount": 6,
       "lastAccessed": 1770466524459,
@@ -112,9 +118,15 @@
       "type": "file"
     },
     {
-      "path": "portfolio/data/projects.json",
+      "path": "portfolio/index.html",
       "accessCount": 4,
-      "lastAccessed": 1770468835222,
+      "lastAccessed": 1770472475212,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/style.css",
+      "accessCount": 3,
+      "lastAccessed": 1770472525698,
       "type": "file"
     },
     {
@@ -148,15 +160,15 @@
       "type": "file"
     },
     {
-      "path": "portfolio/index.html",
-      "accessCount": 2,
-      "lastAccessed": 1770466351590,
-      "type": "file"
-    },
-    {
       "path": "portfolio/projects/opensearch-search-engine/images/thumbnail.svg",
       "accessCount": 2,
       "lastAccessed": 1770471019677,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/templates/project.ejs",
+      "accessCount": 2,
+      "lastAccessed": 1770472531123,
       "type": "file"
     },
     {
@@ -205,6 +217,18 @@
       "path": "portfolio/projects/data-pipeline-firehose/images/thumbnail.svg",
       "accessCount": 1,
       "lastAccessed": 1770470857685,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects",
+      "accessCount": 1,
+      "lastAccessed": 1770472430743,
+      "type": "directory"
+    },
+    {
+      "path": "portfolio/script.js",
+      "accessCount": 1,
+      "lastAccessed": 1770472507287,
       "type": "file"
     }
   ],
