@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1770454784442,
+  "projectRoot": "/Users/bang-geunho/WebstormProjects/banggeunho",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets",
+      "docs"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 1,
+      "lastAccessed": 1770454784418,
+      "keyFiles": [
+        "header.svg"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 3,
+      "lastAccessed": 1770454784419,
+      "keyFiles": [
+        "index.html",
+        "script.js",
+        "style.css"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "assets/header.svg",
+      "accessCount": 178,
+      "lastAccessed": 1770463929374,
+      "type": "file"
+    },
+    {
+      "path": "docs/plans/2026-02-07-github-header-svg-redesign.md",
+      "accessCount": 4,
+      "lastAccessed": 1770456733998,
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "accessCount": 2,
+      "lastAccessed": 1770454897155,
+      "type": "file"
+    },
+    {
+      "path": "docs/index.html",
+      "accessCount": 2,
+      "lastAccessed": 1770454905021,
+      "type": "file"
+    },
+    {
+      "path": "docs/script.js",
+      "accessCount": 2,
+      "lastAccessed": 1770454905492,
+      "type": "file"
+    },
+    {
+      "path": "docs/style.css",
+      "accessCount": 2,
+      "lastAccessed": 1770454905914,
+      "type": "file"
+    },
+    {
+      "path": "~/.config/superpowers/worktrees/banggeunho/remote-main/portfolio/index.html",
+      "accessCount": 2,
+      "lastAccessed": 1770457720379,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1770454849895,
+      "type": "directory"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 1,
+      "lastAccessed": 1770454850147,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 1,
+      "lastAccessed": 1770455094007,
+      "type": "file"
+    },
+    {
+      "path": "assets/preview.html",
+      "accessCount": 1,
+      "lastAccessed": 1770457899957,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
