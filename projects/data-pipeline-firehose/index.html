@@ -70,8 +70,11 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <h2 id="개요">개요</h2>
+        <section class="content-section">
+<h2 id="개요">개요</h2>
 <p>AWS 관리형 서비스 기반 실시간 데이터 파이프라인을 구축하여 데이터 확인 속도를 2<del>3일에서 1시간</del>1일로 단축하고 Tableau 작업을 50% 이상 자동화했습니다.</p>
+</section>
+<section class="content-section">
 <h2 id="문제-상황">문제 상황</h2>
 <p><strong>기존 수동 데이터 수집 프로세스:</strong></p>
 <ol>
@@ -88,6 +91,8 @@
 <li>개발자 리소스 낭비 (반복적인 수동 작업)</li>
 <li>데이터 정합성 이슈 (수동 정제 과정의 실수 가능성)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="해결-과제-task">해결 과제 (Task)</h2>
 <ul>
 <li>사용자 이벤트 데이터를 실시간으로 수집 및 저장</li>
@@ -95,6 +100,8 @@
 <li>저비용(월 1만원 이하)으로 월 3,000만 건 처리</li>
 <li>Tableau 대시보드 자동화로 개발자 리소스 절감</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph LR
     A[사용자 행동] --> B[Firehose]
@@ -102,13 +109,17 @@
     C --> D[S3]
     D --> E[Athena]
     E --> F[Redshift]
-    F --> G[Tableau]</pre><h2 id="수집-이벤트">수집 이벤트</h2>
+    F --> G[Tableau]</pre></section>
+<section class="content-section">
+<h2 id="수집-이벤트">수집 이벤트</h2>
 <ul>
 <li>구매, 상품상세 조회, 장바구니 담기</li>
 <li>로그인, 회원가입</li>
 <li>장바구니 조회, 구매페이지 진입</li>
 <li>검색, 배너 클릭 등</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-기능">주요 기능</h2>
 <p><strong>실시간 데이터 수집:</strong></p>
 <ul>
@@ -123,10 +134,14 @@
 <li><strong>Redshift:</strong> 정형화된 분석을 위해 S3 → Redshift로 데이터 적재 (집계 및 조인 최적화)</li>
 <li><strong>Tableau:</strong> Redshift 연동으로 실시간 대시보드 및 리포트 생성 (비즈니스 인사이트 도출)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li>AWS Firehose, Lambda, S3, Athena, Redshift, Tableau</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
 <p><strong>도전 1: Parquet 변환 및 저장 공간 최적화</strong></p>
 <ul>
@@ -199,6 +214,8 @@
 </li>
 <li><strong>검증:</strong> 3개월간 3억 건 이벤트 중 유실 0건 달성</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-성과-result">주요 성과 (Result)</h2>
 <ul>
 <li><strong>데이터 확인 시간</strong>: 2<del>3일 → 1시간</del>1일 (최대 72배 단축)</li>
@@ -208,12 +225,15 @@
 <li><strong>스토리지 비용</strong>: 70% 절감 (Parquet 변환)</li>
 <li><strong>Athena 쿼리 속도</strong>: 5배 향상</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <ul>
 <li>AWS 관리형 서비스 활용 (서버리스 아키텍처의 장점 이해)</li>
 <li>저비용 고효율 데이터 파이프라인 설계 (월 9,000원으로 3,000만 건 처리)</li>
 <li>데이터 엔지니어링 기초 (ETL, 파티셔닝, 포맷 최적화)</li>
 </ul>
+</section>
 
       </div>
 

@@ -70,8 +70,11 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <h2 id="개요">개요</h2>
+        <section class="content-section">
+<h2 id="개요">개요</h2>
 <p>에브리타임 혜택탭 출시로 트래픽 30% 증가 상황에서 Lambda@Edge 기반 On-demand 이미지 처리 시스템을 구축하여 비용을 68% 절감하고 페이지 로딩 속도를 50% 개선했습니다.</p>
+</section>
+<section class="content-section">
 <h2 id="문제-상황">문제 상황</h2>
 <p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
 <p>에브리타임은 대학생 커뮤니티 앱으로, 커머스 서비스를 앱 내 전용 &#39;혜택탭&#39;으로 노출하게 되었습니다. 거의 모든 페이지에 배너와 상품 이미지가 존재하여 출시 후 트래픽이 30% 급증했고, CloudFront 데이터 전송 비용이 피크 월 90만 원에 도달했습니다.</p>
@@ -82,6 +85,8 @@
 <li><strong>비효율적 처리:</strong> 어드민 업로드 시점에 크기 제한을 두거나, 클라이언트(앱)에서 이미지를 잘라서 표시 (UX 저하)</li>
 <li><strong>포맷 최적화 부재:</strong> WebP, AVIF 등 차세대 포맷 미지원</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="해결-과제-task">해결 과제 (Task)</h2>
 <ul>
 <li>CloudFront 비용을 50% 이상 절감하면서 이미지 품질 유지</li>
@@ -89,6 +94,8 @@
 <li>차세대 포맷(WebP, AVIF) 지원으로 페이지 로딩 속도 개선</li>
 <li>악의적 요청 차단으로 비용 폭증 방지</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[브라우저] -->|?w&h&f&q| B[CloudFront]
@@ -97,7 +104,9 @@
     C -.검증 실패.-> E[403]
     D -->|원본 요청| F[S3]
     D -->|리사이징<br/>포맷 변환| B
-    B -->|캐싱| A</pre><h2 id="주요-기능">주요 기능</h2>
+    B -->|캐싱| A</pre></section>
+<section class="content-section">
+<h2 id="주요-기능">주요 기능</h2>
 <p><strong>CloudFront Functions (어뷰징 방지):</strong></p>
 <ul>
 <li><strong>포맷 검증:</strong> 허용된 이미지 포맷만 처리 (webp, avif, jpg, png)</li>
@@ -118,7 +127,9 @@
   <source srcset="?w=400&f=avif" type="image/avif">
   <source srcset="?w=400&f=webp" type="image/webp">
   <img src="?w=400&f=jpg" alt="상품">
-</picture></code></pre><h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
+</picture></code></pre></section>
+<section class="content-section">
+<h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
 <p><strong>도전 1: 캐시 키 정규화 전략</strong></p>
 <ul>
 <li><strong>문제:</strong> 클라이언트에서 다양한 크기 요청(387px, 392px, 401px 등)으로 캐시 미스가 빈번하여 Lambda 호출 증가</li>
@@ -183,11 +194,15 @@
 </li>
 <li><strong>효과:</strong> 비정상 요청 차단률 99.8%, 월 비용 90만원 → 28만원 (68% 절감)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li>Lambda@Edge, CloudFront Functions, S3</li>
 <li>Sharp (Node.js), TypeScript</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-성과-result">주요 성과 (Result)</h2>
 <ul>
 <li><strong>CloudFront 전송량</strong>: 419GB → 132GB (68% 감소)</li>
@@ -197,12 +212,15 @@
 <li><strong>캐시 히트율</strong>: 65% → 85% (20%p 향상)</li>
 <li><strong>Lambda 타임아웃</strong>: 95% 감소 (메모리 최적화)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <ul>
 <li>엣지 컴퓨팅 아키텍처 설계 경험 (CDN 레벨에서의 동적 처리)</li>
 <li>차세대 이미지 포맷 활용 (WebP, AVIF) 및 브라우저 호환성 처리</li>
 <li>AWS 비용 최적화 전략 (캐시 효율, 어뷰징 방지)</li>
 </ul>
+</section>
 
       </div>
 

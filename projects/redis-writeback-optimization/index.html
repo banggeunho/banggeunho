@@ -70,8 +70,11 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <h2 id="개요">개요</h2>
+        <section class="content-section">
+<h2 id="개요">개요</h2>
 <p>에브리타임 혜택탭 연계로 배너 클릭 API 호출량이 급증하면서 Redis Write-back 전략을 도입하여 DB 부하를 10배 감소시키고 API 응답 속도를 50배 개선했습니다.</p>
+</section>
+<section class="content-section">
 <h2 id="문제-상황">문제 상황</h2>
 <p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
 <p>에브리타임 앱 내 전용 &#39;혜택탭&#39;으로 커머스 서비스가 노출되면서 거의 모든 페이지에 프로모션 배너가 배치되었습니다. 배너 자동 스와이핑 기능으로 인해 노출 시마다 성과 집계 API가 자동 호출되어, 이 API가 <strong>전체 API 중 호출량 1위</strong>를 차지하게 되었습니다 (하루 수백만 건).</p>
@@ -82,6 +85,8 @@
 <li>DB CPU 사용률 지속적 증가 (피크 시간대 80% 이상)</li>
 <li>API 응답 속도 저하로 사용자 경험 악화</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="해결-과제-task">해결 과제 (Task)</h2>
 <ul>
 <li>DB 부하를 10배 이상 감소시키면서 데이터 정합성 유지</li>
@@ -89,6 +94,8 @@
 <li>Redis 장애 시에도 데이터 유실 방지하는 Fallback 메커니즘 구축</li>
 <li>추가 인프라 비용 없이 기존 Redis 클러스터 활용</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[배너 클릭] --> B[API]
@@ -96,7 +103,9 @@
     C -->|10분 배치| D[MySQL]
 
     B -.장애 시.-> E[SQS]
-    E --> D</pre><h2 id="아키텍처-개선">아키텍처 개선</h2>
+    E --> D</pre></section>
+<section class="content-section">
+<h2 id="아키텍처-개선">아키텍처 개선</h2>
 <p><strong>Before:</strong></p>
 <ul>
 <li>클릭 → 즉시 DB UPDATE</li>
@@ -107,6 +116,8 @@
 <li>10분마다 배치 → DB Bulk INSERT</li>
 <li>Redis 장애 시 → SQS → DB (데이터 유실 방지)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술적-검토">기술적 검토</h2>
 <p><strong>다양한 솔루션 비교 분석:</strong></p>
 <p><strong>1. Redis Write-back ✅ 최종 채택</strong></p>
@@ -136,6 +147,8 @@
 <li><strong>초고속 응답:</strong> 메모리 기반 HINCRBY 연산으로 밀리초 단위 응답 (API 성능 50배 개선)</li>
 <li><strong>최소 개발 비용:</strong> 기존 Redis 인프라 활용으로 신규 구축 불필요, 빠른 개발 및 배포 가능</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-기능">주요 기능</h2>
 <p><strong>Redis 구조:</strong></p>
 <pre><code class="language-">HSET banner:{banner_id}:stats
@@ -153,11 +166,15 @@
 <li>SQS → DB 직접 적재</li>
 <li>데이터 유실 방지 (이중 안전장치)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li>Redis 6.x, MySQL, NestJS</li>
 <li>AWS SQS, Cron</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
 <p><strong>도전 1: 배치 주기 선택 (10분 결정)</strong></p>
 <ul>
@@ -211,6 +228,8 @@
 </li>
 <li><strong>최종 선택:</strong> UPDATE 방식이 집계 쿼리 성능과 스토리지 비용 측면에서 우수</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-성과-result">주요 성과 (Result)</h2>
 <ul>
 <li><strong>DB IOPS</strong>: 10배 감소</li>
@@ -220,12 +239,15 @@
 <li><strong>데이터 유실</strong>: 0건 (SQS Fallback으로 100% 보장)</li>
 <li><strong>추가 인프라 비용</strong>: 0원 (기존 Redis 활용)</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <ul>
 <li>Write-back 패턴 실전 적용 경험 (캐시 계층 활용)</li>
 <li>다양한 솔루션 비교 분석을 통한 최적 아키텍처 도출</li>
 <li>고트래픽 환경에서의 성능 최적화 및 장애 대응 설계</li>
 </ul>
+</section>
 
       </div>
 

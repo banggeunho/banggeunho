@@ -68,8 +68,11 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <h2 id="개요">개요</h2>
+        <section class="content-section">
+<h2 id="개요">개요</h2>
 <p>템플릿 메소드 패턴을 활용하여 다중 커머스 플랫폼의 주문 수집 배치 시스템을 설계하고 구축하여 처리 성능을 10배 개선하고 신규 커머스 추가 시간을 2주에서 2일로 단축했습니다.</p>
+</section>
+<section class="content-section">
 <h2 id="문제-상황">문제 상황</h2>
 <p><strong>다중 커머스 플랫폼 연동:</strong></p>
 <p>위메프, 롯데ON, TMON 등 여러 외부 커머스 플랫폼과 연동하여 주문 데이터를 수집해야 했습니다. 각 플랫폼별 API 스펙이 완전히 상이했습니다:</p>
@@ -84,6 +87,8 @@
 <li><strong>코드 중복:</strong> 커머스별로 거의 동일한 로직을 중복 구현 (인증 → 조회 → 파싱 → 저장)</li>
 <li><strong>유지보수 어려움:</strong> 새로운 커머스 추가 시 2주 이상 소요, 버그 수정 시 모든 커머스 코드 수정 필요</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="해결-과제-task">해결 과제 (Task)</h2>
 <ul>
 <li>배치 처리 시간을 30분에서 5분 이하로 단축</li>
@@ -91,6 +96,8 @@
 <li>신규 커머스 추가 시간을 2주에서 2일로 단축</li>
 <li>커머스별 독립적 에러 처리로 장애 격리</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="아키텍처-action">아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[템플릿 메소드] --> B[공통 로직]
@@ -101,7 +108,9 @@
 
     G[위메프] -.구현.-> C
     H[롯데ON] -.구현.-> C
-    I[TMON] -.구현.-> C</pre><h2 id="주요-기능">주요 기능</h2>
+    I[TMON] -.구현.-> C</pre></section>
+<section class="content-section">
+<h2 id="주요-기능">주요 기능</h2>
 <p><strong>템플릿 메소드 패턴 적용:</strong></p>
 <ul>
 <li><strong>공통 로직 추상화:</strong> 인증 → API 호출 → 데이터 변환 → 저장 플로우를 상위 클래스에서 정의</li>
@@ -120,10 +129,14 @@
 <li>커머스별 독립적 에러 처리 (한 커머스 실패해도 다른 커머스 계속 수집)</li>
 <li>상세한 로깅으로 장애 원인 추적 용이</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li>Java 11, Spring Boot 2, Jenkins, Slack API</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
 <p><strong>도전 1: CompletableFuture 병렬 처리 구현</strong></p>
 <ul>
@@ -218,6 +231,8 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
 </li>
 <li><strong>효과:</strong> 한 커머스 실패해도 다른 커머스는 정상 수집, 가용성 99.5% 달성</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="주요-성과-result">주요 성과 (Result)</h2>
 <ul>
 <li><strong>처리 시간</strong>: 30분 → 3분 (10배 향상)</li>
@@ -227,6 +242,8 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
 <li><strong>유지보수성</strong>: 버그 수정 시간 5일 → 1일 (5배 단축)</li>
 <li><strong>확장성</strong>: 5개 커머스 → 10개 커머스로 확장 가능</li>
 </ul>
+</section>
+<section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <ul>
 <li>디자인 패턴(템플릿 메소드)을 실전에 효과적으로 적용하는 경험</li>
@@ -234,6 +251,7 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
 <li>유지보수성과 확장성을 고려한 아키텍처 설계 능력 향상</li>
 <li>다양한 외부 시스템 통합 시 추상화 계층의 중요성 학습</li>
 </ul>
+</section>
 
       </div>
 

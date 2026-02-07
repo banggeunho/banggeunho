@@ -70,7 +70,8 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <h2 id="목차">목차</h2>
+        <section class="content-section">
+<h2 id="목차">목차</h2>
 <ol>
 <li><a href="#%EB%B0%B0%EA%B2%BD-30%EC%B4%88-%EA%B1%B8%EB%A6%AC%EB%8A%94-%EA%B2%80%EC%83%89-%EC%9D%B4%EB%8C%80%EB%A1%9C-%EA%B4%9C%EC%B0%AE%EC%9D%80%EA%B0%80">배경: 30초 걸리는 검색, 이대로 괜찮은가?</a></li>
 <li><a href="#%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-fusejs%EC%9D%98-%ED%95%9C%EA%B3%84">문제 분석: Fuse.js의 한계</a></li>
@@ -82,11 +83,15 @@
 <li><a href="#%EA%B2%B0%EA%B3%BC-%EC%88%AB%EC%9E%90%EB%A1%9C-%EC%A6%9D%EB%AA%85%ED%95%98%EB%8A%94-%EA%B0%9C%EC%84%A0-%ED%9A%A8%EA%B3%BC">결과: 숫자로 증명하는 개선 효과</a></li>
 </ol>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="배경-30초-걸리는-검색-이대로-괜찮은가">배경: 30초 걸리는 검색, 이대로 괜찮은가?</h2>
 <p>300만 회원이 사용하는 커머스 플랫폼. 사용자가 &quot;나이키 운동화&quot;를 검색하면 30초가 걸립니다. 대부분의 사용자는 3초 안에 결과를 기대하는데 말이죠. 당연히 이탈률이 높았고, 검색 후 상품 구매로 이어지는 전환율(CTR)은 17%에 불과했습니다.</p>
 <p>더 심각한 문제는 검색 순위를 조정하려면 코드를 수정하고 프로덕션에 배포해야 한다는 점이었습니다. 마케팅팀이 &quot;이번 주 프로모션 상품을 상위에 노출해주세요&quot;라고 요청하면, 개발자가 코드를 수정하고 배포하는 데 30분이 걸렸습니다.</p>
 <p>우리는 검색 엔진을 전면 개편하기로 결정했습니다.</p>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="문제-분석-fusejs의-한계">문제 분석: Fuse.js의 한계</h2>
 <p>기존 시스템은 <strong>Fuse.js</strong>라는 클라이언트 사이드 검색 라이브러리를 사용했습니다. 서버 메모리에 전체 상품 데이터를 로드한 후, JavaScript로 검색을 수행하는 방식이었죠.</p>
 <h3 id="왜-느렸을까">왜 느렸을까?</h3>
@@ -120,6 +125,8 @@
 </li>
 </ol>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="해결-목표-무엇을-달성하려-했나">해결 목표: 무엇을 달성하려 했나</h2>
 <p>우리는 명확한 목표를 설정했습니다.</p>
 <h3 id="정량적-목표">정량적 목표</h3>
@@ -135,6 +142,8 @@
 <li>확장 가능한 아키텍처 (트래픽 10배 증가 대응)</li>
 </ul>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="아키텍처-설계-opensearch를-선택한-이유">아키텍처 설계: OpenSearch를 선택한 이유</h2>
 <h3 id="opensearch-vs-cloudsearch">OpenSearch vs CloudSearch</h3>
 <p>AWS에는 두 가지 검색 서비스가 있습니다. 우리는 <strong>OpenSearch</strong>를 선택했습니다.</p>
@@ -195,6 +204,8 @@
 <li><strong>Lambda + S3</strong>: 동의어 자동 업데이트</li>
 </ol>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="핵심-구현-1-ctr-기반-동적-랭킹">핵심 구현 1: CTR 기반 동적 랭킹</h2>
 <h3 id="문제-검색-결과를-어떻게-정렬할-것인가">문제: 검색 결과를 어떻게 정렬할 것인가?</h3>
 <p>초기에는 OpenSearch의 기본 TF-IDF 스코어만 사용했습니다. 하지만 이는 텍스트 유사도만 고려할 뿐, 실제로 사용자가 선호하는 상품을 반영하지 못했습니다.</p>
@@ -233,6 +244,8 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><s
 <li>구매 전환율: 8.3% 증가</li>
 </ul>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="핵심-구현-2-캐시-전략으로-비용-절감">핵심 구현 2: 캐시 전략으로 비용 절감</h2>
 <h3 id="문제-opensearch-비용이-생각보다-높다">문제: OpenSearch 비용이 생각보다 높다</h3>
 <p>OpenSearch는 인스턴스 과금 방식입니다. 월 $315는 예상 비용이었지만, 실제로는 트래픽 증가로 인스턴스를 스케일업하면서 $450까지 증가했습니다.</p>
@@ -279,6 +292,8 @@ async warmCache() {
 <li><strong>비용</strong>: $450 → $315 (30% 절감)</li>
 </ul>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="핵심-구현-3-배포-없이-검색-품질-개선">핵심 구현 3: 배포 없이 검색 품질 개선</h2>
 <h3 id="문제-동의어-추가에-30분-걸린다">문제: 동의어 추가에 30분 걸린다</h3>
 <p>사용자는 &quot;운동화&quot;를 검색하지만, 상품명에는 &quot;스니커즈&quot;라고 적혀있는 경우가 많습니다. 동의어를 추가해야 하는데, 기존에는 코드 수정이 필요했습니다.</p>
@@ -346,6 +361,8 @@ async addSynonym(@Body() dto: SynonymDto) {
 <li><strong>개발자 개입: 0분</strong></li>
 </ul>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="결과-숫자로-증명하는-개선-효과">결과: 숫자로 증명하는 개선 효과</h2>
 <h3 id="정량적-성과">정량적 성과</h3>
 <table>
@@ -407,6 +424,8 @@ async addSynonym(@Body() dto: SynonymDto) {
 <li><strong>유지보수성</strong>: 신규 랭킹 요소 추가 시 1일 작업 (기존 1주)</li>
 </ul>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <h3 id="1-검색은-단순히-quot찾기quot가-아니다">1. 검색은 단순히 &quot;찾기&quot;가 아니다</h3>
 <p>검색 엔진을 개선하면서 깨달은 점은, 검색이 단순히 데이터를 찾는 것이 아니라 <strong>사용자가 원하는 것을 예측하는 것</strong>이라는 점입니다. CTR 기반 랭킹은 사용자의 선택을 존중하는 방식이었고, 결과적으로 더 나은 사용자 경험으로 이어졌습니다.</p>
@@ -417,6 +436,8 @@ async addSynonym(@Body() dto: SynonymDto) {
 <h3 id="4-운영-자동화의-가치">4. 운영 자동화의 가치</h3>
 <p>동의어 업데이트를 자동화함으로써, 개발팀은 더 중요한 문제에 집중할 수 있었습니다. &quot;30분 x 주 5회 = 월 10시간&quot;의 개발 시간을 절약했고, 이는 연간 120시간에 달합니다. 자동화는 단순히 시간 절약이 아니라, <strong>팀의 생산성과 만족도 향상</strong>으로 이어집니다.</p>
 <hr>
+</section>
+<section class="content-section">
 <h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li><strong>검색 엔진</strong>: AWS OpenSearch 7.10</li>
@@ -426,6 +447,7 @@ async addSynonym(@Body() dto: SynonymDto) {
 <li><strong>자동화</strong>: AWS Lambda, S3</li>
 <li><strong>모니터링</strong>: CloudWatch, Grafana</li>
 </ul>
+</section>
 
       </div>
 
