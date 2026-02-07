@@ -649,26 +649,6 @@ img {
   padding: 0;
 }
 
-.content-section ul li {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  padding-left: 1.5rem;
-  position: relative;
-  margin-bottom: 0.5rem;
-}
-
-.content-section ul li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.7em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
 .content-section img {
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -701,6 +681,84 @@ img {
   line-height: 1.7;
 }
 
+/* Lists - 일관성 있는 스타일 */
+.content-section ul,
+.content-section ol {
+  margin: 1.25rem 0;
+  padding-left: 0;
+  line-height: 1.8;
+}
+
+.content-section ul {
+  list-style: none;
+}
+
+.content-section ol {
+  list-style: none;
+  counter-reset: item;
+}
+
+.content-section ul > li {
+  position: relative;
+  margin: 0.75rem 0;
+  padding-left: 2rem;
+  color: var(--text-primary);
+}
+
+.content-section ul > li::before {
+  content: "•";
+  position: absolute;
+  left: 0.5rem;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.2em;
+  line-height: 1.4;
+}
+
+.content-section ol > li {
+  position: relative;
+  margin: 0.75rem 0;
+  padding-left: 2rem;
+  color: var(--text-primary);
+  counter-increment: item;
+}
+
+.content-section ol > li::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0.25rem;
+  color: var(--accent);
+  font-weight: 700;
+  min-width: 1.5rem;
+  text-align: left;
+}
+
+/* Nested lists - 들여쓰기 */
+.content-section ul ul,
+.content-section ol ol,
+.content-section ul ol,
+.content-section ol ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.content-section ul ul > li::before {
+  content: "◦";
+  font-size: 1.1em;
+}
+
+.content-section ol ol {
+  counter-reset: subitem;
+}
+
+.content-section ol ol > li {
+  counter-increment: subitem;
+}
+
+.content-section ol ol > li::before {
+  content: counter(subitem, lower-alpha) ".";
+}
+
 /* Mermaid diagrams */
 .content-section .mermaid {
   background: var(--bg-secondary);
@@ -718,6 +776,49 @@ img {
   background: transparent;
   border: none;
   padding: 0;
+}
+
+/* Tables */
+.content-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.content-section table thead {
+  background: rgba(3, 102, 214, 0.1);
+}
+
+.content-section table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.content-section table td {
+  padding: 0.875rem 1rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.content-section table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.content-section table tbody tr:hover {
+  background: rgba(3, 102, 214, 0.05);
+}
+
+.content-section table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 /* ========== Contact ========== */

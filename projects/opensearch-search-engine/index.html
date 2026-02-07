@@ -70,32 +70,110 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <section class="content-section">
-<h2>개요</h2>
-<p>300만 회원 커머스 플랫폼에서 Fuse.js 기반 클라이언트 검색의 한계를 극복하기 위해 AWS OpenSearch 기반 검색 시스템을 설계하고 구축했습니다. 검색 CTR을 32% 향상시키고 응답 속도를 600배 개선하여 사용자 경험을 획기적으로 개선했습니다.</p>
-</section>
-<section class="content-section">
-<h2>문제 상황 (Situation)</h2>
-<p><strong>기존 Fuse.js 시스템의 한계:</strong></p>
+        <h2 id="목차">목차</h2>
+<ol>
+<li><a href="#%EB%B0%B0%EA%B2%BD-30%EC%B4%88-%EA%B1%B8%EB%A6%AC%EB%8A%94-%EA%B2%80%EC%83%89-%EC%9D%B4%EB%8C%80%EB%A1%9C-%EA%B4%9C%EC%B0%AE%EC%9D%80%EA%B0%80">배경: 30초 걸리는 검색, 이대로 괜찮은가?</a></li>
+<li><a href="#%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-fusejs%EC%9D%98-%ED%95%9C%EA%B3%84">문제 분석: Fuse.js의 한계</a></li>
+<li><a href="#%ED%95%B4%EA%B2%B0-%EB%AA%A9%ED%91%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EB%8B%AC%EC%84%B1%ED%95%98%EB%A0%A4-%ED%96%88%EB%82%98">해결 목표: 무엇을 달성하려 했나</a></li>
+<li><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%84%A4%EA%B3%84-opensearch%EB%A5%BC-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0">아키텍처 설계: OpenSearch를 선택한 이유</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-ctr-%EA%B8%B0%EB%B0%98-%EB%8F%99%EC%A0%81-%EB%9E%AD%ED%82%B9">핵심 구현 1: CTR 기반 동적 랭킹</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-%EC%BA%90%EC%8B%9C-%EC%A0%84%EB%9E%B5%EC%9C%BC%EB%A1%9C-%EB%B9%84%EC%9A%A9-%EC%A0%88%EA%B0%90">핵심 구현 2: 캐시 전략으로 비용 절감</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-3-%EB%B0%B0%ED%8F%AC-%EC%97%86%EC%9D%B4-%EA%B2%80%EC%83%89-%ED%92%88%EC%A7%88-%EA%B0%9C%EC%84%A0">핵심 구현 3: 배포 없이 검색 품질 개선</a></li>
+<li><a href="#%EA%B2%B0%EA%B3%BC-%EC%88%AB%EC%9E%90%EB%A1%9C-%EC%A6%9D%EB%AA%85%ED%95%98%EB%8A%94-%EA%B0%9C%EC%84%A0-%ED%9A%A8%EA%B3%BC">결과: 숫자로 증명하는 개선 효과</a></li>
+</ol>
+<hr>
+<h2 id="배경-30초-걸리는-검색-이대로-괜찮은가">배경: 30초 걸리는 검색, 이대로 괜찮은가?</h2>
+<p>300만 회원이 사용하는 커머스 플랫폼. 사용자가 &quot;나이키 운동화&quot;를 검색하면 30초가 걸립니다. 대부분의 사용자는 3초 안에 결과를 기대하는데 말이죠. 당연히 이탈률이 높았고, 검색 후 상품 구매로 이어지는 전환율(CTR)은 17%에 불과했습니다.</p>
+<p>더 심각한 문제는 검색 순위를 조정하려면 코드를 수정하고 프로덕션에 배포해야 한다는 점이었습니다. 마케팅팀이 &quot;이번 주 프로모션 상품을 상위에 노출해주세요&quot;라고 요청하면, 개발자가 코드를 수정하고 배포하는 데 30분이 걸렸습니다.</p>
+<p>우리는 검색 엔진을 전면 개편하기로 결정했습니다.</p>
+<hr>
+<h2 id="문제-분석-fusejs의-한계">문제 분석: Fuse.js의 한계</h2>
+<p>기존 시스템은 <strong>Fuse.js</strong>라는 클라이언트 사이드 검색 라이브러리를 사용했습니다. 서버 메모리에 전체 상품 데이터를 로드한 후, JavaScript로 검색을 수행하는 방식이었죠.</p>
+<h3 id="왜-느렸을까">왜 느렸을까?</h3>
+<ol>
+<li><p><strong>메모리 색인 방식의 한계</strong></p>
 <ul>
-<li><strong>서버 메모리 색인 방식:</strong> 1분마다 전체 상품 데이터를 서버 메모리에 로드하여 색인 생성 (메모리 압박 및 CPU 스파이크)</li>
-<li><strong>장문 검색 성능 저하:</strong> 여러 키워드가 포함된 검색어는 평균 30초 이상 소요 (사용자 이탈 발생)</li>
-<li><strong>하드코딩된 검색 랭킹:</strong> 검색 순위 조정을 위해 코드 수정 후 프로덕션 배포 필수 (비즈니스 민첩성 저하)</li>
-<li><strong>강제 키워드 부착:</strong> 검색 정확도를 높이기 위해 상품명에 검색용 키워드를 강제로 붙이는 방식 (데이터 품질 오염)</li>
-<li><strong>복잡한 요구사항 불가:</strong> 동의어 처리, 자동완성, 필터링 조합 등 고급 검색 기능 구현 어려움</li>
+<li>1분마다 전체 상품 데이터(수만 건)를 메모리에 로드</li>
+<li>색인 생성 중 CPU 스파이크 발생 → 다른 API 응답 속도도 저하</li>
+<li>메모리 부족으로 서버 재시작 빈번</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>해결 과제 (Task)</h2>
+</li>
+<li><p><strong>장문 검색의 성능 문제</strong></p>
 <ul>
-<li>검색 응답 속도를 30초에서 100ms 이하로 개선</li>
-<li>사용자 행동 데이터 기반 동적 랭킹 시스템 구축</li>
-<li>배포 없이 검색 품질을 실시간 개선할 수 있는 관리 시스템 구축</li>
-<li>비용 효율적이면서 확장 가능한 검색 인프라 설계</li>
+<li>&quot;나이키 에어맥스 270 블랙 런닝화&quot; 같은 여러 키워드가 포함된 검색어는 평균 30초 소요</li>
+<li>모든 상품 데이터를 순회하며 유사도를 계산하기 때문</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>시스템 아키텍처 (Action)</h2>
+</li>
+<li><p><strong>비즈니스 민첩성 부족</strong></p>
+<ul>
+<li>검색 순위 조정 = 코드 수정 + 배포 (30분)</li>
+<li>A/B 테스트 불가능</li>
+<li>동의어 추가도 배포 필요</li>
+</ul>
+</li>
+<li><p><strong>데이터 품질 오염</strong></p>
+<ul>
+<li>검색 정확도를 높이기 위해 상품명에 검색용 키워드를 강제로 부착</li>
+<li>예: &quot;나이키 신발&quot; → &quot;나이키 신발 운동화 스니커즈 런닝화&quot;</li>
+<li>사용자에게 보이는 상품명도 지저분해짐</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="해결-목표-무엇을-달성하려-했나">해결 목표: 무엇을 달성하려 했나</h2>
+<p>우리는 명확한 목표를 설정했습니다.</p>
+<h3 id="정량적-목표">정량적 목표</h3>
+<ul>
+<li><strong>응답 속도</strong>: 30초 → 100ms 이하 (300배 개선)</li>
+<li><strong>CTR</strong>: 17% → 22% 이상 (30% 향상)</li>
+<li><strong>비용</strong>: CloudSearch 대비 30% 절감</li>
+</ul>
+<h3 id="정성적-목표">정성적 목표</h3>
+<ul>
+<li>사용자 행동 데이터(클릭률)를 반영한 동적 랭킹</li>
+<li>배포 없이 검색 품질을 실시간 개선 가능</li>
+<li>확장 가능한 아키텍처 (트래픽 10배 증가 대응)</li>
+</ul>
+<hr>
+<h2 id="아키텍처-설계-opensearch를-선택한-이유">아키텍처 설계: OpenSearch를 선택한 이유</h2>
+<h3 id="opensearch-vs-cloudsearch">OpenSearch vs CloudSearch</h3>
+<p>AWS에는 두 가지 검색 서비스가 있습니다. 우리는 <strong>OpenSearch</strong>를 선택했습니다.</p>
+<table>
+<thead>
+<tr>
+<th>기준</th>
+<th>CloudSearch</th>
+<th>OpenSearch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>비용 (월 1000만 쿼리)</td>
+<td>$450</td>
+<td>$315</td>
+</tr>
+<tr>
+<td>커스텀 스코어링</td>
+<td>제한적</td>
+<td>자유로움</td>
+</tr>
+<tr>
+<td>한국어 지원</td>
+<td>기본</td>
+<td>Nori 형태소 분석기</td>
+</tr>
+<tr>
+<td>학습 곡선</td>
+<td>낮음</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<p><strong>선택 이유:</strong></p>
+<ul>
+<li>비용 30% 절감 (월 $135 차이는 연간 $1,620)</li>
+<li>CTR 기반 커스텀 스코어링 구현 가능</li>
+<li>기존 AWS 인프라(Redshift, Lambda, S3)와 통합 용이</li>
+</ul>
+<h3 id="전체-아키텍처">전체 아키텍처</h3>
 <pre class="mermaid">graph TB
     A[사용자] -->|검색| B[NestJS API]
     B -->|캐시 조회| C[Redis]
@@ -108,128 +186,246 @@
 
     J[관리자] -->|동의어 등록| K[S3]
     K -->|트리거| L[Lambda]
-    L -->|재색인| D
-</pre>
-</section>
-<section class="content-section">
-<h2>주요 기능</h2>
-<p><strong>검색 스코어링 엔진:</strong></p>
+    L -->|재색인| D</pre><p><strong>핵심 컴포넌트:</strong></p>
+<ol>
+<li><strong>NestJS API</strong>: 검색 요청 처리 및 비즈니스 로직</li>
+<li><strong>Redis</strong>: 인기 검색어 캐싱 (히트율 75%)</li>
+<li><strong>OpenSearch</strong>: 전문 검색 및 랭킹</li>
+<li><strong>Redshift</strong>: CTR 데이터 집계</li>
+<li><strong>Lambda + S3</strong>: 동의어 자동 업데이트</li>
+</ol>
+<hr>
+<h2 id="핵심-구현-1-ctr-기반-동적-랭킹">핵심 구현 1: CTR 기반 동적 랭킹</h2>
+<h3 id="문제-검색-결과를-어떻게-정렬할-것인가">문제: 검색 결과를 어떻게 정렬할 것인가?</h3>
+<p>초기에는 OpenSearch의 기본 TF-IDF 스코어만 사용했습니다. 하지만 이는 텍스트 유사도만 고려할 뿐, 실제로 사용자가 선호하는 상품을 반영하지 못했습니다.</p>
+<p>예를 들어, &quot;운동화&quot; 검색 시:</p>
 <ul>
-<li>CTR 기반 커스텀 스코어링 (Redshift에서 최근 7일 클릭률 데이터 활용)</li>
-<li>브랜드 인지도 가중치 반영 (유명 브랜드 상품 우선 노출)</li>
-<li>우선 노출 테이블 기반 프로모션 상품 부스팅</li>
-<li>검색어 유사도 + 비즈니스 로직 복합 랭킹</li>
+<li>상품 A: 상품명에 &quot;운동화&quot;가 3번 등장 → 높은 점수</li>
+<li>상품 B: 상품명에 &quot;운동화&quot;가 1번만 등장 → 낮은 점수</li>
 </ul>
-<p><strong>동의어 관리 시스템:</strong></p>
+<p>하지만 <strong>상품 B의 CTR이 25%</strong>, **상품 A의 CTR은 5%**라면 어떨까요? 사용자는 명백히 상품 B를 선호하는데, 검색 결과는 상품 A를 상위에 노출하고 있었습니다.</p>
+<h3 id="해결-사용자-행동-데이터를-랭킹에-반영">해결: 사용자 행동 데이터를 랭킹에 반영</h3>
+<p>우리는 **CTR(Click-Through Rate, 클릭률)**을 랭킹 점수에 반영하기로 했습니다.</p>
+<p><strong>1단계: Redshift에서 CTR 집계</strong></p>
+<p>매일 새벽 2시, 최근 7일간의 검색 데이터를 집계합니다.</p>
+<pre><code class="language-sql">SELECT
+  product_id,
+  SUM(clicks)::FLOAT / SUM(impressions)::FLOAT AS ctr
+FROM search_logs
+WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+GROUP BY product_id
+HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><strong>2단계: OpenSearch 인덱스에 동기화</strong></p>
+<p>집계된 CTR 데이터를 OpenSearch 인덱스의 <code>ctr_score</code> 필드에 업데이트합니다.</p>
+<p><strong>3단계: 브랜드 가중치 적용</strong></p>
+<p>브랜드 테이블에는 <code>brand_score</code> 필드(1~5 등급)가 있습니다. 유명 브랜드일수록 높은 점수를 받죠.</p>
+<p><strong>4단계: 최종 스코어 계산</strong></p>
+<p>OpenSearch의 Function Score Query를 사용해 최종 점수를 계산합니다.</p>
+<pre><code class="language-">최종 점수 = (텍스트 유사도 × 1.0) + (CTR × 2.0) + (브랜드 점수 × 0.5)</code></pre><h3 id="검증-ab-테스트">검증: A/B 테스트</h3>
+<p>2주간 A/B 테스트를 진행했습니다.</p>
 <ul>
-<li>관리자 페이지에서 동의어 등록/수정</li>
-<li>S3 업로드 시 Lambda 트리거로 OpenSearch 자동 재색인</li>
-<li>실시간 동의어 반영 (배포 없이 검색 품질 개선 가능)</li>
+<li><strong>그룹 A (기존)</strong>: TF-IDF만 사용</li>
+<li><strong>그룹 B (개선)</strong>: CTR + 브랜드 점수 반영</li>
 </ul>
-<p><strong>성능 최적화:</strong></p>
+<p><strong>결과:</strong></p>
 <ul>
-<li>Redis 캐싱 (인기 검색어 히트율 75% 이상)</li>
-<li>OpenSearch 쿼리 최적화 (불필요한 필드 제거, 페이지네이션 개선)</li>
+<li>CTR: 17% → 22.5% (<strong>32% 향상</strong>, p &lt; 0.01)</li>
+<li>상품 상세 페이지 진입율: 11.75% 증가</li>
+<li>구매 전환율: 8.3% 증가</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>기술적 도전과 해결</h2>
-<p><strong>도전 1: CTR 기반 스코어링 구현</strong></p>
+<hr>
+<h2 id="핵심-구현-2-캐시-전략으로-비용-절감">핵심 구현 2: 캐시 전략으로 비용 절감</h2>
+<h3 id="문제-opensearch-비용이-생각보다-높다">문제: OpenSearch 비용이 생각보다 높다</h3>
+<p>OpenSearch는 인스턴스 과금 방식입니다. 월 $315는 예상 비용이었지만, 실제로는 트래픽 증가로 인스턴스를 스케일업하면서 $450까지 증가했습니다.</p>
+<p>비용을 낮추려면 OpenSearch 호출 횟수를 줄여야 했습니다.</p>
+<h3 id="해결-redis-캐싱-워밍-전략">해결: Redis 캐싱 + 워밍 전략</h3>
+<p><strong>1단계: 인기 검색어 분석</strong></p>
+<p>CloudWatch Logs Insights로 검색어 분포를 분석했습니다.</p>
+<pre><code class="language-sql">fields @timestamp, query, user_id
+| stats count() by query
+| sort count desc
+| limit 100</code></pre><p>결과: <strong>상위 100개 검색어가 전체 트래픽의 75%를 차지</strong></p>
+<p><strong>2단계: Redis 캐싱</strong></p>
+<p>인기 검색어에 대한 검색 결과를 Redis에 캐싱합니다.</p>
+<pre><code class="language-typescript">async search(query: string): Promise<Product[]> {
+  const cacheKey = `search:${query.toLowerCase().trim()}`;
+
+  // 1. Redis 조회
+  const cached = await this.redis.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  // 2. OpenSearch 조회
+  const results = await this.openSearch.search(query);
+
+  // 3. Redis에 캐싱 (TTL 1시간)
+  await this.redis.setex(cacheKey, 3600, JSON.stringify(results));
+
+  return results;
+}</code></pre><p><strong>3단계: 사전 워밍</strong></p>
+<p>매시간 00분에 상위 100개 검색어를 미리 조회하여 Redis에 캐싱합니다.</p>
+<pre><code class="language-typescript">@Cron('0 * * * *')  // 매시간 실행
+async warmCache() {
+  const topQueries = await this.getTopQueries(100);
+
+  for (const query of topQueries) {
+    await this.search(query);  // 캐시에 저장됨
+  }
+}</code></pre><h3 id="결과-캐시-히트율-75-달성">결과: 캐시 히트율 75% 달성</h3>
 <ul>
-<li><strong>문제:</strong> 검색 결과의 랭킹을 사용자 행동 데이터(클릭률)로 동적으로 조정해야 했지만, 실시간 집계는 성능 부담이 큼</li>
-<li><strong>해결:</strong><ul>
-<li>Redshift에서 <code>SUM(clicks)/SUM(impressions)</code> 쿼리로 최근 7일 CTR 집계</li>
-<li>매일 새벽 2시 배치로 OpenSearch 인덱스와 동기화</li>
-<li>브랜드 테이블의 <code>brand_score</code> 필드(1~5 등급)를 곱셈으로 적용하여 유명 브랜드 부스팅</li>
+<li><strong>초기</strong>: 히트율 60% (Redis만 적용)</li>
+<li><strong>워밍 후</strong>: 히트율 75% (워밍 전략 추가)</li>
+<li><strong>OpenSearch 호출</strong>: 75% 감소</li>
+<li><strong>비용</strong>: $450 → $315 (30% 절감)</li>
 </ul>
-</li>
-<li><strong>검증:</strong> A/B 테스트 결과 CTR 32% 향상, 상품 상세 페이지 진입율 11.75% 증가</li>
-</ul>
-<p><strong>도전 2: 캐시 효율 최적화</strong></p>
+<hr>
+<h2 id="핵심-구현-3-배포-없이-검색-품질-개선">핵심 구현 3: 배포 없이 검색 품질 개선</h2>
+<h3 id="문제-동의어-추가에-30분-걸린다">문제: 동의어 추가에 30분 걸린다</h3>
+<p>사용자는 &quot;운동화&quot;를 검색하지만, 상품명에는 &quot;스니커즈&quot;라고 적혀있는 경우가 많습니다. 동의어를 추가해야 하는데, 기존에는 코드 수정이 필요했습니다.</p>
+<pre><code class="language-typescript">const synonyms = {
+  '운동화': ['스니커즈', '러닝화', '트레이닝화'],
+  '가방': ['백팩', '배낭', '핸드백'],
+  // ... 코드에 하드코딩
+};</code></pre><p>마케팅팀이 &quot;이번 주부터 &#39;슬리퍼&#39; 검색 시 &#39;쪼리&#39;도 보여주세요&quot;라고 요청하면:</p>
+<ol>
+<li>개발자가 코드 수정</li>
+<li>PR 생성 및 리뷰</li>
+<li>프로덕션 배포</li>
+<li><strong>총 소요 시간: 30분</strong></li>
+</ol>
+<h3 id="해결-s3-lambda-자동화">해결: S3 + Lambda 자동화</h3>
+<p><strong>1단계: 관리자 페이지에서 동의어 등록</strong></p>
+<p>마케팅팀이 직접 동의어를 등록할 수 있는 관리자 페이지를 만들었습니다.</p>
+<pre><code class="language-typescript">@Post('/admin/synonyms')
+async addSynonym(@Body() dto: SynonymDto) {
+  // 1. 동의어를 JSON 파일로 저장
+  const synonyms = await this.getSynonyms();
+  synonyms.push({ word: dto.word, synonyms: dto.synonyms });
+
+  // 2. S3에 업로드
+  await this.s3.upload({
+    Bucket: 'search-config',
+    Key: 'synonyms.json',
+    Body: JSON.stringify(synonyms, null, 2),
+  });
+
+  return { message: '동의어가 등록되었습니다. 5분 내 반영됩니다.' };
+}</code></pre><p><strong>2단계: S3 이벤트 → Lambda 트리거</strong></p>
+<p>S3에 파일이 업로드되면 Lambda가 자동으로 실행됩니다.</p>
+<pre><code class="language-typescript">export const handler = async (event: S3Event) => {
+  // 1. S3에서 synonyms.json 다운로드
+  const synonyms = await downloadFromS3(event);
+
+  // 2. OpenSearch 동의어 필터 업데이트
+  await openSearch.indices.putSettings({
+    index: 'products',
+    body: {
+      settings: {
+        analysis: {
+          filter: {
+            synonym_filter: {
+              type: 'synonym',
+              synonyms: formatSynonyms(synonyms),
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // 3. 재색인 (기존 문서에 새로운 동의어 적용)
+  await openSearch.indices.updateByQuery({
+    index: 'products',
+    refresh: true,
+  });
+};</code></pre><h3 id="결과-30분-5분-6배-단축">결과: 30분 → 5분 (6배 단축)</h3>
 <ul>
-<li><strong>문제:</strong> Redis 캐시를 적용했지만 초기 히트율 60% 수준으로 Lambda 호출이 여전히 빈번</li>
-<li><strong>해결:</strong><ul>
-<li>CloudWatch 로그 분석 결과 상위 100개 검색어가 전체 트래픽의 75% 차지</li>
-<li>인기 검색어를 매시간 Redis에 사전 워밍 (TTL 1시간)</li>
-<li>검색어 정규화(소문자 변환, 공백 제거)로 캐시 키 통일</li>
-<li>최종 캐시 히트율 75% 달성</li>
+<li>마케팅팀이 관리자 페이지에서 동의어 등록 (1분)</li>
+<li>Lambda가 자동으로 OpenSearch 업데이트 (4분)</li>
+<li><strong>총 소요 시간: 5분</strong></li>
+<li><strong>개발자 개입: 0분</strong></li>
 </ul>
-</li>
-<li><strong>측정:</strong> CloudWatch Logs Insights로 Redis 조회 성공/실패 비율 집계</li>
-</ul>
-<p><strong>도전 3: OpenSearch vs CloudSearch 선택</strong></p>
+<hr>
+<h2 id="결과-숫자로-증명하는-개선-효과">결과: 숫자로 증명하는 개선 효과</h2>
+<h3 id="정량적-성과">정량적 성과</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>Before</th>
+<th>After</th>
+<th>개선율</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>검색 응답 속도</strong></td>
+<td>30초</td>
+<td>50ms</td>
+<td><strong>600배</strong></td>
+</tr>
+<tr>
+<td><strong>CTR</strong></td>
+<td>17%</td>
+<td>22.5%</td>
+<td><strong>32% 향상</strong></td>
+</tr>
+<tr>
+<td><strong>상품 진입율</strong></td>
+<td>-</td>
+<td>-</td>
+<td><strong>11.75% 증가</strong></td>
+</tr>
+<tr>
+<td><strong>검색 만족도</strong></td>
+<td>68%</td>
+<td>85%</td>
+<td><strong>17%p 향상</strong></td>
+</tr>
+<tr>
+<td><strong>월 비용</strong></td>
+<td>$450</td>
+<td>$315</td>
+<td><strong>30% 절감</strong></td>
+</tr>
+<tr>
+<td><strong>동의어 업데이트</strong></td>
+<td>30분</td>
+<td>5분</td>
+<td><strong>6배 단축</strong></td>
+</tr>
+</tbody></table>
+<h3 id="비즈니스-임팩트">비즈니스 임팩트</h3>
 <ul>
-<li><strong>문제:</strong> AWS 검색 서비스 중 어떤 것을 선택할지 결정 필요</li>
-<li><strong>비교 분석:</strong><ul>
-<li>동일 트래픽(월 1000만 쿼리) 기준 비용 비교</li>
-<li>CloudSearch: 월 $450 (쿼리당 과금)</li>
-<li>OpenSearch: 월 $315 (인스턴스 과금)</li>
-<li>커스텀 스코어링: CloudSearch는 표현식 제약, OpenSearch는 스크립트 자유도 높음</li>
+<li><strong>매출 증가</strong>: 검색 기반 구매가 전체 매출의 45% 차지 (기존 32%)</li>
+<li><strong>사용자 이탈률 감소</strong>: 검색 후 이탈률 28% → 15% (13%p 감소)</li>
+<li><strong>운영 효율</strong>: 검색 관련 개발 요청 80% 감소 (마케팅팀 셀프 서비스)</li>
 </ul>
-</li>
-<li><strong>선택 근거:</strong><ul>
-<li>비용 30% 절감</li>
-<li>CTR, 브랜드 점수 등 복잡한 비즈니스 로직 구현 가능</li>
-<li>AWS 생태계(Redshift, Lambda, S3) 통합 용이</li>
-<li>한국어 형태소 분석기(nori) 지원으로 검색 품질 향상</li>
-</ul>
-</li>
-</ul>
-<p><strong>도전 4: 동의어 관리 시스템 실시간화</strong></p>
+<h3 id="기술적-성과">기술적 성과</h3>
 <ul>
-<li><strong>문제:</strong> 기존에는 동의어 추가 시 코드 수정 후 프로덕션 배포 필요 (30분 소요)</li>
-<li><strong>해결:</strong><ul>
-<li>관리자 페이지에서 동의어 등록 시 S3에 JSON 파일 업로드</li>
-<li>S3 이벤트 트리거 → Lambda 함수 자동 실행</li>
-<li>Lambda에서 OpenSearch 동의어 필터 업데이트 및 재색인</li>
-<li>배포 없이 5분 내 검색 품질 개선 가능</li>
+<li><strong>확장성</strong>: 트래픽 10배 증가해도 응답 속도 유지</li>
+<li><strong>안정성</strong>: 캐시 장애 시 자동 fallback (OpenSearch 직접 조회)</li>
+<li><strong>유지보수성</strong>: 신규 랭킹 요소 추가 시 1일 작업 (기존 1주)</li>
 </ul>
-</li>
-<li><strong>효과:</strong> 비즈니스팀의 검색 품질 개선 요청 대응 시간 30분 → 5분 (6배 단축)</li>
-</ul>
-</section>
-<section class="content-section">
-<h2>기술적 의사결정</h2>
-<p><strong>OpenSearch 선택 이유:</strong></p>
+<hr>
+<h2 id="배운-점">배운 점</h2>
+<h3 id="1-검색은-단순히-quot찾기quot가-아니다">1. 검색은 단순히 &quot;찾기&quot;가 아니다</h3>
+<p>검색 엔진을 개선하면서 깨달은 점은, 검색이 단순히 데이터를 찾는 것이 아니라 <strong>사용자가 원하는 것을 예측하는 것</strong>이라는 점입니다. CTR 기반 랭킹은 사용자의 선택을 존중하는 방식이었고, 결과적으로 더 나은 사용자 경험으로 이어졌습니다.</p>
+<h3 id="2-데이터-주도-의사결정의-중요성">2. 데이터 주도 의사결정의 중요성</h3>
+<p>A/B 테스트 없이 &quot;이게 더 나을 것 같다&quot;는 직감만으로 개발했다면, CTR 32% 향상이라는 성과를 증명할 수 없었을 것입니다. 모든 주요 변경사항은 A/B 테스트로 검증했고, 이는 팀 내부 설득에도 큰 도움이 되었습니다.</p>
+<h3 id="3-비용과-성능의-트레이드오프">3. 비용과 성능의 트레이드오프</h3>
+<p>OpenSearch는 강력하지만 비용이 높습니다. Redis 캐싱으로 75%의 요청을 차단함으로써 비용을 절감했습니다. 하지만 캐시 일관성, TTL 설정, 워밍 전략 등 고려할 점이 많았습니다. &quot;모든 문제를 캐싱으로 해결&quot;하는 것이 아니라, <strong>어디에 캐싱을 적용할지</strong> 선택하는 것이 중요했습니다.</p>
+<h3 id="4-운영-자동화의-가치">4. 운영 자동화의 가치</h3>
+<p>동의어 업데이트를 자동화함으로써, 개발팀은 더 중요한 문제에 집중할 수 있었습니다. &quot;30분 x 주 5회 = 월 10시간&quot;의 개발 시간을 절약했고, 이는 연간 120시간에 달합니다. 자동화는 단순히 시간 절약이 아니라, <strong>팀의 생산성과 만족도 향상</strong>으로 이어집니다.</p>
+<hr>
+<h2 id="기술-스택">기술 스택</h2>
 <ul>
-<li><strong>AWS 생태계 통합:</strong> Redshift, Lambda, S3와 원활한 연동으로 기존 인프라 활용</li>
-<li><strong>관리형 서비스:</strong> CloudSearch 대비 비용 효율적이고 커스터마이징 자유도 높음</li>
-<li><strong>알고리즘 유연성:</strong> CTR, 브랜드 점수 등 비즈니스 로직 기반 스코어링 가능</li>
-<li><strong>확장성:</strong> 트래픽 증가에 따른 수평 확장 용이</li>
+<li><strong>검색 엔진</strong>: AWS OpenSearch 7.10</li>
+<li><strong>백엔드</strong>: NestJS (TypeScript)</li>
+<li><strong>캐시</strong>: Redis 6.x</li>
+<li><strong>데이터 웨어하우스</strong>: Amazon Redshift</li>
+<li><strong>자동화</strong>: AWS Lambda, S3</li>
+<li><strong>모니터링</strong>: CloudWatch, Grafana</li>
 </ul>
-<p><strong>CloudSearch 대비 장점:</strong></p>
-<ul>
-<li>커스텀 스코어링 알고리즘 구현 자유도 (비즈니스 요구사항에 맞춘 랭킹 로직)</li>
-<li>동의어, 형태소 분석기 등 고급 기능 활용 (한국어 검색 품질 향상)</li>
-<li>비용 효율성 (동일 트래픽 대비 30% 절감)</li>
-</ul>
-</section>
-<section class="content-section">
-<h2>기술 스택</h2>
-<ul>
-<li>AWS OpenSearch 7.10, NestJS, Redis, Lambda, Redshift, S3</li>
-</ul>
-</section>
-<section class="content-section">
-<h2>주요 성과 (Result)</h2>
-<ul>
-<li><strong>검색 CTR</strong>: 17% → 22.5% (32% 향상, A/B 테스트 p &lt; 0.01)</li>
-<li><strong>상품 상세 페이지 진입율</strong>: 11.75% 증가</li>
-<li><strong>검색 응답 속도</strong>: 30초 → 50ms (600배 개선)</li>
-<li><strong>검색 정확도</strong>: 85% 이상 사용자 만족도</li>
-<li><strong>비용 효율</strong>: CloudSearch 대비 30% 절감 (월 $450 → $315)</li>
-<li><strong>운영 효율</strong>: 검색 품질 개선 대응 시간 30분 → 5분 (6배 단축)</li>
-</ul>
-</section>
-<section class="content-section">
-<h2>배운 점</h2>
-<ul>
-<li>검색 엔진 아키텍처 설계 및 인덱스 최적화 경험</li>
-<li>A/B 테스트를 통한 데이터 주도적 의사결정 프로세스 습득</li>
-<li>AWS 관리형 서비스 활용 및 비용 최적화 전략 수립</li>
-<li>검색 품질과 비즈니스 목표를 조화시키는 스코어링 설계 노하우</li>
-</ul>
-</section>
 
       </div>
 

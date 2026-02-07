@@ -70,12 +70,9 @@
 
       <!-- Content -->
       <div class="project-detail-content">
-        <section class="content-section">
-<h2>개요</h2>
+        <h2 id="개요">개요</h2>
 <p>기존 이니시스(신용카드), 카카오페이(간편결제) 결제 수단에 토스페이를 추가하여 결제 옵션을 다양화하고 전체 거래액의 30%(111억 원)를 달성했습니다. ISMS-P 보안 인증 심사와 병행하며 통상 3개월 작업을 6주 만에 완료한 프로젝트입니다.</p>
-</section>
-<section class="content-section">
-<h2>프로젝트 배경</h2>
+<h2 id="프로젝트-배경">프로젝트 배경</h2>
 <p><strong>비즈니스 요구사항:</strong></p>
 <ul>
 <li>결제 수단 다양화로 사용자 편의성 향상</li>
@@ -89,18 +86,14 @@
 <li><strong>타이트한 일정:</strong> 통상 3개월 소요되는 작업을 비즈니스 요구사항에 따라 6주 내 완료 필요</li>
 <li><strong>데이터 정합성 보장:</strong> 결제-주문-정산 전 과정의 트랜잭션 일관성 유지</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>해결 과제 (Task)</h2>
+<h2 id="해결-과제-task">해결 과제 (Task)</h2>
 <ul>
 <li>4개 시스템(결제/주문/정산/어드민)을 6주 내 동시 개발 및 배포</li>
 <li>ISMS-P 보안 인증 요구사항을 충족하며 신규 PG사 연동</li>
 <li>결제-주문-정산 전 과정의 데이터 정합성 보장 (Saga 패턴)</li>
 <li>결제 성공률 개선 및 사용자 편의성 향상</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>시스템 아키텍처 (Action)</h2>
+<h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph LR
     A[결제 요청] --> B{PG 라우팅}
     B -->|기존| C[이니시스]
@@ -113,11 +106,7 @@
 
     I[어드민] --> J[결제 내역]
     I --> K[정산 관리]
-    I --> L[통계 대시보드]
-</pre>
-</section>
-<section class="content-section">
-<h2>주요 기능</h2>
+    I --> L[통계 대시보드]</pre><h2 id="주요-기능">주요 기능</h2>
 <p><strong>결제 시스템:</strong></p>
 <ul>
 <li>토스페이 API 연동 (승인, 취소, 환불)</li>
@@ -140,9 +129,7 @@
 <li>결제 수단별 통계 대시보드</li>
 <li>수동 환불 처리 기능</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>개발 프로세스</h2>
+<h2 id="개발-프로세스">개발 프로세스</h2>
 <p><strong>태스크 분석 및 우선순위:</strong></p>
 <ol>
 <li>영향 범위 파악 (결제/주문/정산/어드민)</li>
@@ -156,9 +143,7 @@
 <li>어드민 기능 개발 (1주)</li>
 <li>QA 및 버그 수정 (1주)</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>기술적 도전과 해결</h2>
+<h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
 <p><strong>도전 1: 짧은 일정 (3개월 → 6주)</strong></p>
 <ul>
 <li><strong>문제:</strong> 결제/주문/정산/어드민 4개 영역을 모두 수정해야 하는 대규모 작업을 6주 내 완료</li>
@@ -227,17 +212,13 @@
 </ul>
 </li>
 </ul>
-</section>
-<section class="content-section">
-<h2>기술 스택</h2>
+<h2 id="기술-스택">기술 스택</h2>
 <ul>
 <li>NestJS, MySQL, Redis</li>
 <li>TossPay API, Webhook</li>
 <li>Docker, GitLab CI/CD</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>주요 성과 (Result)</h2>
+<h2 id="주요-성과-result">주요 성과 (Result)</h2>
 <ul>
 <li><strong>거래액</strong>: 전체 거래액의 30% (약 111억 원) 달성</li>
 <li><strong>개발 기간</strong>: 통상 3개월 → 6주 완료 (50% 단축)</li>
@@ -246,15 +227,12 @@
 <li><strong>데이터 정합성</strong>: 결제-주문 불일치 케이스 0건</li>
 <li><strong>병렬 개발</strong>: 3명 개발자 동시 작업으로 생산성 2배 향상</li>
 </ul>
-</section>
-<section class="content-section">
-<h2>배운 점</h2>
+<h2 id="배운-점">배운 점</h2>
 <ul>
 <li>복잡한 시스템 통합 경험 (결제-주문-정산 전 영역 변경)</li>
 <li>짧은 일정 내 효율적 태스크 관리 및 우선순위 결정</li>
 <li>보안 인증 요구사항 대응 및 규제 준수 프로세스 이해</li>
 </ul>
-</section>
 
       </div>
 
