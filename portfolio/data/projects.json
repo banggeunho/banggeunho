@@ -7,7 +7,7 @@
       "image": "",
       "tags": ["Kafka", "Debezium", "CDC"],
       "github": "https://github.com/banggeunho/CDC-Kafka-Debezium",
-      "link": "projects/cdc-kafka-debezium.html"
+      "link": "projects/cdc-kafka-debezium/"
     },
     {
       "id": "concurrent-handler-lock",
