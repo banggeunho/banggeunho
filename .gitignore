@@ -1,0 +1,16 @@
+# Build output
+portfolio/build/
+
+# Dependencies
+scripts/node_modules/
+scripts/package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
