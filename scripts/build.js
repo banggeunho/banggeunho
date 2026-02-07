@@ -6,6 +6,19 @@ const matter = require('gray-matter');
 const { marked } = require('marked');
 const ejs = require('ejs');
 
+// Configure marked for better code rendering
+marked.setOptions({
+  highlight: function(code, lang) {
+    // Return code with language class for syntax highlighting
+    return code;
+  },
+  langPrefix: 'language-',
+  breaks: true,
+  gfm: true,
+  headerIds: true,
+  mangle: false
+});
+
 // Paths
 const ROOT_DIR = path.join(__dirname, '..');
 const PORTFOLIO_DIR = path.join(ROOT_DIR, 'portfolio');
@@ -67,6 +80,26 @@ function wrapSections(html) {
 }
 
 /**
+ * Convert mermaid code blocks to proper mermaid divs
+ */
+function convertMermaidBlocks(html) {
+  // Replace <pre><code class="language-mermaid"> with <pre class="mermaid">
+  return html.replace(
+    /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+    (match, content) => {
+      // Decode HTML entities in mermaid content
+      const decoded = content
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      return `<pre class="mermaid">${decoded}</pre>`;
+    }
+  );
+}
+
+/**
  * Process a single project
  */
 function processProject(projectName) {
@@ -84,14 +117,17 @@ function processProject(projectName) {
   // 3. Convert markdown to HTML
   let htmlContent = marked.parse(markdownContent);
 
-  // 4. Wrap H2 sections in <section class="content-section">
+  // 4. Convert mermaid code blocks to proper format
+  htmlContent = convertMermaidBlocks(htmlContent);
+
+  // 5. Wrap H2 sections in <section class="content-section">
   htmlContent = wrapSections(htmlContent);
 
-  // 4. Load template
+  // 6. Load template
   const templatePath = path.join(TEMPLATES_DIR, 'project.ejs');
   const template = fs.readFileSync(templatePath, 'utf-8');
 
-  // 5. Render template
+  // 7. Render template
   const html = ejs.render(template, {
     project: {
       ...frontmatter,
@@ -101,16 +137,16 @@ function processProject(projectName) {
     filename: templatePath // For include() to work
   });
 
-  // 6. Create output directory
+  // 8. Create output directory
   const outputDir = path.join(BUILD_DIR, 'projects', projectName);
   fs.ensureDirSync(outputDir);
 
-  // 7. Copy entire project folder (includes images, etc.)
+  // 9. Copy entire project folder (includes images, etc.)
   fs.copySync(projectDir, outputDir, {
     overwrite: true
   });
 
-  // 8. Write HTML file
+  // 10. Write HTML file
   const outputPath = path.join(outputDir, 'index.html');
   fs.writeFileSync(outputPath, html, 'utf-8');
 

@@ -701,6 +701,25 @@ img {
   line-height: 1.7;
 }
 
+/* Mermaid diagrams */
+.content-section .mermaid {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.content-section pre.mermaid {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
 /* ========== Contact ========== */
 .contact-content {
   text-align: center;
