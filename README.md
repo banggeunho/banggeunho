@@ -1,14 +1,14 @@
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Hi%20there!%20I'm%20Geunho%20Bang%20👋&fontSize=36&fontColor=ffffff&animation=fadeIn&fontAlignY=36" width="100%"/>
+
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Belanosima&weight=600&size=40&pause=15000&color=F753B2&background=E9CFE780&center=true&vCenter=true&width=600&height=80&lines=Hi+there!+I'm+Geunho+Bang+👋" alt="Hi there! I'm Geunho Bang" />
-</div>
+
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=A960FF&center=true&vCenter=true&multiline=true&repeat=true&width=500&height=60&lines=Backend+Developer+%40+Commerce+Platform;Building+Scalable+%26+Reliable+Systems" alt="Typing SVG" /></a>
 
 <br/>
 
-<div align="center">
-
-**Backend Developer** @ Commerce Platform (3M+ users)
-
 대규모 트래픽 환경에서 **안정적이고 효율적인 서비스**를 만드는 일에 몰입합니다.
+
+<br/>
 
 <img src="https://img.shields.io/badge/AWS_Solutions_Architect_Associate-232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=white"/>
 
@@ -96,7 +96,19 @@
 
 ---
 
+### 📊 GitHub Stats
+
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=banggeunho&show_icons=true&theme=radical&hide_border=true&cache_seconds=1800" height="160"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=banggeunho&layout=compact&theme=radical&hide_border=true&cache_seconds=1800" height="160"/>
+  <img src="https://github-readme-stats.vercel.app/api?username=banggeunho&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=A960FF&icon_color=A960FF&text_color=FFFFFF&cache_seconds=1800" height="170"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com?user=banggeunho&theme=tokyonight&hide_border=true&background=0D1117&ring=A960FF&fire=FF6600&currStreakLabel=A960FF&cache_seconds=1800" height="170"/>
 </div>
+
+<br/>
+
+<div align="center">
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=banggeunho&theme=tokyo-night&hide_border=true&bg_color=0D1117&color=A960FF&line=A960FF&point=FFFFFF&area=true&area_color=A960FF" width="90%"/>
+</div>
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer" width="100%"/>
