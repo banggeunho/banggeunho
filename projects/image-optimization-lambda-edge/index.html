@@ -87,16 +87,16 @@
 </ul>
 </section>
 <section class="content-section">
-<h2>주요 성과</h2>
+<h2>해결 과제 (Task)</h2>
 <ul>
-<li>CloudFront 전송량: 419GB → 132GB (68% 감소)</li>
-<li>이미지 용량: 평균 85~90% 감소</li>
-<li>월 비용: 90만원 → 28만원 (68% 절감)</li>
-<li>페이지 로딩: 1.2초 → 0.6초 (50% 개선)</li>
+<li>CloudFront 비용을 50% 이상 절감하면서 이미지 품질 유지</li>
+<li>On-demand 이미지 처리로 다양한 크기 요구사항 대응</li>
+<li>차세대 포맷(WebP, AVIF) 지원으로 페이지 로딩 속도 개선</li>
+<li>악의적 요청 차단으로 비용 폭증 방지</li>
 </ul>
 </section>
 <section class="content-section">
-<h2>시스템 아키텍처</h2>
+<h2>시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[브라우저] -->|?w&h&f&q| B[CloudFront]
     B --> C[CloudFront Functions]
@@ -204,6 +204,17 @@
 <ul>
 <li>Lambda@Edge, CloudFront Functions, S3</li>
 <li>Sharp (Node.js), TypeScript</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과 (Result)</h2>
+<ul>
+<li><strong>CloudFront 전송량</strong>: 419GB → 132GB (68% 감소)</li>
+<li><strong>이미지 용량</strong>: 평균 85~90% 감소</li>
+<li><strong>월 비용</strong>: 90만원 → 28만원 (68% 절감)</li>
+<li><strong>페이지 로딩</strong>: 1.2초 → 0.6초 (50% 개선)</li>
+<li><strong>캐시 히트율</strong>: 65% → 85% (20%p 향상)</li>
+<li><strong>Lambda 타임아웃</strong>: 95% 감소 (메모리 최적화)</li>
 </ul>
 </section>
 <section class="content-section">

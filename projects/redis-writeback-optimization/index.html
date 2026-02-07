@@ -87,16 +87,16 @@
 </ul>
 </section>
 <section class="content-section">
-<h2>주요 성과</h2>
+<h2>해결 과제 (Task)</h2>
 <ul>
-<li>DB IOPS: 10배 감소</li>
-<li>DB CPU: 25% 절감</li>
-<li>서버 CPU: 7% 절감</li>
-<li>API 응답 속도: 500ms → 10ms (50배 개선)</li>
+<li>DB 부하를 10배 이상 감소시키면서 데이터 정합성 유지</li>
+<li>API 응답 속도를 50배 개선하여 사용자 경험 향상</li>
+<li>Redis 장애 시에도 데이터 유실 방지하는 Fallback 메커니즘 구축</li>
+<li>추가 인프라 비용 없이 기존 Redis 클러스터 활용</li>
 </ul>
 </section>
 <section class="content-section">
-<h2>시스템 아키텍처</h2>
+<h2>시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[배너 클릭] --> B[API]
     B --> C[Redis Hash]
@@ -231,6 +231,17 @@
 </ul>
 </li>
 <li><strong>최종 선택:</strong> UPDATE 방식이 집계 쿼리 성능과 스토리지 비용 측면에서 우수</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과 (Result)</h2>
+<ul>
+<li><strong>DB IOPS</strong>: 10배 감소</li>
+<li><strong>DB CPU</strong>: 25% 절감</li>
+<li><strong>서버 CPU</strong>: 7% 절감</li>
+<li><strong>API 응답 속도</strong>: 500ms → 10ms (50배 개선)</li>
+<li><strong>데이터 유실</strong>: 0건 (SQS Fallback으로 100% 보장)</li>
+<li><strong>추가 인프라 비용</strong>: 0원 (기존 Redis 활용)</li>
 </ul>
 </section>
 <section class="content-section">

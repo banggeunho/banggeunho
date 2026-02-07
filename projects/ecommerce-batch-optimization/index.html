@@ -89,15 +89,16 @@
 </ul>
 </section>
 <section class="content-section">
-<h2>주요 성과</h2>
+<h2>해결 과제 (Task)</h2>
 <ul>
-<li>처리 시간: 30분 → 3분 (10배 향상)</li>
-<li>코드 중복: 70% 감소</li>
-<li>신규 커머스 추가: 2주 → 2일</li>
+<li>배치 처리 시간을 30분에서 5분 이하로 단축</li>
+<li>코드 중복을 제거하고 템플릿 메소드 패턴으로 공통 로직 추상화</li>
+<li>신규 커머스 추가 시간을 2주에서 2일로 단축</li>
+<li>커머스별 독립적 에러 처리로 장애 격리</li>
 </ul>
 </section>
 <section class="content-section">
-<h2>아키텍처</h2>
+<h2>아키텍처 (Action)</h2>
 <pre class="mermaid">graph TB
     A[템플릿 메소드] --> B[공통 로직]
     B --> C[인증]
@@ -235,6 +236,17 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
 </ul>
 </li>
 <li><strong>효과:</strong> 한 커머스 실패해도 다른 커머스는 정상 수집, 가용성 99.5% 달성</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과 (Result)</h2>
+<ul>
+<li><strong>처리 시간</strong>: 30분 → 3분 (10배 향상)</li>
+<li><strong>코드 중복</strong>: 70% 감소</li>
+<li><strong>신규 커머스 추가</strong>: 2주 → 2일 (7배 단축)</li>
+<li><strong>장애 격리</strong>: 커머스별 독립 실행으로 가용성 99.5% 달성</li>
+<li><strong>유지보수성</strong>: 버그 수정 시간 5일 → 1일 (5배 단축)</li>
+<li><strong>확장성</strong>: 5개 커머스 → 10개 커머스로 확장 가능</li>
 </ul>
 </section>
 <section class="content-section">

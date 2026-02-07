@@ -91,16 +91,16 @@
 </ul>
 </section>
 <section class="content-section">
-<h2>주요 성과</h2>
+<h2>해결 과제 (Task)</h2>
 <ul>
-<li>전체 거래액의 30% (약 111억 원) 달성</li>
-<li>개발 기간: 통상 3개월 → 6주 완료</li>
-<li>결제 성공률: 2.5% 향상</li>
-<li>ISMS-P 인증 동시 통과</li>
+<li>4개 시스템(결제/주문/정산/어드민)을 6주 내 동시 개발 및 배포</li>
+<li>ISMS-P 보안 인증 요구사항을 충족하며 신규 PG사 연동</li>
+<li>결제-주문-정산 전 과정의 데이터 정합성 보장 (Saga 패턴)</li>
+<li>결제 성공률 개선 및 사용자 편의성 향상</li>
 </ul>
 </section>
 <section class="content-section">
-<h2>시스템 아키텍처</h2>
+<h2>시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph LR
     A[결제 요청] --> B{PG 라우팅}
     B -->|기존| C[이니시스]
@@ -234,6 +234,17 @@
 <li>NestJS, MySQL, Redis</li>
 <li>TossPay API, Webhook</li>
 <li>Docker, GitLab CI/CD</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과 (Result)</h2>
+<ul>
+<li><strong>거래액</strong>: 전체 거래액의 30% (약 111억 원) 달성</li>
+<li><strong>개발 기간</strong>: 통상 3개월 → 6주 완료 (50% 단축)</li>
+<li><strong>결제 성공률</strong>: 2.5% 향상</li>
+<li><strong>보안 인증</strong>: ISMS-P 인증 동시 통과</li>
+<li><strong>데이터 정합성</strong>: 결제-주문 불일치 케이스 0건</li>
+<li><strong>병렬 개발</strong>: 3명 개발자 동시 작업으로 생산성 2배 향상</li>
 </ul>
 </section>
 <section class="content-section">

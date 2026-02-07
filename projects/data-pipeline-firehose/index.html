@@ -93,16 +93,16 @@
 </ul>
 </section>
 <section class="content-section">
-<h2>주요 성과</h2>
+<h2>해결 과제 (Task)</h2>
 <ul>
-<li>데이터 확인: 2<del>3일 → 1시간</del>1일 (최대 72배 단축)</li>
-<li>월 비용: 약 9,000원 (3,000만 건 처리)</li>
-<li>Tableau 작업: 50% 이상 자동화</li>
-<li>주요 이벤트: 100% 수집</li>
+<li>사용자 이벤트 데이터를 실시간으로 수집 및 저장</li>
+<li>데이터 확인 시간을 2~3일에서 1시간 이내로 단축</li>
+<li>저비용(월 1만원 이하)으로 월 3,000만 건 처리</li>
+<li>Tableau 대시보드 자동화로 개발자 리소스 절감</li>
 </ul>
 </section>
 <section class="content-section">
-<h2>시스템 아키텍처</h2>
+<h2>시스템 아키텍처 (Action)</h2>
 <pre class="mermaid">graph LR
     A[사용자 행동] --> B[Firehose]
     B --> C[Lambda<br/>Parquet 변환]
@@ -215,6 +215,17 @@
 </ul>
 </li>
 <li><strong>검증:</strong> 3개월간 3억 건 이벤트 중 유실 0건 달성</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과 (Result)</h2>
+<ul>
+<li><strong>데이터 확인 시간</strong>: 2<del>3일 → 1시간</del>1일 (최대 72배 단축)</li>
+<li><strong>월 비용</strong>: 약 9,000원 (3,000만 건 처리)</li>
+<li><strong>Tableau 작업</strong>: 50% 이상 자동화</li>
+<li><strong>주요 이벤트</strong>: 100% 수집 (8개 이벤트)</li>
+<li><strong>스토리지 비용</strong>: 70% 절감 (Parquet 변환)</li>
+<li><strong>Athena 쿼리 속도</strong>: 5배 향상</li>
 </ul>
 </section>
 <section class="content-section">
