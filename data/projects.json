@@ -16,7 +16,7 @@
       "image": "",
       "tags": ["Redis", "Concurrency", "Lock"],
       "github": "https://github.com/banggeunho/concurrent-handler-lock",
-      "link": "projects/concurrent-handler-lock.html"
+      "link": "projects/concurrent-handler-lock/"
     },
     {
       "id": "terraform-ecs-example",
@@ -25,7 +25,7 @@
       "image": "",
       "tags": ["Terraform", "AWS ECS", "IaC"],
       "github": "https://github.com/banggeunho/terraform-ecs-example",
-      "link": "projects/terraform-ecs-example.html"
+      "link": "projects/terraform-ecs-example/"
     },
     {
       "id": "spring-boot-msa",
@@ -34,7 +34,7 @@
       "image": "",
       "tags": ["Spring Boot", "MSA", "Monitoring"],
       "github": "https://github.com/banggeunho/Spring-Boot-MSA",
-      "link": "projects/spring-boot-msa.html"
+      "link": "projects/spring-boot-msa/"
     }
   ]
 }
