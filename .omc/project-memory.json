@@ -70,6 +70,42 @@
       "type": "file"
     },
     {
+      "path": "portfolio/projects/tosspay-payment-integration/index.md",
+      "accessCount": 6,
+      "lastAccessed": 1770470457880,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/opensearch-search-engine/index.md",
+      "accessCount": 5,
+      "lastAccessed": 1770470299403,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
+      "accessCount": 5,
+      "lastAccessed": 1770470335925,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/redis-writeback-optimization/index.md",
+      "accessCount": 5,
+      "lastAccessed": 1770470375492,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/data-pipeline-firehose/index.md",
+      "accessCount": 5,
+      "lastAccessed": 1770470409505,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
+      "accessCount": 5,
+      "lastAccessed": 1770470448926,
+      "type": "file"
+    },
+    {
       "path": "docs/plans/2026-02-07-github-header-svg-redesign.md",
       "accessCount": 4,
       "lastAccessed": 1770456733998,
@@ -118,18 +154,6 @@
       "type": "file"
     },
     {
-      "path": "portfolio/projects/opensearch-search-engine/index.md",
-      "accessCount": 2,
-      "lastAccessed": 1770468700353,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
-      "accessCount": 2,
-      "lastAccessed": 1770468743234,
-      "type": "file"
-    },
-    {
       "path": "",
       "accessCount": 1,
       "lastAccessed": 1770454849895,
@@ -145,30 +169,6 @@
       "path": "assets/preview.html",
       "accessCount": 1,
       "lastAccessed": 1770457899957,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/tosspay-payment-integration/index.md",
-      "accessCount": 1,
-      "lastAccessed": 1770468723933,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/redis-writeback-optimization/index.md",
-      "accessCount": 1,
-      "lastAccessed": 1770468761713,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/data-pipeline-firehose/index.md",
-      "accessCount": 1,
-      "lastAccessed": 1770468774634,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
-      "accessCount": 1,
-      "lastAccessed": 1770468785721,
       "type": "file"
     },
     {
