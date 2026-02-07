@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>검색 엔진 전면 개편 | Geunho Bang</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo">GB</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html#about">About</a></li>
+      <li><a href="../../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+  <main class="project-detail">
+    <div class="container">
+
+      <!-- Back -->
+      <a href="../../index.html#projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+        Projects
+      </a>
+
+      <!-- Hero image -->
+      
+      <div class="project-detail-hero">
+        <div class="project-detail-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span>프로젝트 썸네일을 추가하세요</span>
+        </div>
+      </div>
+      
+
+      <!-- Header -->
+      <div class="project-detail-header">
+        <h1>검색 엔진 전면 개편</h1>
+        
+        <div class="project-detail-tags">
+          
+            <span>AWS OpenSearch</span>
+          
+            <span>NestJS</span>
+          
+            <span>Redis</span>
+          
+            <span>Lambda</span>
+          
+            <span>Redshift</span>
+          
+        </div>
+        
+        
+        <a href="https://github.com/banggeunho" class="btn btn-outline" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        
+      </div>
+
+      <!-- Content -->
+      <div class="project-detail-content">
+        <section class="content-section">
+<h2>개요</h2>
+<p>300만 회원 커머스 플랫폼에서 Fuse.js 기반 클라이언트 검색의 한계를 극복하기 위해 AWS OpenSearch 기반 검색 시스템을 설계하고 구축했습니다.</p>
+</section>
+<section class="content-section">
+<h2>문제 상황</h2>
+<p><strong>기존 Fuse.js 시스템의 한계:</strong></p>
+<ul>
+<li>장문 검색 시 평균 30초 이상 소요</li>
+<li>서버 메모리에 1분마다 전체 상품 색인 (성능 저하)</li>
+<li>검색 순위 조정이 하드코딩 방식 (배포 필수)</li>
+<li>상품 키워드를 억지로 붙여 데이터 오염</li>
+<li>복잡한 검색 요구사항 대응 불가</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>주요 성과</h2>
+<ul>
+<li>검색 CTR: 17% → 22.5% (32% 향상, A/B 테스트 p &lt; 0.01)</li>
+<li>상품 상세 페이지 진입율: 11.75% 증가</li>
+<li>검색 응답 속도: 30초 → 50ms (600배 개선)</li>
+<li>검색 정확도: 85% 이상 사용자 만족도</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>시스템 아키텍처</h2>
+<pre><code class="language-mermaid">graph TB
+    A[사용자] --&gt;|검색| B[NestJS API]
+    B --&gt;|캐시 조회| C[Redis]
+    C -.캐시 미스.-&gt; D[OpenSearch]
+
+    F[Redshift] --&gt;|CTR 7일| G[스코어링]
+    G --&gt; D
+    H[브랜드 우선] --&gt; D
+    I[우선 노출 테이블] --&gt; D
+
+    J[관리자] --&gt;|동의어 등록| K[S3]
+    K --&gt;|트리거| L[Lambda]
+    L --&gt;|재색인| D
+</code></pre>
+</section>
+<section class="content-section">
+<h2>주요 기능</h2>
+<ul>
+<li>CTR 기반 커스텀 스코어링 (Redshift 7일 데이터)</li>
+<li>브랜드 인지도 가중치 반영</li>
+<li>관리자 페이지 → S3 → Lambda 동의어 자동 업데이트</li>
+<li>Redis 캐싱 (히트율 75%+)</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>기술 스택</h2>
+<ul>
+<li>AWS OpenSearch 7.10, NestJS, Redis, Lambda, Redshift</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>배운 점</h2>
+<ul>
+<li>검색 엔진 아키텍처 설계 및 인덱스 최적화</li>
+<li>A/B 테스트 기반 데이터 주도 의사결정</li>
+<li>AWS 관리형 서비스 활용 및 비용 최적화</li>
+</ul>
+</section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+  <div class="container">
+    <p>&copy; 2025 Geunho Bang. Built with passion.</p>
+  </div>
+</footer>
+
+
+  <script src="../../script.js"></script>
+</body>
+</html>
