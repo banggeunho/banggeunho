@@ -1,3 +1,152 @@
+// ========== Data Loading ==========
+let portfolioData = {
+  projects: [],
+  about: null,
+  skills: null
+};
+
+async function loadJSON(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to load ${url}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error loading JSON:', error);
+    return null;
+  }
+}
+
+async function loadAllData() {
+  const [projects, about, skills] = await Promise.all([
+    loadJSON('data/projects.json'),
+    loadJSON('data/about.json'),
+    loadJSON('data/skills.json')
+  ]);
+
+  portfolioData.projects = projects?.projects || [];
+  portfolioData.about = about;
+  portfolioData.skills = skills;
+
+  renderContent();
+}
+
+function renderContent() {
+  renderSkills();
+  renderAbout();
+  renderProjects();
+
+  // Dispatch event to re-observe elements for scroll reveal
+  window.dispatchEvent(new Event('contentLoaded'));
+}
+
+function renderSkills() {
+  const container = document.querySelector('.hero-stack');
+  if (!container || !portfolioData.skills) return;
+
+  container.innerHTML = '';
+
+  portfolioData.skills.categories.forEach(category => {
+    const row = document.createElement('div');
+    row.className = 'hero-stack-row';
+
+    category.skills.forEach(skill => {
+      const tag = document.createElement('span');
+      tag.className = 'skill-tag';
+      tag.textContent = skill.name;
+      tag.style.setProperty('--tag-color', skill.color);
+      if (skill.textColor) {
+        tag.style.setProperty('--tag-text', skill.textColor);
+      }
+      row.appendChild(tag);
+    });
+
+    container.appendChild(row);
+  });
+}
+
+function renderAbout() {
+  if (!portfolioData.about) return;
+
+  // Render intro paragraphs
+  const aboutText = document.querySelector('.about-text');
+  if (aboutText) {
+    const existingParagraphs = aboutText.querySelectorAll('p');
+    portfolioData.about.intro.forEach((text, index) => {
+      if (existingParagraphs[index]) {
+        existingParagraphs[index].textContent = text;
+      }
+    });
+  }
+
+  // Render highlights
+  const highlightsContainer = document.querySelector('.about-highlights');
+  if (highlightsContainer) {
+    highlightsContainer.innerHTML = '';
+    portfolioData.about.highlights.forEach(highlight => {
+      const div = document.createElement('div');
+      div.className = 'highlight';
+      div.innerHTML = `
+        <span class="highlight-number">${highlight.number}</span>
+        <span class="highlight-label">${highlight.label}</span>
+      `;
+      highlightsContainer.appendChild(div);
+    });
+  }
+
+  // Render expertise cards
+  const detailsContainer = document.querySelector('.about-details');
+  if (detailsContainer) {
+    detailsContainer.innerHTML = '';
+    portfolioData.about.expertise.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'detail-card fade-in';
+      card.innerHTML = `
+        <h3>${item.title}</h3>
+        <p>${item.description}</p>
+      `;
+      detailsContainer.appendChild(card);
+    });
+  }
+}
+
+function renderProjects() {
+  const grid = document.querySelector('.projects-grid');
+  if (!grid || portfolioData.projects.length === 0) return;
+
+  grid.innerHTML = '';
+
+  portfolioData.projects.forEach(project => {
+    const card = document.createElement('a');
+    card.href = project.link;
+    card.className = 'project-card fade-in';
+
+    const thumbnail = project.image
+      ? `<img src="${project.image}" alt="${project.title}">`
+      : `<div class="project-thumbnail-placeholder">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+             <rect x="3" y="3" width="18" height="18" rx="2"/>
+             <circle cx="8.5" cy="8.5" r="1.5"/>
+             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+           </svg>
+         </div>`;
+
+    const tags = project.tags.map(tag => `<span>${tag}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="project-thumbnail">
+        ${thumbnail}
+      </div>
+      <div class="project-body">
+        <h3 class="project-name">${project.title}</h3>
+        <p class="project-desc">${project.description}</p>
+        <div class="project-tags">${tags}</div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
 // ========== Code Rain Canvas ==========
 (function initCodeRain() {
   const canvas = document.getElementById('hero-canvas');
@@ -125,22 +274,37 @@
 
 // ========== Scroll Reveal ==========
 (function initReveal() {
-  const targets = document.querySelectorAll(
-    '.section-title, .about-text, .about-details, .detail-card, .project-card, .contact-content, .content-section'
-  );
+  function observeElements() {
+    const targets = document.querySelectorAll(
+      '.section-title, .about-text, .about-details, .detail-card, .project-card, .contact-content, .content-section'
+    );
 
-  targets.forEach((el) => el.classList.add('fade-in'));
+    targets.forEach((el) => el.classList.add('fade-in'));
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    },
-    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-  );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
 
-  targets.forEach((el) => observer.observe(el));
+    targets.forEach((el) => observer.observe(el));
+  }
+
+  // Initial observation
+  observeElements();
+
+  // Re-observe after content is loaded
+  window.addEventListener('contentLoaded', observeElements);
 })();
+
+// ========== Initialize on DOM Ready ==========
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadAllData);
+} else {
+  loadAllData();
+}
