@@ -1,69 +1,146 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" preserveAspectRatio="xMidYMid slice">
+
+  <!-- background -->
   <rect width="100%" height="100%" fill="#0d1117"/>
 
-  <!-- code rain: falling keywords -->
-  <g font-family="'Courier New',monospace" font-size="14">
+  <!-- ═══════════ CODE RAIN (full height) ═══════════ -->
+  <g font-family="'Courier New',monospace" font-size="11">
+    <!-- layer 1 -->
+    <text x="20" y="-30" fill="#58a6ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="14s" repeatCount="indefinite" begin="0s"/>const app = express();</text>
+    <text x="250" y="-30" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-30;890" dur="18s" repeatCount="indefinite" begin="3s"/>@Injectable()</text>
+    <text x="440" y="-30" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-30;890" dur="12s" repeatCount="indefinite" begin="1s"/>return await this.repo.find();</text>
+    <text x="700" y="-30" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-30;890" dur="16s" repeatCount="indefinite" begin="5s"/>await redis.set(key, val, 'EX', 3600);</text>
+    <text x="980" y="-30" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-30;890" dur="13s" repeatCount="indefinite" begin="2s"/>SELECT * FROM orders WHERE</text>
+    <text x="130" y="-30" fill="#7ee787" opacity="0.06"><animate attributeName="y" values="-30;890" dur="19s" repeatCount="indefinite" begin="7s"/>kafka.producer.send(record);</text>
+    <text x="550" y="-30" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="11s" repeatCount="indefinite" begin="0.5s"/>@Transactional</text>
+    <text x="820" y="-30" fill="#58a6ff" opacity="0.08"><animate attributeName="y" values="-30;890" dur="15s" repeatCount="indefinite" begin="4s"/>consumer.subscribe({ topic });</text>
+    <text x="350" y="-30" fill="#ff7b72" opacity="0.11"><animate attributeName="y" values="-30;890" dur="10s" repeatCount="indefinite" begin="6s"/>app.listen(3000, () =&gt; {</text>
+    <text x="1050" y="-30" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-30;890" dur="17s" repeatCount="indefinite" begin="1.5s"/>pipe()</text>
 
-    <text x="30" y="-10" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-10;330" dur="7s" repeatCount="indefinite" begin="0s"/>const</text>
-    <text x="90" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="11s" repeatCount="indefinite" begin="2s"/>async</text>
-    <text x="160" y="-10" fill="#58a6ff" opacity="0.15"><animate attributeName="y" values="-10;330" dur="9s" repeatCount="indefinite" begin="4s"/>return</text>
-    <text x="240" y="-10" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8s" repeatCount="indefinite" begin="1s"/>=&gt;</text>
-    <text x="290" y="-10" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-10;330" dur="13s" repeatCount="indefinite" begin="5s"/>await</text>
-    <text x="370" y="-10" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-10;330" dur="10s" repeatCount="indefinite" begin="0.5s"/>import</text>
-    <text x="450" y="-10" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-10;330" dur="7.5s" repeatCount="indefinite" begin="3s"/>class</text>
-    <text x="520" y="-10" fill="#d2a8ff" opacity="0.14"><animate attributeName="y" values="-10;330" dur="12s" repeatCount="indefinite" begin="1.5s"/>{ }</text>
-    <text x="580" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="8.5s" repeatCount="indefinite" begin="6s"/>try</text>
-    <text x="630" y="-10" fill="#58a6ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="9.5s" repeatCount="indefinite" begin="2.5s"/>function</text>
-    <text x="730" y="-10" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-10;330" dur="14s" repeatCount="indefinite" begin="4.5s"/>export</text>
-    <text x="820" y="-10" fill="#d2a8ff" opacity="0.13"><animate attributeName="y" values="-10;330" dur="7.8s" repeatCount="indefinite" begin="0.8s"/>new</text>
-    <text x="880" y="-10" fill="#7ee787" opacity="0.09"><animate attributeName="y" values="-10;330" dur="11.5s" repeatCount="indefinite" begin="3.5s"/>this</text>
-    <text x="940" y="-10" fill="#58a6ff" opacity="0.15"><animate attributeName="y" values="-10;330" dur="8.2s" repeatCount="indefinite" begin="1.2s"/>let</text>
-    <text x="1000" y="-10" fill="#ff7b72" opacity="0.07"><animate attributeName="y" values="-10;330" dur="10.5s" repeatCount="indefinite" begin="5.5s"/>catch</text>
-    <text x="1070" y="-10" fill="#d2a8ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="9.2s" repeatCount="indefinite" begin="2.2s"/>for</text>
-    <text x="1130" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="12.5s" repeatCount="indefinite" begin="4.2s"/>[ ]</text>
+    <!-- layer 2 -->
+    <text x="60" y="-30" fill="#d2a8ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="20s" repeatCount="indefinite" begin="8s"/>@GetMapping("/api/v1/users")</text>
+    <text x="380" y="-30" fill="#58a6ff" opacity="0.09"><animate attributeName="y" values="-30;890" dur="14s" repeatCount="indefinite" begin="10s"/>return ResponseEntity.ok(body);</text>
+    <text x="670" y="-30" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-30;890" dur="21s" repeatCount="indefinite" begin="9s"/>CREATE INDEX idx_user ON users;</text>
+    <text x="920" y="-30" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-30;890" dur="16s" repeatCount="indefinite" begin="11s"/>this.cacheManager.get(key);</text>
+    <text x="160" y="-30" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-30;890" dur="18s" repeatCount="indefinite" begin="12s"/>await queryRunner.connect();</text>
+    <text x="500" y="-30" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-30;890" dur="13s" repeatCount="indefinite" begin="3.5s"/>torch.nn.Linear(512, 256)</text>
+    <text x="780" y="-30" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-30;890" dur="19s" repeatCount="indefinite" begin="13s"/>INSERT INTO events VALUES (?)</text>
 
-    <!-- second layer: offset positions -->
-    <text x="60" y="-10" fill="#d2a8ff" opacity="0.06"><animate attributeName="y" values="-10;330" dur="13.5s" repeatCount="indefinite" begin="7s"/>SELECT</text>
-    <text x="140" y="-10" fill="#ff7b72" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.8s" repeatCount="indefinite" begin="6.5s"/>void</text>
-    <text x="210" y="-10" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="11.2s" repeatCount="indefinite" begin="8s"/>null</text>
-    <text x="310" y="-10" fill="#7ee787" opacity="0.12"><animate attributeName="y" values="-10;330" dur="7.2s" repeatCount="indefinite" begin="3.8s"/>pipe</text>
-    <text x="400" y="-10" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-10;330" dur="10.8s" repeatCount="indefinite" begin="9s"/>@Get</text>
-    <text x="480" y="-10" fill="#58a6ff" opacity="0.13"><animate attributeName="y" values="-10;330" dur="9.8s" repeatCount="indefinite" begin="1.8s"/>yield</text>
-    <text x="560" y="-10" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-10;330" dur="14.5s" repeatCount="indefinite" begin="7.5s"/>FROM</text>
-    <text x="660" y="-10" fill="#7ee787" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.5s" repeatCount="indefinite" begin="5.2s"/>deploy</text>
-    <text x="760" y="-10" fill="#d2a8ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="12.2s" repeatCount="indefinite" begin="8.5s"/>WHERE</text>
-    <text x="850" y="-10" fill="#58a6ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="7.6s" repeatCount="indefinite" begin="4.8s"/>kafka</text>
-    <text x="920" y="-10" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-10;330" dur="10.2s" repeatCount="indefinite" begin="6.2s"/>docker</text>
-    <text x="1010" y="-10" fill="#7ee787" opacity="0.13"><animate attributeName="y" values="-10;330" dur="8.9s" repeatCount="indefinite" begin="2.8s"/>push</text>
-    <text x="1100" y="-10" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-10;330" dur="11.8s" repeatCount="indefinite" begin="9.5s"/>enum</text>
-
-    <!-- third layer: more variety -->
-    <text x="45" y="-10" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-10;330" dur="15s" repeatCount="indefinite" begin="10s"/>0x1F</text>
-    <text x="195" y="-10" fill="#58a6ff" opacity="0.09"><animate attributeName="y" values="-10;330" dur="9.5s" repeatCount="indefinite" begin="11s"/>JOIN</text>
-    <text x="345" y="-10" fill="#7ee787" opacity="0.06"><animate attributeName="y" values="-10;330" dur="13s" repeatCount="indefinite" begin="10.5s"/>redis</text>
-    <text x="495" y="-10" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.3s" repeatCount="indefinite" begin="12s"/>SQS</text>
-    <text x="695" y="-10" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="12.8s" repeatCount="indefinite" begin="11.5s"/>stream</text>
-    <text x="795" y="-10" fill="#ff7b72" opacity="0.11"><animate attributeName="y" values="-10;330" dur="7.4s" repeatCount="indefinite" begin="13s"/>ECS</text>
-    <text x="1055" y="-10" fill="#7ee787" opacity="0.09"><animate attributeName="y" values="-10;330" dur="10.6s" repeatCount="indefinite" begin="12.5s"/>λ</text>
+    <!-- layer 3 -->
+    <text x="40" y="-30" fill="#7ee787" opacity="0.05"><animate attributeName="y" values="-30;890" dur="22s" repeatCount="indefinite" begin="14s"/>@KafkaListener(topics = "order.created")</text>
+    <text x="420" y="-30" fill="#d2a8ff" opacity="0.04"><animate attributeName="y" values="-30;890" dur="24s" repeatCount="indefinite" begin="15s"/>CompletableFuture.supplyAsync(() -&gt;</text>
+    <text x="750" y="-30" fill="#58a6ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="20s" repeatCount="indefinite" begin="16s"/>upstream backend { server 127.0.0.1; }</text>
+    <text x="1020" y="-30" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-30;890" dur="23s" repeatCount="indefinite" begin="17s"/>docker build -t api .</text>
+    <text x="200" y="-30" fill="#7ee787" opacity="0.04"><animate attributeName="y" values="-30;890" dur="25s" repeatCount="indefinite" begin="18s"/>stage('Deploy') { sh 'helm upgrade' }</text>
+    <text x="600" y="-30" fill="#58a6ff" opacity="0.06"><animate attributeName="y" values="-30;890" dur="21s" repeatCount="indefinite" begin="19s"/>SELECT COUNT(*) FROM events</text>
+    <text x="880" y="-30" fill="#d2a8ff" opacity="0.05"><animate attributeName="y" values="-30;890" dur="22s" repeatCount="indefinite" begin="20s"/>await this.em.flush();</text>
   </g>
 
-  <!-- center text -->
-  <text x="600" y="130" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="52" fill="#ffffff" opacity="0.95">Geunho Bang</text>
-  <text x="600" y="170" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="18" fill="#8b949e">Backend Engineer  ·  Commerce Platform  ·  3M+ Users</text>
+  <!-- ═══════════ HEADER ═══════════ -->
+  <text x="600" y="108" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="52" fill="#ffffff" opacity="0.95">Geunho Bang</text>
+  <text x="600" y="148" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="18" fill="#8b949e">Backend Engineer &#xB7; Commerce Platform &#xB7; 3M+ Users</text>
 
-  <!-- bottom wave -->
-  <path fill="#0d1117" opacity="0.6">
+  <!-- divider -->
+  <line x1="440" y1="195" x2="760" y2="195" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+
+  <!-- ═══════════ TECH STACK ═══════════ -->
+
+  <!-- LANGUAGES -->
+  <text x="600" y="240" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">LANGUAGES</text>
+  <g transform="translate(419, 255)">
+    <g><rect width="56" height="28" rx="6" fill="#ED8B00"/><text x="28" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Java</text></g>
+    <g transform="translate(66,0)"><rect width="102" height="28" rx="6" fill="#F7DF1E"/><text x="51" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">JavaScript</text></g>
+    <g transform="translate(178,0)"><rect width="102" height="28" rx="6" fill="#3178C6"/><text x="51" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">TypeScript</text></g>
+    <g transform="translate(290,0)"><rect width="72" height="28" rx="6" fill="#3776AB"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Python</text></g>
+  </g>
+
+  <!-- BACKEND -->
+  <text x="600" y="325" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">BACKEND</text>
+  <g transform="translate(478, 340)">
+    <g><rect width="72" height="28" rx="6" fill="#6DB33F"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Spring</text></g>
+    <g transform="translate(82,0)"><rect width="72" height="28" rx="6" fill="#E0234E"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">NestJS</text></g>
+    <g transform="translate(164,0)"><rect width="80" height="28" rx="6" fill="#353535"/><text x="40" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Express</text></g>
+  </g>
+
+  <!-- INFRASTRUCTURE -->
+  <text x="600" y="410" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">INFRASTRUCTURE</text>
+  <!-- row 1 -->
+  <g transform="translate(453, 425)">
+    <g><rect width="52" height="28" rx="6" fill="#FF9900"/><text x="26" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">AWS</text></g>
+    <g transform="translate(62,0)"><rect width="72" height="28" rx="6" fill="#2496ED"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Docker</text></g>
+    <g transform="translate(144,0)"><rect width="140" height="28" rx="6" fill="#2088FF"/><text x="70" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">GitHub Actions</text></g>
+  </g>
+  <!-- row 2 -->
+  <g transform="translate(490, 463)">
+    <g><rect width="72" height="28" rx="6" fill="#FC6D26"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">GitLab</text></g>
+    <g transform="translate(82,0)"><rect width="64" height="28" rx="6" fill="#FCC624"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">Linux</text></g>
+    <g transform="translate(156,0)"><rect width="64" height="28" rx="6" fill="#009639"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">nginx</text></g>
+  </g>
+
+  <!-- DATA -->
+  <text x="600" y="535" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">DATA</text>
+  <g transform="translate(437, 550)">
+    <g><rect width="68" height="28" rx="6" fill="#4479A1"/><text x="34" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">MySQL</text></g>
+    <g transform="translate(78,0)"><rect width="64" height="28" rx="6" fill="#DC382D"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Redis</text></g>
+    <g transform="translate(152,0)"><rect width="64" height="28" rx="6" fill="#231F20"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">Kafka</text></g>
+    <g transform="translate(226,0)"><rect width="80" height="28" rx="6" fill="#EE4C2C"/><text x="40" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">PyTorch</text></g>
+  </g>
+
+  <!-- FRONTEND -->
+  <text x="600" y="620" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">FRONTEND</text>
+  <g transform="translate(498, 635)">
+    <g><rect width="64" height="28" rx="6" fill="#61DAFB"/><text x="32" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#000">React</text></g>
+    <g transform="translate(74,0)"><rect width="72" height="28" rx="6" fill="#0769AD"/><text x="36" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">jQuery</text></g>
+    <g transform="translate(156,0)"><rect width="48" height="28" rx="6" fill="#1572B6"/><text x="24" y="18" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="500" fill="#fff">CSS</text></g>
+  </g>
+
+  <!-- ═══════════ FEATURED PROJECTS ═══════════ -->
+  <line x1="440" y1="695" x2="760" y2="695" stroke="#30363d" stroke-width="1" opacity="0.5"/>
+  <text x="600" y="725" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#8b949e" letter-spacing="3" font-weight="600">FEATURED PROJECTS</text>
+
+  <!-- row 1 -->
+  <g transform="translate(330, 742)">
+    <!-- card 1 -->
+    <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+    <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">CDC-Kafka-Debezium</text>
+    <text x="246" y="17" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="11" fill="#7ee787">&#9733; 6</text>
+    <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">CDC pipeline with Kafka &amp; Debezium</text>
+    <!-- card 2 -->
+    <g transform="translate(280,0)">
+      <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">concurrent-handler-lock</text>
+      <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">Concurrency handling with Redis/DB Lock</text>
+    </g>
+  </g>
+
+  <!-- row 2 -->
+  <g transform="translate(330, 790)">
+    <!-- card 3 -->
+    <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+    <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">terraform-ecs-example</text>
+    <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">Infrastructure as Code with Terraform</text>
+    <!-- card 4 -->
+    <g transform="translate(280,0)">
+      <rect width="260" height="38" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="14" y="17" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="#58a6ff">Spring-Boot-MSA</text>
+      <text x="246" y="17" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="11" fill="#7ee787">&#9733; 1</text>
+      <text x="14" y="31" font-family="'Segoe UI',sans-serif" font-size="10" fill="#8b949e">MSA with Grafana, Zipkin, Prometheus</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ BOTTOM WAVE ═══════════ -->
+  <path fill="#161b22" opacity="0.4">
     <animate attributeName="d" dur="12s" repeatCount="indefinite" values="
-      M0,280 C200,260 400,300 600,280 C800,260 1000,300 1200,280 L1200,320 L0,320 Z;
-      M0,280 C200,300 400,260 600,280 C800,300 1000,260 1200,280 L1200,320 L0,320 Z;
-      M0,280 C200,260 400,300 600,280 C800,260 1000,300 1200,280 L1200,320 L0,320 Z
+      M0,835 C200,820 400,850 600,835 C800,820 1000,850 1200,835 L1200,860 L0,860 Z;
+      M0,835 C200,850 400,820 600,835 C800,850 1000,820 1200,835 L1200,860 L0,860 Z;
+      M0,835 C200,820 400,850 600,835 C800,820 1000,850 1200,835 L1200,860 L0,860 Z
     "/>
   </path>
-  <path fill="#161b22" opacity="0.5">
+  <path fill="#0d1117" opacity="0.3">
     <animate attributeName="d" dur="8s" repeatCount="indefinite" values="
-      M0,290 C200,310 400,270 600,290 C800,310 1000,270 1200,290 L1200,320 L0,320 Z;
-      M0,290 C200,270 400,310 600,290 C800,270 1000,310 1200,290 L1200,320 L0,320 Z;
-      M0,290 C200,310 400,270 600,290 C800,310 1000,270 1200,290 L1200,320 L0,320 Z
+      M0,845 C200,855 400,835 600,845 C800,855 1000,835 1200,845 L1200,860 L0,860 Z;
+      M0,845 C200,835 400,855 600,845 C800,835 1000,855 1200,845 L1200,860 L0,860 Z;
+      M0,845 C200,855 400,835 600,845 C800,855 1000,835 1200,845 L1200,860 L0,860 Z
     "/>
   </path>
 
