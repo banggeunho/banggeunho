@@ -98,17 +98,17 @@
 </section>
 <section class="content-section">
 <h2>아키텍처</h2>
-<pre><code class="language-mermaid">graph TB
-    A[템플릿 메소드] --&gt; B[공통 로직]
-    B --&gt; C[인증]
-    B --&gt; D[API 호출]
-    B --&gt; E[데이터 변환]
-    B --&gt; F[저장]
+<pre class="mermaid">graph TB
+    A[템플릿 메소드] --> B[공통 로직]
+    B --> C[인증]
+    B --> D[API 호출]
+    B --> E[데이터 변환]
+    B --> F[저장]
 
-    G[위메프] -.구현.-&gt; C
-    H[롯데ON] -.구현.-&gt; C
-    I[TMON] -.구현.-&gt; C
-</code></pre>
+    G[위메프] -.구현.-> C
+    H[롯데ON] -.구현.-> C
+    I[TMON] -.구현.-> C
+</pre>
 </section>
 <section class="content-section">
 <h2>주요 기능</h2>
@@ -138,6 +138,106 @@
 </ul>
 </section>
 <section class="content-section">
+<h2>기술적 도전과 해결</h2>
+<p><strong>도전 1: CompletableFuture 병렬 처리 구현</strong></p>
+<ul>
+<li><strong>문제:</strong> 5개 커머스를 순차 처리하면 30분 소요, 실시간 주문 반영 불가</li>
+<li><strong>해결:</strong><ul>
+<li><strong>병렬 처리 구조:</strong><ul>
+<li><code>CompletableFuture.allOf()</code>로 5개 커머스 동시 수집</li>
+<li>ThreadPoolExecutor 10 스레드 설정 (커머스당 2개 스레드)</li>
+<li>각 커머스는 독립적으로 인증 → 조회 → 파싱 → 저장</li>
+</ul>
+</li>
+<li><strong>구체적 코드 구조:</strong><pre><code class="language-java">List&lt;CompletableFuture&lt;Void&gt;&gt; futures = commerceList.stream()
+    .map(commerce -&gt; CompletableFuture.runAsync(
+        () -&gt; commerce.collectOrders(startDate, endDate),
+        executorService
+    ))
+    .collect(Collectors.toList());
+
+CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+    .get(30, TimeUnit.MINUTES);
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 처리 시간 30분 → 3분 (10배 향상)</li>
+</ul>
+<p><strong>도전 2: 템플릿 메소드 패턴의 구체적 구조</strong></p>
+<ul>
+<li><strong>문제:</strong> 커머스별로 중복된 코드가 70% 수준, 유지보수 어려움</li>
+<li><strong>해결:</strong><ul>
+<li><strong>추상 클래스 (CommerceCollector):</strong><ul>
+<li>공통 플로우: <code>collect() { authenticate() → fetchOrders() → parseResponse() → saveOrders() }</code></li>
+</ul>
+</li>
+<li><strong>3개 추상 메서드 (커머스별 구현 필수):</strong><ul>
+<li><code>authenticate()</code>: 인증 방식 (API Key, OAuth, Basic Auth)</li>
+<li><code>parseResponse()</code>: 응답 포맷 파싱 (JSON, XML, CSV)</li>
+<li><code>transformToEntity()</code>: 데이터 구조 변환 (필드명 매핑)</li>
+</ul>
+</li>
+<li><strong>구체적 구현 예시:</strong><ul>
+<li>위메프: JSON 응답, OAuth 인증</li>
+<li>롯데ON: XML 응답, API Key 인증</li>
+<li>TMON: CSV 응답, Basic Auth 인증</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 신규 커머스 추가 시 3개 메서드만 구현하면 완료 (2주 → 2일)</li>
+</ul>
+<p><strong>도전 3: 재수집 중복 방지 로직</strong></p>
+<ul>
+<li><strong>문제:</strong> Jenkins에서 특정 기간 재수집 시 중복 데이터 저장 우려</li>
+<li><strong>해결:</strong><ul>
+<li><strong>UPSERT 쿼리:</strong><ul>
+<li>주문 ID (<code>order_id</code>)를 기준으로 UNIQUE 제약조건</li>
+<li>중복 시 최신 데이터로 업데이트 (<code>ON DUPLICATE KEY UPDATE</code>)</li>
+<li>주문 상태, 결제 정보 등 변경 가능한 필드만 업데이트</li>
+</ul>
+</li>
+<li><strong>Jenkins 파라미터:</strong><ul>
+<li><code>startDate</code>, <code>endDate</code>로 재수집 기간 지정</li>
+<li>실패한 커머스만 선택적으로 재실행 가능</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 재수집 시에도 데이터 정합성 100% 유지</li>
+</ul>
+<p><strong>도전 4: 에러 격리 및 핸들링 구체화</strong></p>
+<ul>
+<li><strong>문제:</strong> 한 커머스 실패 시 전체 배치 중단, 다른 커머스 수집 불가</li>
+<li><strong>해결:</strong><ul>
+<li><strong>try-catch로 커머스별 예외 격리:</strong><pre><code class="language-java">commerceList.forEach(commerce -&gt; {
+    try {
+        commerce.collectOrders(startDate, endDate);
+    } catch (Exception e) {
+        log.error(&quot;Failed: {}&quot;, commerce.getName(), e);
+        sendSlackAlert(commerce.getName(), e.getMessage());
+        saveFailureLog(commerce.getName(), e);
+    }
+});
+</code></pre>
+</li>
+<li><strong>실패 로그 DB 저장:</strong><ul>
+<li><code>batch_failure_log</code> 테이블에 커머스명, 에러 메시지, 스택 트레이스 저장</li>
+<li>실패 로그 조회로 재실행 대상 식별</li>
+</ul>
+</li>
+<li><strong>Slack 알림:</strong><ul>
+<li>실패 시 즉시 Slack 채널에 알림</li>
+<li>에러 메시지와 Jenkins 재실행 링크 포함</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 한 커머스 실패해도 다른 커머스는 정상 수집, 가용성 99.5% 달성</li>
+</ul>
+</section>
+<section class="content-section">
 <h2>배운 점</h2>
 <ul>
 <li>디자인 패턴(템플릿 메소드)을 실전에 효과적으로 적용하는 경험</li>
@@ -160,7 +260,42 @@
 
 
   <script src="../../script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#0366d6',
+        primaryTextColor: '#24292e',
+        primaryBorderColor: '#e1e4e8',
+        lineColor: '#586069',
+        secondaryColor: '#f6f8fa',
+        tertiaryColor: '#fafbfc',
+        background: '#ffffff',
+        mainBkg: '#ffffff',
+        secondBkg: '#f6f8fa',
+        border1: '#e1e4e8',
+        border2: '#e1e4e8',
+        note: '#fff5b1',
+        noteBkg: '#fff5b1',
+        noteBorder: '#e1e4e8',
+        noteText: '#24292e',
+        fontSize: '14px',
+        fontFamily: 'Inter, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 </body>
 </html>

@@ -69,6 +69,83 @@ graph TB
 
 - Java 11, Spring Boot 2, Jenkins, Slack API
 
+## 기술적 도전과 해결
+
+**도전 1: CompletableFuture 병렬 처리 구현**
+
+- **문제:** 5개 커머스를 순차 처리하면 30분 소요, 실시간 주문 반영 불가
+- **해결:**
+  - **병렬 처리 구조:**
+    - `CompletableFuture.allOf()`로 5개 커머스 동시 수집
+    - ThreadPoolExecutor 10 스레드 설정 (커머스당 2개 스레드)
+    - 각 커머스는 독립적으로 인증 → 조회 → 파싱 → 저장
+  - **구체적 코드 구조:**
+    ```java
+    List<CompletableFuture<Void>> futures = commerceList.stream()
+        .map(commerce -> CompletableFuture.runAsync(
+            () -> commerce.collectOrders(startDate, endDate),
+            executorService
+        ))
+        .collect(Collectors.toList());
+
+    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+        .get(30, TimeUnit.MINUTES);
+    ```
+- **효과:** 처리 시간 30분 → 3분 (10배 향상)
+
+**도전 2: 템플릿 메소드 패턴의 구체적 구조**
+
+- **문제:** 커머스별로 중복된 코드가 70% 수준, 유지보수 어려움
+- **해결:**
+  - **추상 클래스 (CommerceCollector):**
+    - 공통 플로우: `collect() { authenticate() → fetchOrders() → parseResponse() → saveOrders() }`
+  - **3개 추상 메서드 (커머스별 구현 필수):**
+    - `authenticate()`: 인증 방식 (API Key, OAuth, Basic Auth)
+    - `parseResponse()`: 응답 포맷 파싱 (JSON, XML, CSV)
+    - `transformToEntity()`: 데이터 구조 변환 (필드명 매핑)
+  - **구체적 구현 예시:**
+    - 위메프: JSON 응답, OAuth 인증
+    - 롯데ON: XML 응답, API Key 인증
+    - TMON: CSV 응답, Basic Auth 인증
+- **효과:** 신규 커머스 추가 시 3개 메서드만 구현하면 완료 (2주 → 2일)
+
+**도전 3: 재수집 중복 방지 로직**
+
+- **문제:** Jenkins에서 특정 기간 재수집 시 중복 데이터 저장 우려
+- **해결:**
+  - **UPSERT 쿼리:**
+    - 주문 ID (`order_id`)를 기준으로 UNIQUE 제약조건
+    - 중복 시 최신 데이터로 업데이트 (`ON DUPLICATE KEY UPDATE`)
+    - 주문 상태, 결제 정보 등 변경 가능한 필드만 업데이트
+  - **Jenkins 파라미터:**
+    - `startDate`, `endDate`로 재수집 기간 지정
+    - 실패한 커머스만 선택적으로 재실행 가능
+- **효과:** 재수집 시에도 데이터 정합성 100% 유지
+
+**도전 4: 에러 격리 및 핸들링 구체화**
+
+- **문제:** 한 커머스 실패 시 전체 배치 중단, 다른 커머스 수집 불가
+- **해결:**
+  - **try-catch로 커머스별 예외 격리:**
+    ```java
+    commerceList.forEach(commerce -> {
+        try {
+            commerce.collectOrders(startDate, endDate);
+        } catch (Exception e) {
+            log.error("Failed: {}", commerce.getName(), e);
+            sendSlackAlert(commerce.getName(), e.getMessage());
+            saveFailureLog(commerce.getName(), e);
+        }
+    });
+    ```
+  - **실패 로그 DB 저장:**
+    - `batch_failure_log` 테이블에 커머스명, 에러 메시지, 스택 트레이스 저장
+    - 실패 로그 조회로 재실행 대상 식별
+  - **Slack 알림:**
+    - 실패 시 즉시 Slack 채널에 알림
+    - 에러 메시지와 Jenkins 재실행 링크 포함
+- **효과:** 한 커머스 실패해도 다른 커머스는 정상 수집, 가용성 99.5% 달성
+
 ## 배운 점
 
 - 디자인 패턴(템플릿 메소드)을 실전에 효과적으로 적용하는 경험

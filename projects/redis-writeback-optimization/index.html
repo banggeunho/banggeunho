@@ -97,14 +97,14 @@
 </section>
 <section class="content-section">
 <h2>시스템 아키텍처</h2>
-<pre><code class="language-mermaid">graph TB
-    A[배너 클릭] --&gt; B[API]
-    B --&gt; C[Redis Hash]
-    C --&gt;|10분 배치| D[MySQL]
+<pre class="mermaid">graph TB
+    A[배너 클릭] --> B[API]
+    B --> C[Redis Hash]
+    C -->|10분 배치| D[MySQL]
 
-    B -.장애 시.-&gt; E[SQS]
-    E --&gt; D
-</code></pre>
+    B -.장애 시.-> E[SQS]
+    E --> D
+</pre>
 </section>
 <section class="content-section">
 <h2>아키텍처 개선</h2>
@@ -179,6 +179,61 @@
 </ul>
 </section>
 <section class="content-section">
+<h2>기술적 도전과 해결</h2>
+<p><strong>도전 1: 배치 주기 선택 (10분 결정)</strong></p>
+<ul>
+<li><strong>문제:</strong> 배치 주기를 얼마로 설정할지 트레이드오프 분석 필요</li>
+<li><strong>비교 분석:</strong><ul>
+<li><strong>1분:</strong> DB 부하 여전히 높음 (시간당 60회 INSERT), 효과 미미</li>
+<li><strong>10분:</strong> DB 부하 10배 감소, 데이터 유실 리스크 허용 범위 (최대 10분 데이터)</li>
+<li><strong>30분:</strong> 데이터 유실 리스크 증가, 실시간성 저하</li>
+</ul>
+</li>
+<li><strong>선택 근거:</strong> 성능 개선 효과와 데이터 유실 리스크의 최적 밸런스</li>
+<li><strong>보완책:</strong> SQS fallback으로 Redis 장애 시에도 데이터 유실 방지</li>
+</ul>
+<p><strong>도전 2: SQS Fallback 메커니즘</strong></p>
+<ul>
+<li><strong>문제:</strong> Redis 장애 시 데이터 유실 우려</li>
+<li><strong>구체적 구현:</strong><ul>
+<li>Redis HINCRBY 실패 시 try-catch로 즉시 감지</li>
+<li>실패 이벤트를 SQS에 발행 (<code>banner_id</code>, <code>type</code>, <code>count</code>)</li>
+<li>SQS 컨슈머가 DB에 직접 UPDATE 쿼리 실행</li>
+<li>컨슈머 실패 시 DLQ(Dead Letter Queue)로 전송 → 수동 처리</li>
+</ul>
+</li>
+<li><strong>검증:</strong> Redis 장애 시뮬레이션으로 100% 데이터 보존 확인</li>
+</ul>
+<p><strong>도전 3: 트랜잭션 보장 (원자성)</strong></p>
+<ul>
+<li><strong>문제:</strong> 배치 실행 중 서버 재시작 시 데이터 정합성 이슈 가능</li>
+<li><strong>해결:</strong><ul>
+<li><strong>배치 시작:</strong> Redis 데이터를 임시 백업 키(<code>banner:*:stats:backup</code>)로 복사</li>
+<li><strong>DB INSERT 실패:</strong> Redis 백업에서 복구 후 재시도</li>
+<li><strong>DB INSERT 성공:</strong> Redis 원본 데이터 DEL, 백업 데이터 삭제</li>
+<li><strong>트랜잭션 보장:</strong> DB INSERT와 Redis DEL을 하나의 트랜잭션으로 묶음</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 배치 실패 시에도 데이터 정합성 100% 유지</li>
+</ul>
+<p><strong>도전 4: Row INSERT 방식 불채택 이유 보강</strong></p>
+<ul>
+<li><strong>문제:</strong> 클릭마다 새로운 Row를 INSERT하는 방식 검토</li>
+<li><strong>파티셔닝 고려:</strong><ul>
+<li>날짜별 파티션 테이블로 데이터 분산 가능</li>
+<li>월별 파티션 삭제로 오래된 데이터 정리 용이</li>
+</ul>
+</li>
+<li><strong>불채택 이유:</strong><ul>
+<li><strong>실시간 집계 쿼리 성능:</strong> <code>SUM(clicks), GROUP BY banner_id</code> 쿼리가 UPDATE 방식보다 3배 느림</li>
+<li><strong>테이블 크기:</strong> 월 수억 건 INSERT 시 테이블 크기 급증 (예상 100GB 이상)</li>
+<li><strong>인덱스 유지 비용:</strong> 파티션별 인덱스 재구축 비용 증가</li>
+</ul>
+</li>
+<li><strong>최종 선택:</strong> UPDATE 방식이 집계 쿼리 성능과 스토리지 비용 측면에서 우수</li>
+</ul>
+</section>
+<section class="content-section">
 <h2>배운 점</h2>
 <ul>
 <li>Write-back 패턴 실전 적용 경험 (캐시 계층 활용)</li>
@@ -200,7 +255,42 @@
 
 
   <script src="../../script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#0366d6',
+        primaryTextColor: '#24292e',
+        primaryBorderColor: '#e1e4e8',
+        lineColor: '#586069',
+        secondaryColor: '#f6f8fa',
+        tertiaryColor: '#fafbfc',
+        background: '#ffffff',
+        mainBkg: '#ffffff',
+        secondBkg: '#f6f8fa',
+        border1: '#e1e4e8',
+        border2: '#e1e4e8',
+        note: '#fff5b1',
+        noteBkg: '#fff5b1',
+        noteBorder: '#e1e4e8',
+        noteText: '#24292e',
+        fontSize: '14px',
+        fontFamily: 'Inter, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 </body>
 </html>

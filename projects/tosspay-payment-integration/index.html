@@ -101,20 +101,20 @@
 </section>
 <section class="content-section">
 <h2>시스템 아키텍처</h2>
-<pre><code class="language-mermaid">graph LR
-    A[결제 요청] --&gt; B{PG 라우팅}
-    B --&gt;|기존| C[이니시스]
-    B --&gt;|기존| D[카카오페이]
-    B --&gt;|신규| E[토스페이]
+<pre class="mermaid">graph LR
+    A[결제 요청] --> B{PG 라우팅}
+    B -->|기존| C[이니시스]
+    B -->|기존| D[카카오페이]
+    B -->|신규| E[토스페이]
 
-    E --&gt; F[결제 승인]
-    F --&gt; G[주문 생성]
-    G --&gt; H[정산 데이터]
+    E --> F[결제 승인]
+    F --> G[주문 생성]
+    G --> H[정산 데이터]
 
-    I[어드민] --&gt; J[결제 내역]
-    I --&gt; K[정산 관리]
-    I --&gt; L[통계 대시보드]
-</code></pre>
+    I[어드민] --> J[결제 내역]
+    I --> K[정산 관리]
+    I --> L[통계 대시보드]
+</pre>
 </section>
 <section class="content-section">
 <h2>주요 기능</h2>
@@ -161,25 +161,60 @@
 <h2>기술적 도전과 해결</h2>
 <p><strong>도전 1: 짧은 일정 (3개월 → 6주)</strong></p>
 <ul>
-<li><strong>문제:</strong> 결제/주문/정산/어드민 4개 영역을 모두 수정해야 하는 대규모 작업</li>
+<li><strong>문제:</strong> 결제/주문/정산/어드민 4개 영역을 모두 수정해야 하는 대규모 작업을 6주 내 완료</li>
 <li><strong>해결:</strong><ul>
-<li>전체 태스크를 세부 단위로 분해하고 우선순위 매트릭스 작성</li>
-<li>핵심 결제 플로우(승인/취소/환불)를 최우선으로 개발</li>
-<li>부가 기능(통계, 대시보드)은 2차 배포로 분리</li>
-<li>병렬 개발 가능한 영역 식별 및 팀원 간 작업 분담</li>
+<li><strong>태스크 분해 및 우선순위:</strong><ul>
+<li>전체 작업을 60개 세부 태스크로 분해</li>
+<li>영향도-긴급도 매트릭스로 우선순위 결정</li>
+<li>P0(핵심): 결제 승인/취소/환불 API (2주)</li>
+<li>P1(중요): 주문·정산 로직 확장 (2주)</li>
+<li>P2(부가): 통계·대시보드 (2차 배포로 분리)</li>
+</ul>
+</li>
+<li><strong>병렬 개발 전략:</strong><ul>
+<li>결제 API 연동: 본인 담당 (2주)</li>
+<li>주문·정산 로직: 동료 백엔드 개발자 담당 (2주)</li>
+<li>어드민 UI: 프론트엔드 개발자 담당 (2주)</li>
+<li>주 2회 동기화 회의로 인터페이스 정합성 유지</li>
+</ul>
+</li>
+<li><strong>핵심 플로우 우선:</strong><ul>
+<li>1단계: 결제 승인/취소/환불만 구현 후 QA</li>
+<li>2단계: 주문·정산 연동</li>
+<li>3단계: 어드민 기능 추가</li>
+<li>각 단계마다 프로덕션 배포하여 리스크 분산</li>
 </ul>
 </li>
 </ul>
-<p><strong>도전 2: 데이터 정합성 보장</strong></p>
+</li>
+<li><strong>효과:</strong> 3개월 예상 작업을 6주 만에 완료, ISMS-P 인증 동시 통과</li>
+</ul>
+<p><strong>도전 2: 데이터 정합성 보장 (Saga 패턴)</strong></p>
 <ul>
 <li><strong>문제:</strong> 결제 승인 후 주문 생성 실패 시 고객 과금 문제 발생 가능</li>
 <li><strong>해결:</strong><ul>
-<li>분산 트랜잭션 패턴 적용 (Saga 패턴으로 보상 트랜잭션 설계)</li>
-<li>TossPay Webhook을 통한 결제 상태 실시간 동기화</li>
-<li>실패 케이스별 보상 트랜잭션 설계 (자동 환불, 재시도 로직)</li>
-<li>결제-주문 매핑 테이블로 중복 결제 방지</li>
+<li><strong>Saga 패턴 구현:</strong> 결제 승인 실패 → 자동 환불 이벤트 발행 → 주문 상태 롤백 → SQS 재시도</li>
+<li><strong>구체적 플로우:</strong><ol>
+<li>결제 승인 성공 → <code>payment_order_mapping</code> 테이블에 매핑 기록</li>
+<li>주문 생성 실패 시 → 이벤트 발행 (<code>OrderFailedEvent</code>)</li>
+<li>이벤트 컨슈머가 TossPay 환불 API 호출</li>
+<li>환불 실패 시 SQS DLQ(Dead Letter Queue)로 전송 → 수동 처리</li>
+</ol>
+</li>
+<li><strong>멱등성 보장:</strong><ul>
+<li>TossPay Webhook 수신 시 <code>payment_key</code>로 중복 검증</li>
+<li>동일 <code>payment_key</code> 재수신 시 DB 업데이트 스킵</li>
+<li>실패 시 SQS로 이벤트 재발행하여 재시도</li>
 </ul>
 </li>
+<li><strong>트랜잭션 매핑 테이블:</strong><ul>
+<li><code>payment_order_mapping</code> 테이블로 결제-주문 1:1 매핑</li>
+<li>UNIQUE 제약조건으로 중복 결제 원천 차단</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>검증:</strong> 결제 성공률 2.5% 향상, 결제-주문 불일치 케이스 0건 달성</li>
 </ul>
 <p><strong>도전 3: ISMS-P 인증과 병행 개발</strong></p>
 <ul>
@@ -223,7 +258,42 @@
 
 
   <script src="../../script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#0366d6',
+        primaryTextColor: '#24292e',
+        primaryBorderColor: '#e1e4e8',
+        lineColor: '#586069',
+        secondaryColor: '#f6f8fa',
+        tertiaryColor: '#fafbfc',
+        background: '#ffffff',
+        mainBkg: '#ffffff',
+        secondBkg: '#f6f8fa',
+        border1: '#e1e4e8',
+        border2: '#e1e4e8',
+        note: '#fff5b1',
+        noteBkg: '#fff5b1',
+        noteBorder: '#e1e4e8',
+        noteText: '#24292e',
+        fontSize: '14px',
+        fontFamily: 'Inter, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 </body>
 </html>

@@ -103,14 +103,14 @@
 </section>
 <section class="content-section">
 <h2>시스템 아키텍처</h2>
-<pre><code class="language-mermaid">graph LR
-    A[사용자 행동] --&gt; B[Firehose]
-    B --&gt; C[Lambda&lt;br/&gt;Parquet 변환]
-    C --&gt; D[S3]
-    D --&gt; E[Athena]
-    E --&gt; F[Redshift]
-    F --&gt; G[Tableau]
-</code></pre>
+<pre class="mermaid">graph LR
+    A[사용자 행동] --> B[Firehose]
+    B --> C[Lambda<br/>Parquet 변환]
+    C --> D[S3]
+    D --> E[Athena]
+    E --> F[Redshift]
+    F --> G[Tableau]
+</pre>
 </section>
 <section class="content-section">
 <h2>수집 이벤트</h2>
@@ -144,6 +144,80 @@
 </ul>
 </section>
 <section class="content-section">
+<h2>기술적 도전과 해결</h2>
+<p><strong>도전 1: Parquet 변환 및 저장 공간 최적화</strong></p>
+<ul>
+<li><strong>문제:</strong> JSON 포맷으로 저장 시 스토리지 비용 증가 및 Athena 쿼리 성능 저하</li>
+<li><strong>해결:</strong><ul>
+<li><strong>Parquet 변환 로직:</strong><ul>
+<li>Lambda에서 PyArrow 라이브러리 사용</li>
+<li>JSON(1GB) → Parquet(300MB) 70% 절감</li>
+<li>컬럼 기반 압축으로 Athena 쿼리 속도 5배 향상</li>
+</ul>
+</li>
+<li><strong>변환 프로세스:</strong><ul>
+<li>Firehose → Lambda 트리거 → PyArrow로 변환 → S3 저장</li>
+<li>배치 크기: 1000건 또는 1MB 단위로 변환</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> 월 스토리지 비용 70% 절감, Athena 쿼리 비용 80% 감소</li>
+</ul>
+<p><strong>도전 2: Redshift 적재 시점 및 테이블 구조</strong></p>
+<ul>
+<li><strong>문제:</strong> 실시간 데이터를 언제 Redshift에 적재할지 결정 필요</li>
+<li><strong>해결:</strong><ul>
+<li><strong>적재 시점:</strong> 매일 새벽 2시 배치로 S3 → Redshift COPY</li>
+<li><strong>테이블 구조:</strong><ul>
+<li>날짜별 파티션 테이블 (<code>events_20250208</code>)</li>
+<li>파티션 키: <code>event_date</code> (DATE 타입)</li>
+<li>정렬 키: <code>user_id</code>, <code>created_at</code> (조인 및 시계열 조회 최적화)</li>
+</ul>
+</li>
+<li><strong>COPY 명령어 최적화:</strong><ul>
+<li><code>COMPUPDATE OFF</code> - 압축 업데이트 스킵 (속도 향상)</li>
+<li><code>STATUPDATE OFF</code> - 통계 업데이트 스킵 (배치 후 수동 실행)</li>
+<li>병렬 COPY로 10분 내 1억 건 적재</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>효과:</strong> Tableau 대시보드 조회 속도 10배 향상</li>
+</ul>
+<p><strong>도전 3: 지연 시간 편차 (1시간 vs 1일) 명확화</strong></p>
+<ul>
+<li><strong>문제:</strong> &quot;1시간~1일 편차&quot;의 구체적 의미 불명확</li>
+<li><strong>구체적 케이스:</strong><ul>
+<li><strong>Athena 즉시 조회:</strong> 이벤트 발생 → Firehose 버퍼링(5분) → S3 적재 → 즉시 쿼리 가능 (총 1시간 이내)</li>
+<li><strong>Redshift 배치 후 조회:</strong> 이벤트 발생 → Firehose → S3 → 새벽 2시 배치 대기 → Redshift 적재 (총 최대 1일)</li>
+</ul>
+</li>
+<li><strong>사용 시나리오:</strong><ul>
+<li><strong>임시 조회 (Athena):</strong> &quot;오늘 특정 배너의 클릭수는?&quot; → 1시간 내 확인</li>
+<li><strong>정형 분석 (Redshift):</strong> &quot;지난 주 전체 배너 성과 비교&quot; → 다음날 확인</li>
+</ul>
+</li>
+<li><strong>선택 근거:</strong> 분석 목적에 따라 실시간성과 비용 트레이드오프</li>
+</ul>
+<p><strong>도전 4: 유실률 0% 달성 방법</strong></p>
+<ul>
+<li><strong>문제:</strong> 네트워크 장애, Lambda 실패 등으로 데이터 유실 가능</li>
+<li><strong>해결:</strong><ul>
+<li><strong>Firehose 자동 재시도:</strong> 최대 24시간 동안 재시도 (지수 백오프)</li>
+<li><strong>실패 데이터 백업:</strong> S3 에러 버킷에 자동 저장</li>
+<li><strong>모니터링:</strong> CloudWatch 알람으로 실패율 1% 초과 시 Slack 알림</li>
+<li><strong>8개 주요 이벤트 전체 커버:</strong><ul>
+<li>구매, 상품상세 조회, 장바구니 담기, 로그인, 회원가입, 장바구니 조회, 구매페이지 진입, 검색, 배너 클릭</li>
+<li>각 이벤트별 스키마 검증 및 필수 필드 체크</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>검증:</strong> 3개월간 3억 건 이벤트 중 유실 0건 달성</li>
+</ul>
+</section>
+<section class="content-section">
 <h2>배운 점</h2>
 <ul>
 <li>AWS 관리형 서비스 활용 (서버리스 아키텍처의 장점 이해)</li>
@@ -165,7 +239,42 @@
 
 
   <script src="../../script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#0366d6',
+        primaryTextColor: '#24292e',
+        primaryBorderColor: '#e1e4e8',
+        lineColor: '#586069',
+        secondaryColor: '#f6f8fa',
+        tertiaryColor: '#fafbfc',
+        background: '#ffffff',
+        mainBkg: '#ffffff',
+        secondBkg: '#f6f8fa',
+        border1: '#e1e4e8',
+        border2: '#e1e4e8',
+        note: '#fff5b1',
+        noteBkg: '#fff5b1',
+        noteBorder: '#e1e4e8',
+        noteText: '#24292e',
+        fontSize: '14px',
+        fontFamily: 'Inter, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 </body>
 </html>
