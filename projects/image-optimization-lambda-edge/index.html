@@ -79,16 +79,19 @@
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
-<p><strong>에브리타임 혜택탭 출시:</strong></p>
+<p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
 <ul>
-<li>트래픽 30% 증가</li>
-<li>CloudFront 비용 피크 월 90만원</li>
+<li>에브리타임 앱 내 전용 탭으로 커머스 서비스 노출</li>
+<li>거의 모든 페이지에 배너/상품 이미지 존재</li>
+<li>출시 후 트래픽 30% 급증</li>
+<li>CloudFront 데이터 전송 비용 피크 월 90만 원 도달</li>
 </ul>
 <p><strong>기존 시스템의 문제:</strong></p>
 <ul>
-<li>원본 이미지 그대로 서빙</li>
-<li>서비스별 이미지 크기 제한 불일치</li>
-<li>어드민 업로드 시점 제한 또는 앱에서 잘라서 표시</li>
+<li><strong>원본 이미지 서빙:</strong> 고해상도 원본 파일을 그대로 전송 (불필요한 대역폭 낭비)</li>
+<li><strong>크기 제한 불일치:</strong> 서비스별로 요구하는 이미지 사이즈가 다름에도 통일된 처리 로직 부재</li>
+<li><strong>비효율적 처리:</strong> 어드민 업로드 시점에 크기 제한을 두거나, 클라이언트(앱)에서 이미지를 잘라서 표시 (UX 저하)</li>
+<li><strong>포맷 최적화 부재:</strong> WebP, AVIF 등 차세대 포맷 미지원</li>
 </ul>
 </section>
 <section class="content-section">
@@ -116,16 +119,18 @@
 <h2>주요 기능</h2>
 <p><strong>CloudFront Functions (어뷰징 방지):</strong></p>
 <ul>
-<li>이미지 포맷 검증 (webp, avif, jpg, png만 허용)</li>
-<li>크기 노멀라이제이션 (100 단위 반올림)</li>
-<li>허용 범위 검증 (50px~2000px)</li>
-<li>잘못된 쿼리 파라미터 차단</li>
+<li><strong>포맷 검증:</strong> 허용된 이미지 포맷만 처리 (webp, avif, jpg, png)</li>
+<li><strong>크기 정규화:</strong> 요청 크기를 100px 단위로 반올림하여 캐시 효율 극대화 (예: 387px → 400px)</li>
+<li><strong>범위 제한:</strong> 허용 가능한 이미지 크기 범위 검증 (50px ~ 2000px)</li>
+<li><strong>악의적 요청 차단:</strong> 비정상적인 쿼리 파라미터 조합 차단으로 비용 폭증 방지</li>
+<li><strong>성능 최적화:</strong> Viewer Request 단계에서 경량 JavaScript 실행 (Lambda@Edge 호출 전 사전 필터링)</li>
 </ul>
 <p><strong>Lambda@Edge (이미지 처리):</strong></p>
 <ul>
-<li>Sharp 라이브러리 기반 리사이징</li>
-<li>WebP/AVIF 포맷 변환</li>
-<li>품질 조정 (기본 80%)</li>
+<li><strong>리사이징:</strong> Sharp 라이브러리 기반 고성능 이미지 리사이징</li>
+<li><strong>포맷 변환:</strong> WebP, AVIF 등 차세대 압축 포맷 지원</li>
+<li><strong>품질 조정:</strong> 기본 80% 품질로 시각적 품질과 용량 최적 밸런스 유지</li>
+<li><strong>원본 보존:</strong> S3에 원본 이미지 유지, 변환된 이미지는 CloudFront 캐시에만 저장</li>
 </ul>
 <p><strong>프론트엔드:</strong></p>
 <pre><code class="language-html">&lt;picture&gt;

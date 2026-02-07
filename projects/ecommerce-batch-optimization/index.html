@@ -73,21 +73,25 @@
       <div class="project-detail-content">
         <section class="content-section">
 <h2>개요</h2>
-<p>템플릿 메소드 패턴을 활용하여 다중 커머스 주문 수집 배치 시스템을 구축하고 성능을 10배 개선했습니다.</p>
+<p>템플릿 메소드 패턴을 활용하여 다중 커머스 플랫폼의 주문 수집 배치 시스템을 설계하고 구축하여 처리 성능을 10배 개선하고 유지보수성을 대폭 향상시켰습니다.</p>
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
-<p><strong>다중 커머스 연동:</strong></p>
+<p><strong>다중 커머스 플랫폼 연동:</strong></p>
 <ul>
-<li>위메프, 롯데ON, TMON 등</li>
-<li>각 커머스별 API 형식 상이</li>
-<li>응답 형식, 인증 방식, 데이터 구조 모두 다름</li>
+<li>위메프, 롯데ON, TMON 등 여러 외부 커머스 플랫폼과 연동</li>
+<li>각 플랫폼별 API 스펙이 완전히 상이함<ul>
+<li><strong>응답 형식:</strong> JSON, XML, CSV 등 다양</li>
+<li><strong>인증 방식:</strong> API Key, OAuth, Basic Auth 등 제각각</li>
+<li><strong>데이터 구조:</strong> 주문 정보 필드명 및 계층 구조 모두 상이</li>
 </ul>
-<p><strong>기존 시스템:</strong></p>
+</li>
+</ul>
+<p><strong>기존 시스템의 문제:</strong></p>
 <ul>
-<li>주문 10,000건 수집: 30분 소요</li>
-<li>커머스별 코드 중복</li>
-<li>유지보수 어려움</li>
+<li><strong>성능 저하:</strong> 주문 10,000건 수집에 30분 소요 (순차 처리)</li>
+<li><strong>코드 중복:</strong> 커머스별로 거의 동일한 로직을 중복 구현 (인증 → 조회 → 파싱 → 저장)</li>
+<li><strong>유지보수 어려움:</strong> 새로운 커머스 추가 시 2주 이상 소요, 버그 수정 시 모든 커머스 코드 수정 필요</li>
 </ul>
 </section>
 <section class="content-section">
@@ -114,31 +118,38 @@
 </section>
 <section class="content-section">
 <h2>주요 기능</h2>
-<p><strong>템플릿 메소드 패턴:</strong></p>
+<p><strong>템플릿 메소드 패턴 적용:</strong></p>
 <ul>
-<li>공통 로직 분리</li>
-<li>커머스별 특화 로직 인터페이스화</li>
-<li>신규 커머스 추가 용이</li>
+<li><strong>공통 로직 추상화:</strong> 인증 → API 호출 → 데이터 변환 → 저장 플로우를 상위 클래스에서 정의</li>
+<li><strong>커머스별 특화 로직 분리:</strong> 각 커머스 구현체는 인증 방식, 파싱 로직만 구현</li>
+<li><strong>신규 커머스 추가 용이:</strong> 추상 클래스 상속 후 3개 메서드만 구현하면 완료 (2주 → 2일)</li>
+<li><strong>병렬 처리:</strong> CompletableFuture를 활용하여 여러 커머스 동시 수집</li>
 </ul>
-<p><strong>Jenkins 기반 재처리:</strong></p>
+<p><strong>Jenkins 기반 배치 관리:</strong></p>
 <ul>
-<li>LocalDateTime 매개변수</li>
-<li>실패 작업 재실행</li>
-<li>재시도 + 알림</li>
+<li>LocalDateTime 파라미터로 특정 기간 재수집 가능</li>
+<li>실패한 작업만 선택적으로 재실행</li>
+<li>재시도 로직 + Slack 알림 연동</li>
+</ul>
+<p><strong>에러 핸들링:</strong></p>
+<ul>
+<li>커머스별 독립적 에러 처리 (한 커머스 실패해도 다른 커머스 계속 수집)</li>
+<li>상세한 로깅으로 장애 원인 추적 용이</li>
 </ul>
 </section>
 <section class="content-section">
 <h2>기술 스택</h2>
 <ul>
-<li>Java 11, Spring Boot 2, Jenkins</li>
+<li>Java 11, Spring Boot 2, Jenkins, Slack API</li>
 </ul>
 </section>
 <section class="content-section">
 <h2>배운 점</h2>
 <ul>
-<li>디자인 패턴 실전 적용</li>
-<li>배치 성능 최적화</li>
-<li>유지보수성 개선</li>
+<li>디자인 패턴(템플릿 메소드)을 실전에 효과적으로 적용하는 경험</li>
+<li>배치 시스템의 성능 최적화 기법 (병렬 처리, 비동기 I/O)</li>
+<li>유지보수성과 확장성을 고려한 아키텍처 설계 능력 향상</li>
+<li>다양한 외부 시스템 통합 시 추상화 계층의 중요성 학습</li>
 </ul>
 </section>
 

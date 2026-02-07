@@ -79,17 +79,19 @@
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
-<p><strong>에브리타임 혜택탭 출시:</strong></p>
+<p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
 <ul>
-<li>거의 모든 페이지에 배너 존재</li>
-<li>자동 스와이핑 시 성과 집계 API 호출</li>
-<li>API 호출량 1위 (가장 많이 호출되는 API)</li>
+<li>에브리타임 앱 내 전용 탭으로 커머스 서비스 노출</li>
+<li>거의 모든 페이지에 프로모션 배너 배치</li>
+<li>배너 자동 스와이핑 기능으로 노출 시마다 성과 집계 API 자동 호출</li>
+<li><strong>전체 API 중 호출량 1위</strong> 차지 (하루 수백만 건)</li>
 </ul>
-<p><strong>기존 시스템:</strong></p>
+<p><strong>기존 시스템의 한계:</strong></p>
 <ul>
-<li>배너 클릭 시 즉시 DB 업데이트</li>
-<li>DB IOPS 급증</li>
-<li>DB CPU 사용률 증가</li>
+<li>배너 노출/클릭 시 즉시 MySQL DB UPDATE 쿼리 실행</li>
+<li>DB IOPS 급증으로 인한 성능 저하</li>
+<li>DB CPU 사용률 지속적 증가 (피크 시간대 80% 이상)</li>
+<li>API 응답 속도 저하로 사용자 경험 악화</li>
 </ul>
 </section>
 <section class="content-section">
@@ -127,19 +129,33 @@
 </section>
 <section class="content-section">
 <h2>기술적 검토</h2>
-<p><strong>다양한 방식 POC:</strong></p>
-<ol>
-<li>Redis Write-back ✅ 채택</li>
-<li>SQS Pub-Sub ❌ DB 부하 감소 미미</li>
-<li>DB Row Insert ❌ 데이터 급증 우려</li>
-<li>DB Bulk Insert ❌ 정합성 이슈</li>
-</ol>
-<p><strong>Redis 선택 이유:</strong></p>
+<p><strong>다양한 솔루션 비교 분석:</strong></p>
+<p><strong>1. Redis Write-back ✅ 최종 채택</strong></p>
 <ul>
-<li>기존 Redis 유휴 리소스 활용</li>
-<li>싱글스레드 → 정확한 집계</li>
-<li>빠른 속도 → 안정성</li>
-<li>최소 개발 비용</li>
+<li>장점: 메모리 기반 초고속 처리, 기존 인프라 활용, 정확한 집계</li>
+<li>단점: Redis 장애 시 데이터 유실 가능 (SQS fallback으로 해결)</li>
+</ul>
+<p><strong>2. SQS Pub-Sub ❌ 불채택</strong></p>
+<ul>
+<li>이유: 메시지를 SQS로 보내도 결국 DB에 즉시 적재해야 함 (DB 부하 감소 효과 미미)</li>
+<li>추가 인프라 비용 대비 성능 개선 미미</li>
+</ul>
+<p><strong>3. DB Row INSERT 방식 ❌ 불채택</strong></p>
+<ul>
+<li>이유: 클릭마다 새로운 Row 삽입 시 테이블 크기 급증 우려 (월 수억 건)</li>
+<li>집계 쿼리 복잡도 증가 및 성능 저하 예상</li>
+</ul>
+<p><strong>4. DB Bulk INSERT ❌ 불채택</strong></p>
+<ul>
+<li>이유: 배치 처리 중 서버 재시작 등으로 인한 데이터 정합성 이슈</li>
+<li>Redis 없이 메모리 버퍼 사용 시 데이터 유실 위험</li>
+</ul>
+<p><strong>Redis Write-back 선택 이유:</strong></p>
+<ul>
+<li><strong>유휴 리소스 활용:</strong> 기존 Redis 클러스터의 여유 메모리/CPU 활용 (추가 비용 제로)</li>
+<li><strong>싱글스레드 정확성:</strong> Redis의 싱글스레드 특성으로 동시성 이슈 없이 정확한 집계 보장</li>
+<li><strong>초고속 응답:</strong> 메모리 기반 HINCRBY 연산으로 밀리초 단위 응답 (API 성능 50배 개선)</li>
+<li><strong>최소 개발 비용:</strong> 기존 Redis 인프라 활용으로 신규 구축 불필요, 빠른 개발 및 배포 가능</li>
 </ul>
 </section>
 <section class="content-section">

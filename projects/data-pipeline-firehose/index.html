@@ -79,11 +79,19 @@
 </section>
 <section class="content-section">
 <h2>문제 상황</h2>
-<p><strong>기존 데이터 수집:</strong></p>
+<p><strong>기존 수동 데이터 수집 프로세스:</strong></p>
+<ol>
+<li><strong>요청:</strong> 데이터팀에서 특정 이벤트 데이터 분석 필요 시 백엔드팀에 요청</li>
+<li><strong>추출:</strong> 백엔드 개발자가 어드민 페이지 또는 DB 직접 조회로 원본 데이터 추출</li>
+<li><strong>정제:</strong> 이전 날짜 데이터를 수동으로 정제 (중복 제거, 포맷 변환, 필드 매핑)</li>
+<li><strong>적재:</strong> 정제된 데이터를 데이터 웨어하우스에 수동 업로드</li>
+<li><strong>지연:</strong> 데이터 요청부터 분석 가능 시점까지 평균 2~3일 소요</li>
+</ol>
+<p><strong>문제점:</strong></p>
 <ul>
-<li>데이터 담당자가 수동으로 어드민 또는 DB 조회</li>
-<li>전일 데이터를 정제하여 수동 적재</li>
-<li>데이터 확인: 2~3일 소요</li>
+<li>실시간 의사결정 불가 (마케팅 캠페인 효과 측정 지연)</li>
+<li>개발자 리소스 낭비 (반복적인 수동 작업)</li>
+<li>데이터 정합성 이슈 (수동 정제 과정의 실수 가능성)</li>
 </ul>
 </section>
 <section class="content-section">
@@ -116,17 +124,18 @@
 </section>
 <section class="content-section">
 <h2>주요 기능</h2>
-<p><strong>실시간 수집:</strong></p>
+<p><strong>실시간 데이터 수집:</strong></p>
 <ul>
-<li>Firehose로 이벤트 스트리밍</li>
-<li>Lambda로 Parquet 변환</li>
-<li>S3 원본 백업 (장애 대비)</li>
+<li>애플리케이션에서 사용자 이벤트 발생 시 Kinesis Firehose로 스트리밍 전송</li>
+<li>Lambda를 통해 JSON 데이터를 Parquet 포맷으로 변환 (저장 공간 70% 절감)</li>
+<li>S3에 원본 데이터 백업 (장애 대비 및 재처리 가능)</li>
+<li>1시간 단위 배치로 자동 파티셔닝 (년/월/일/시간 구조)</li>
 </ul>
-<p><strong>데이터 분석:</strong></p>
+<p><strong>데이터 분석 환경:</strong></p>
 <ul>
-<li>Athena 간단 조회</li>
-<li>S3 → Redshift 적재</li>
-<li>Tableau 대시보드 연동</li>
+<li><strong>Athena:</strong> S3 데이터를 직접 쿼리하여 빠른 임시 조회 (서버리스, 쿼리당 과금)</li>
+<li><strong>Redshift:</strong> 정형화된 분석을 위해 S3 → Redshift로 데이터 적재</li>
+<li><strong>Tableau:</strong> Redshift 연동으로 실시간 대시보드 및 리포트 생성</li>
 </ul>
 </section>
 <section class="content-section">
