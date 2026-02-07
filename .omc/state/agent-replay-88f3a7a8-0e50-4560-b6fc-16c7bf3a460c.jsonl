@@ -1,0 +1,5 @@
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"oh-my-claudecode:deepinit"}
+{"t":0,"agent":"a91df8d","agent_type":"explore","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a91df8d","agent_type":"explore","event":"agent_stop","success":true,"duration_ms":9842}
+{"t":0,"agent":"a8529e2","agent_type":"executor","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"ac84700","agent_type":"unknown","event":"agent_stop","success":true}
