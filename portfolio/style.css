@@ -190,10 +190,40 @@ img {
   margin: 0 auto 2rem;
 }
 
+.hero-contact {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-size: 0.95rem;
+}
+
+.hero-contact-link:hover {
+  color: var(--accent);
+}
+
+.hero-contact-link svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .hero-cta {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .hero-scroll {
