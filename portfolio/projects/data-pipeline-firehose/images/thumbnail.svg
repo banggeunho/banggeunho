@@ -1,0 +1,68 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="450" fill="#0d1117"/>
+
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="pipelineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#a371f7;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#f778ba;stop-opacity:0.8" />
+    </linearGradient>
+    <radialGradient id="glowPurple" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#a371f7;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#a371f7;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#pipelineGradient)"/>
+
+  <!-- Glow Effect -->
+  <circle cx="400" cy="180" r="200" fill="url(#glowPurple)"/>
+
+  <!-- Data Flow Pipeline -->
+  <circle cx="250" cy="180" r="30" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
+  <text x="250" y="190" font-family="monospace" font-size="24" font-weight="700" fill="#58a6ff" text-anchor="middle">S</text>
+
+  <!-- Flow Lines -->
+  <path d="M 280 180 L 340 180" stroke="url(#flowGradient)" stroke-width="4" stroke-dasharray="10,5">
+    <animate attributeName="stroke-dashoffset" from="15" to="0" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Processing Node -->
+  <rect x="340" y="150" width="60" height="60" rx="8" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
+  <path d="M 360 170 L 370 180 L 360 190 L 350 180 Z" fill="#a371f7" opacity="0.6"/>
+  <path d="M 375 170 L 385 180 L 375 190 L 365 180 Z" fill="#a371f7" opacity="0.8"/>
+
+  <path d="M 400 180 L 460 180" stroke="url(#flowGradient)" stroke-width="4" stroke-dasharray="10,5">
+    <animate attributeName="stroke-dashoffset" from="15" to="0" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Firehose -->
+  <path d="M 460 150 L 460 210 L 520 190 L 520 170 Z" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
+  <path d="M 465 160 L 465 200 L 515 185 L 515 175 Z" fill="#a371f7" opacity="0.3"/>
+
+  <path d="M 520 180 L 570 180" stroke="url(#flowGradient)" stroke-width="4"/>
+  <path d="M 555 173 L 570 180 L 555 187" stroke="url(#flowGradient)" stroke-width="4" fill="none"/>
+
+  <!-- Destination -->
+  <rect x="570" y="160" width="40" height="40" rx="4" fill="#1c2128" stroke="#7ee787" stroke-width="3"/>
+  <path d="M 580 180 L 590 190 L 600 170" stroke="#7ee787" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Data Particles -->
+  <circle cx="310" cy="175" r="2" fill="#58a6ff" opacity="0.8"/>
+  <circle cx="330" cy="185" r="2" fill="#a371f7" opacity="0.8"/>
+  <circle cx="430" cy="175" r="2" fill="#f778ba" opacity="0.8"/>
+  <circle cx="450" cy="185" r="2" fill="#58a6ff" opacity="0.8"/>
+
+  <!-- Title -->
+  <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="700" fill="#c9d1d9" text-anchor="middle">데이터 파이프라인</text>
+
+  <!-- Tech Tag -->
+  <rect x="320" y="360" width="160" height="36" rx="18" fill="#1c2128" stroke="#a371f7" stroke-width="2"/>
+  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#a371f7" text-anchor="middle">AWS Firehose</text>
+</svg>

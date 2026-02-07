@@ -1,0 +1,51 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="450" fill="#0d1117"/>
+
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="lambdaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowOrange" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#lambdaGradient)"/>
+
+  <!-- Glow Effect -->
+  <circle cx="400" cy="180" r="200" fill="url(#glowOrange)"/>
+
+  <!-- Lambda Symbol -->
+  <path d="M 340 120 L 380 180 L 340 240" stroke="#FF9900" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 380 180 L 460 180" stroke="#FF9900" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Image Frame 1 (Original) -->
+  <rect x="290" y="140" width="60" height="60" rx="4" fill="#1c2128" stroke="#c9d1d9" stroke-width="2" opacity="0.5"/>
+  <rect x="300" y="150" width="20" height="20" fill="#58a6ff" opacity="0.3"/>
+  <rect x="325" y="155" width="15" height="15" fill="#7ee787" opacity="0.3"/>
+
+  <!-- Arrow -->
+  <path d="M 360 170 L 440 170" stroke="#7ee787" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 425 163 L 440 170 L 425 177" stroke="#7ee787" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+  <!-- Image Frame 2 (Optimized) -->
+  <rect x="450" y="155" width="50" height="50" rx="4" fill="#1c2128" stroke="#7ee787" stroke-width="2"/>
+  <rect x="458" y="163" width="17" height="17" fill="#58a6ff" opacity="0.5"/>
+  <rect x="478" y="167" width="13" height="13" fill="#7ee787" opacity="0.5"/>
+
+  <!-- Speed Lines -->
+  <line x1="510" y1="165" x2="530" y2="165" stroke="#FF9900" stroke-width="2" opacity="0.5"/>
+  <line x1="510" y1="180" x2="540" y2="180" stroke="#FF9900" stroke-width="2" opacity="0.3"/>
+  <line x1="510" y1="195" x2="535" y2="195" stroke="#FF9900" stroke-width="2" opacity="0.4"/>
+
+  <!-- Title -->
+  <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#c9d1d9" text-anchor="middle">이미지 최적화</text>
+
+  <!-- Tech Tag -->
+  <rect x="320" y="360" width="160" height="36" rx="18" fill="#1c2128" stroke="#FF9900" stroke-width="2"/>
+  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FF9900" text-anchor="middle">Lambda@Edge</text>
+</svg>

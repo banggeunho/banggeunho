@@ -64,45 +64,45 @@
       "type": "file"
     },
     {
-      "path": "CLAUDE.md",
-      "accessCount": 6,
-      "lastAccessed": 1770466524459,
-      "type": "file"
-    },
-    {
       "path": "portfolio/projects/tosspay-payment-integration/index.md",
-      "accessCount": 6,
-      "lastAccessed": 1770470457880,
+      "accessCount": 8,
+      "lastAccessed": 1770470994233,
       "type": "file"
     },
     {
       "path": "portfolio/projects/opensearch-search-engine/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770470299403,
+      "accessCount": 7,
+      "lastAccessed": 1770470989152,
       "type": "file"
     },
     {
       "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770470335925,
+      "accessCount": 7,
+      "lastAccessed": 1770470999329,
       "type": "file"
     },
     {
       "path": "portfolio/projects/redis-writeback-optimization/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770470375492,
+      "accessCount": 7,
+      "lastAccessed": 1770471004432,
       "type": "file"
     },
     {
       "path": "portfolio/projects/data-pipeline-firehose/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770470409505,
+      "accessCount": 7,
+      "lastAccessed": 1770471009532,
       "type": "file"
     },
     {
       "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770470448926,
+      "accessCount": 7,
+      "lastAccessed": 1770471014643,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 6,
+      "lastAccessed": 1770466524459,
       "type": "file"
     },
     {
@@ -154,6 +154,12 @@
       "type": "file"
     },
     {
+      "path": "portfolio/projects/opensearch-search-engine/images/thumbnail.svg",
+      "accessCount": 2,
+      "lastAccessed": 1770471019677,
+      "type": "file"
+    },
+    {
       "path": "",
       "accessCount": 1,
       "lastAccessed": 1770454849895,
@@ -176,6 +182,30 @@
       "accessCount": 1,
       "lastAccessed": 1770468795014,
       "type": "directory"
+    },
+    {
+      "path": "portfolio/projects/tosspay-payment-integration/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770470795127,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/image-optimization-lambda-edge/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770470813640,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/redis-writeback-optimization/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770470833993,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/data-pipeline-firehose/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770470857685,
+      "type": "file"
     }
   ],
   "userDirectives": []
