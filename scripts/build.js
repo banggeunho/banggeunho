@@ -34,6 +34,39 @@ function scanProjects() {
 }
 
 /**
+ * Wrap H2 sections in <section class="content-section">
+ */
+function wrapSections(html) {
+  // Split by h2 tags
+  const parts = html.split(/(<h2>)/);
+
+  if (parts.length <= 1) return html; // No h2 tags
+
+  let result = parts[0]; // Content before first h2
+
+  for (let i = 1; i < parts.length; i += 2) {
+    if (i + 1 < parts.length) {
+      const h2Tag = parts[i];
+      const content = parts[i + 1];
+
+      // Find next h2 or end of content
+      const nextH2Index = content.indexOf('<h2>');
+      const sectionContent = nextH2Index > 0
+        ? content.substring(0, nextH2Index)
+        : content;
+      const rest = nextH2Index > 0
+        ? content.substring(nextH2Index)
+        : '';
+
+      // Wrap in section
+      result += `<section class="content-section">\n${h2Tag}${sectionContent}</section>\n${rest}`;
+    }
+  }
+
+  return result;
+}
+
+/**
  * Process a single project
  */
 function processProject(projectName) {
@@ -49,7 +82,10 @@ function processProject(projectName) {
   const { data: frontmatter, content: markdownContent } = matter(mdContent);
 
   // 3. Convert markdown to HTML
-  const htmlContent = marked.parse(markdownContent);
+  let htmlContent = marked.parse(markdownContent);
+
+  // 4. Wrap H2 sections in <section class="content-section">
+  htmlContent = wrapSections(htmlContent);
 
   // 4. Load template
   const templatePath = path.join(TEMPLATES_DIR, 'project.ejs');
