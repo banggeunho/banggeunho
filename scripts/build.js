@@ -93,18 +93,52 @@ function build() {
     console.log('✓ Cleaned build directory\n');
   }
 
-  // Ensure build directory exists
+  // Create build directory
   fs.ensureDirSync(BUILD_DIR);
 
-  // Scan and process projects
+  // Copy portfolio files to build directory (excluding build, templates)
+  console.log('Copying portfolio files...');
+
+  // Copy root-level files (index.html, style.css, script.js, etc.)
+  const filesToCopy = ['index.html', 'style.css', 'script.js', 'IMPLEMENTATION.md'];
+  filesToCopy.forEach(file => {
+    const srcPath = path.join(PORTFOLIO_DIR, file);
+    if (fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, path.join(BUILD_DIR, file));
+    }
+  });
+
+  // Copy data folder if exists
+  const dataDir = path.join(PORTFOLIO_DIR, 'data');
+  if (fs.existsSync(dataDir)) {
+    fs.copySync(dataDir, path.join(BUILD_DIR, 'data'));
+  }
+
+  // Copy existing project HTML files
+  fs.ensureDirSync(path.join(BUILD_DIR, 'projects'));
+  const projectsDir = path.join(PORTFOLIO_DIR, 'projects');
+  if (fs.existsSync(projectsDir)) {
+    const items = fs.readdirSync(projectsDir);
+    items.forEach(item => {
+      const srcPath = path.join(projectsDir, item);
+      // Only copy .html files (skip markdown project folders)
+      if (fs.statSync(srcPath).isFile() && item.endsWith('.html')) {
+        fs.copyFileSync(srcPath, path.join(BUILD_DIR, 'projects', item));
+      }
+    });
+  }
+
+  console.log('✓ Copied portfolio files\n');
+
+  // Scan and process markdown projects
   const projects = scanProjects();
 
   if (projects.length === 0) {
-    console.warn('No projects found!');
+    console.warn('No markdown projects found! Build completed with existing HTML files.');
     return;
   }
 
-  console.log(`Found ${projects.length} project(s):\n`);
+  console.log(`Found ${projects.length} markdown project(s):\n`);
 
   projects.forEach(projectName => {
     try {
