@@ -1,0 +1,77 @@
+{
+  "categories": [
+    {
+      "name": "Languages",
+      "skills": [
+        {
+          "name": "Java",
+          "color": "#ED8B00"
+        },
+        {
+          "name": "JavaScript",
+          "color": "#F7DF1E",
+          "textColor": "#000"
+        },
+        {
+          "name": "TypeScript",
+          "color": "#3178C6"
+        },
+        {
+          "name": "Python",
+          "color": "#3776AB"
+        }
+      ]
+    },
+    {
+      "name": "Backend",
+      "skills": [
+        {
+          "name": "Spring",
+          "color": "#6DB33F"
+        },
+        {
+          "name": "NestJS",
+          "color": "#E0234E"
+        },
+        {
+          "name": "Express",
+          "color": "#353535"
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure & Tools",
+      "skills": [
+        {
+          "name": "AWS",
+          "color": "#FF9900",
+          "textColor": "#000"
+        },
+        {
+          "name": "Docker",
+          "color": "#2496ED"
+        },
+        {
+          "name": "MySQL",
+          "color": "#4479A1"
+        },
+        {
+          "name": "Redis",
+          "color": "#DC382D"
+        },
+        {
+          "name": "Kafka",
+          "color": "#231F20"
+        },
+        {
+          "name": "GitHub Actions",
+          "color": "#2088FF"
+        },
+        {
+          "name": "nginx",
+          "color": "#009639"
+        }
+      ]
+    }
+  ]
+}
