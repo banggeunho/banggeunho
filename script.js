@@ -269,27 +269,18 @@ function renderProjects() {
   updateActive();
 })();
 
-// ========== Scroll Reveal ==========
+// ========== Scroll Reveal (Disabled - Show all content immediately) ==========
 (function initReveal() {
   function observeElements() {
     const targets = document.querySelectorAll(
       '.section-title, .about-text, .about-details, .detail-card, .project-card, .contact-content, .content-section, .skill-category'
     );
 
-    targets.forEach((el) => el.classList.add('fade-in'));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    targets.forEach((el) => observer.observe(el));
+    // Immediately show all elements without animation
+    targets.forEach((el) => {
+      el.classList.add('fade-in');
+      el.classList.add('visible');
+    });
   }
 
   // Initial observation

@@ -3,7 +3,7 @@
     {
       "id": "opensearch-search-engine",
       "title": "검색 엔진 전면 개편",
-      "description": "300만 회원 커머스 플랫폼의 검색 시스템을 AWS OpenSearch로 전환하여 CTR 32% 향상, 응답속도 600배 개선",
+      "description": "AWS OpenSearch 도입으로 CTR 32% 향상, 응답속도 600배 개선 (3초→5ms). CloudSearch 대비 월 비용 30% 절감",
       "image": "projects/opensearch-search-engine/images/thumbnail.svg",
       "tags": ["AWS OpenSearch", "NestJS", "Redis"],
       "github": "https://github.com/banggeunho",
@@ -12,7 +12,7 @@
     {
       "id": "tosspay-payment-integration",
       "title": "토스페이 결제 시스템 연동",
-      "description": "결제/주문/정산/어드민 전 영역 통합 작업. 6주 만에 완료하여 전체 거래액의 30%(111억) 달성",
+      "description": "결제/주문/정산/어드민 전 영역 통합. 6주 완료 → 전체 거래액의 30%(111억) 달성",
       "image": "projects/tosspay-payment-integration/images/thumbnail.svg",
       "tags": ["TossPay", "Payment", "NestJS"],
       "github": "https://github.com/banggeunho",
@@ -21,7 +21,7 @@
     {
       "id": "image-optimization-lambda-edge",
       "title": "실시간 이미지 최적화 시스템",
-      "description": "Lambda@Edge 기반 On-demand 이미지 처리로 CloudFront 전송량 68% 감소, 월 비용 62만원 절감",
+      "description": "Lambda@Edge On-demand 처리로 CloudFront 전송량 68% 감소, 비용 75% 절감. WebP/AVIF 변환으로 요청 +31%, 전송량 -68%",
       "image": "projects/image-optimization-lambda-edge/images/thumbnail.svg",
       "tags": ["Lambda@Edge", "CloudFront", "WebP"],
       "github": "https://github.com/banggeunho",
@@ -30,7 +30,7 @@
     {
       "id": "redis-writeback-optimization",
       "title": "배너 성과 집계 API 성능 최적화",
-      "description": "Redis Write-back 패턴 도입으로 DB IOPS 10배 감소, API 응답속도 50배 개선",
+      "description": "Redis Write-back 패턴으로 DB IOPS 10배 감소 (300→30 IOPS), API 응답속도 50배 개선 (150ms→3ms)",
       "image": "projects/redis-writeback-optimization/images/thumbnail.svg",
       "tags": ["Redis", "MySQL", "Performance"],
       "github": "https://github.com/banggeunho",
@@ -39,7 +39,7 @@
     {
       "id": "data-pipeline-firehose",
       "title": "사용자 이벤트 로그 데이터 파이프라인",
-      "description": "AWS Firehose 기반 실시간 데이터 파이프라인 구축. 데이터 확인 속도 2~3일에서 1시간으로 단축",
+      "description": "AWS Firehose 기반 실시간 파이프라인 구축. 데이터 확인 2-3일 → 1시간, Parquet 변환으로 Athena 쿼리 5배 향상",
       "image": "projects/data-pipeline-firehose/images/thumbnail.svg",
       "tags": ["AWS Firehose", "Athena", "Redshift"],
       "github": "https://github.com/banggeunho",
@@ -48,7 +48,7 @@
     {
       "id": "ecommerce-batch-optimization",
       "title": "e커머스 주문 수집 배치 성능 개선",
-      "description": "템플릿 메소드 패턴을 활용한 다중 커머스 연동. 처리시간 10배 향상, 코드 중복 70% 감소",
+      "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 1,000+ 라인 코드 중복 70% 감소, DB I/O 20,000→3",
       "image": "projects/ecommerce-batch-optimization/images/thumbnail.svg",
       "tags": ["Java", "Spring Boot", "Batch"],
       "github": "https://github.com/banggeunho",
