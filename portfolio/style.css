@@ -32,7 +32,7 @@ body {
   font-family: var(--font-sans);
   background: var(--bg-primary);
   color: var(--text-primary);
-  line-height: 1.6;
+  line-height: 1.75;
   overflow-x: hidden;
 }
 
@@ -50,18 +50,19 @@ img {
 /* ========== Navigation ========== */
 .nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
   z-index: 100;
   padding: 1rem 0;
+  border-radius: 12px;
   transition: background 0.3s, box-shadow 0.3s;
 }
 
 .nav.scrolled {
   background: rgba(13, 17, 23, 0.95);
   backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 var(--border);
+  box-shadow: 0 1px 0 var(--border), 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .nav-inner {
@@ -92,6 +93,12 @@ img {
   color: var(--text-secondary);
   transition: color 0.2s;
   position: relative;
+}
+
+.nav-links a:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .nav-links a::after {
@@ -250,6 +257,7 @@ img {
   background: var(--tag-color, #333);
   color: var(--tag-text, #fff);
   transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
 }
 
 .skill-tag:hover {
@@ -344,7 +352,8 @@ img {
   color: var(--text-secondary);
   margin-bottom: 1.25rem;
   font-size: 1.05rem;
-  line-height: 1.8;
+  line-height: 1.75;
+  max-width: 65ch;
 }
 
 .about-highlights {
@@ -382,6 +391,7 @@ img {
   border: 1px solid var(--border);
   border-radius: 10px;
   transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
 }
 
 .detail-card:hover {
@@ -414,14 +424,14 @@ img {
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
-  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .project-card:hover {
   border-color: var(--accent);
-  transform: translateY(-6px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -616,8 +626,9 @@ img {
 .content-section p {
   font-size: 1.05rem;
   color: var(--text-secondary);
-  line-height: 1.9;
+  line-height: 1.75;
   margin-bottom: 1rem;
+  max-width: 70ch;
 }
 
 .content-section ul {
@@ -706,6 +717,9 @@ img {
   border-radius: 10px;
   font-weight: 500;
   transition: all 0.2s;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .contact-link:hover {
@@ -828,4 +842,137 @@ img {
   .section-title {
     font-size: 1.5rem;
   }
+}
+
+/* ========== Accessibility ========== */
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.btn:focus,
+.nav-toggle:focus,
+.project-card:focus,
+.contact-link:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.skill-tag:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ========== Loading States ========== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0px,
+    var(--bg-card) 40px,
+    var(--bg-secondary) 80px
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-secondary);
+}
+
+.skeleton-body {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 60%;
+}
+
+.skeleton-desc {
+  height: 14px;
+  width: 100%;
+}
+
+.skeleton-desc:last-child {
+  width: 80%;
+}
+
+.skeleton-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.skeleton-tag {
+  height: 20px;
+  width: 50px;
+  border-radius: 20px;
+}
+
+/* ========== Error States ========== */
+.error-container {
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  color: var(--red);
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }

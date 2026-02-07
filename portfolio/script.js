@@ -8,15 +8,19 @@ let portfolioData = {
 async function loadJSON(url) {
   try {
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to load ${url}`);
+    if (!response.ok) throw new Error(`Failed to load ${url}: ${response.status}`);
     return await response.json();
   } catch (error) {
     console.error('Error loading JSON:', error);
+    showError('데이터를 불러오는 중 문제가 발생했습니다. 페이지를 새로고침해 주세요.');
     return null;
   }
 }
 
 async function loadAllData() {
+  // Show loading skeleton
+  showLoadingSkeleton();
+
   const [projects, about, skills] = await Promise.all([
     loadJSON('data/projects.json'),
     loadJSON('data/about.json'),
@@ -28,6 +32,58 @@ async function loadAllData() {
   portfolioData.skills = skills;
 
   renderContent();
+}
+
+function showLoadingSkeleton() {
+  const grid = document.querySelector('.projects-grid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  // Create 4 skeleton cards
+  for (let i = 0; i < 4; i++) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'skeleton-card';
+    skeleton.innerHTML = `
+      <div class="skeleton-thumbnail skeleton"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-title skeleton"></div>
+        <div class="skeleton-desc skeleton"></div>
+        <div class="skeleton-desc skeleton"></div>
+        <div class="skeleton-tags">
+          <div class="skeleton-tag skeleton"></div>
+          <div class="skeleton-tag skeleton"></div>
+          <div class="skeleton-tag skeleton"></div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(skeleton);
+  }
+}
+
+function showError(message) {
+  const grid = document.querySelector('.projects-grid');
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <div class="error-container" style="grid-column: 1 / -1;">
+      <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h3 class="error-title">문제가 발생했습니다</h3>
+      <p class="error-message">${message}</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" onclick="location.reload()">
+          페이지 새로고침
+        </button>
+        <a href="https://github.com/banggeunho" class="btn btn-outline" target="_blank" rel="noopener">
+          GitHub 방문
+        </a>
+      </div>
+    </div>
+  `;
 }
 
 function renderContent() {
@@ -121,9 +177,9 @@ function renderProjects() {
     card.className = 'project-card fade-in';
 
     const thumbnail = project.image
-      ? `<img src="${project.image}" alt="${project.title}">`
+      ? `<img src="${project.image}" alt="${project.title} project thumbnail">`
       : `<div class="project-thumbnail-placeholder">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
              <rect x="3" y="3" width="18" height="18" rx="2"/>
              <circle cx="8.5" cy="8.5" r="1.5"/>
              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
@@ -152,6 +208,13 @@ function renderProjects() {
   const canvas = document.getElementById('hero-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    // Don't start animation if user prefers reduced motion
+    return;
+  }
 
   const snippets = [
     'const app = express();',
