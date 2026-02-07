@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMid slice">
+  <rect width="100%" height="100%" fill="#0d1117"/>
+
+  <!-- code rain: falling keywords -->
+  <g font-family="'Courier New',monospace" font-size="14">
+
+    <text x="30" y="-10" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-10;330" dur="7s" repeatCount="indefinite" begin="0s"/>const</text>
+    <text x="90" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="11s" repeatCount="indefinite" begin="2s"/>async</text>
+    <text x="160" y="-10" fill="#58a6ff" opacity="0.15"><animate attributeName="y" values="-10;330" dur="9s" repeatCount="indefinite" begin="4s"/>return</text>
+    <text x="240" y="-10" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8s" repeatCount="indefinite" begin="1s"/>=&gt;</text>
+    <text x="290" y="-10" fill="#7ee787" opacity="0.07"><animate attributeName="y" values="-10;330" dur="13s" repeatCount="indefinite" begin="5s"/>await</text>
+    <text x="370" y="-10" fill="#58a6ff" opacity="0.12"><animate attributeName="y" values="-10;330" dur="10s" repeatCount="indefinite" begin="0.5s"/>import</text>
+    <text x="450" y="-10" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-10;330" dur="7.5s" repeatCount="indefinite" begin="3s"/>class</text>
+    <text x="520" y="-10" fill="#d2a8ff" opacity="0.14"><animate attributeName="y" values="-10;330" dur="12s" repeatCount="indefinite" begin="1.5s"/>{ }</text>
+    <text x="580" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="8.5s" repeatCount="indefinite" begin="6s"/>try</text>
+    <text x="630" y="-10" fill="#58a6ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="9.5s" repeatCount="indefinite" begin="2.5s"/>function</text>
+    <text x="730" y="-10" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-10;330" dur="14s" repeatCount="indefinite" begin="4.5s"/>export</text>
+    <text x="820" y="-10" fill="#d2a8ff" opacity="0.13"><animate attributeName="y" values="-10;330" dur="7.8s" repeatCount="indefinite" begin="0.8s"/>new</text>
+    <text x="880" y="-10" fill="#7ee787" opacity="0.09"><animate attributeName="y" values="-10;330" dur="11.5s" repeatCount="indefinite" begin="3.5s"/>this</text>
+    <text x="940" y="-10" fill="#58a6ff" opacity="0.15"><animate attributeName="y" values="-10;330" dur="8.2s" repeatCount="indefinite" begin="1.2s"/>let</text>
+    <text x="1000" y="-10" fill="#ff7b72" opacity="0.07"><animate attributeName="y" values="-10;330" dur="10.5s" repeatCount="indefinite" begin="5.5s"/>catch</text>
+    <text x="1070" y="-10" fill="#d2a8ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="9.2s" repeatCount="indefinite" begin="2.2s"/>for</text>
+    <text x="1130" y="-10" fill="#7ee787" opacity="0.08"><animate attributeName="y" values="-10;330" dur="12.5s" repeatCount="indefinite" begin="4.2s"/>[ ]</text>
+
+    <!-- second layer: offset positions -->
+    <text x="60" y="-10" fill="#d2a8ff" opacity="0.06"><animate attributeName="y" values="-10;330" dur="13.5s" repeatCount="indefinite" begin="7s"/>SELECT</text>
+    <text x="140" y="-10" fill="#ff7b72" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.8s" repeatCount="indefinite" begin="6.5s"/>void</text>
+    <text x="210" y="-10" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="11.2s" repeatCount="indefinite" begin="8s"/>null</text>
+    <text x="310" y="-10" fill="#7ee787" opacity="0.12"><animate attributeName="y" values="-10;330" dur="7.2s" repeatCount="indefinite" begin="3.8s"/>pipe</text>
+    <text x="400" y="-10" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-10;330" dur="10.8s" repeatCount="indefinite" begin="9s"/>@Get</text>
+    <text x="480" y="-10" fill="#58a6ff" opacity="0.13"><animate attributeName="y" values="-10;330" dur="9.8s" repeatCount="indefinite" begin="1.8s"/>yield</text>
+    <text x="560" y="-10" fill="#ff7b72" opacity="0.06"><animate attributeName="y" values="-10;330" dur="14.5s" repeatCount="indefinite" begin="7.5s"/>FROM</text>
+    <text x="660" y="-10" fill="#7ee787" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.5s" repeatCount="indefinite" begin="5.2s"/>deploy</text>
+    <text x="760" y="-10" fill="#d2a8ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="12.2s" repeatCount="indefinite" begin="8.5s"/>WHERE</text>
+    <text x="850" y="-10" fill="#58a6ff" opacity="0.11"><animate attributeName="y" values="-10;330" dur="7.6s" repeatCount="indefinite" begin="4.8s"/>kafka</text>
+    <text x="920" y="-10" fill="#ff7b72" opacity="0.09"><animate attributeName="y" values="-10;330" dur="10.2s" repeatCount="indefinite" begin="6.2s"/>docker</text>
+    <text x="1010" y="-10" fill="#7ee787" opacity="0.13"><animate attributeName="y" values="-10;330" dur="8.9s" repeatCount="indefinite" begin="2.8s"/>push</text>
+    <text x="1100" y="-10" fill="#d2a8ff" opacity="0.08"><animate attributeName="y" values="-10;330" dur="11.8s" repeatCount="indefinite" begin="9.5s"/>enum</text>
+
+    <!-- third layer: more variety -->
+    <text x="45" y="-10" fill="#ff7b72" opacity="0.05"><animate attributeName="y" values="-10;330" dur="15s" repeatCount="indefinite" begin="10s"/>0x1F</text>
+    <text x="195" y="-10" fill="#58a6ff" opacity="0.09"><animate attributeName="y" values="-10;330" dur="9.5s" repeatCount="indefinite" begin="11s"/>JOIN</text>
+    <text x="345" y="-10" fill="#7ee787" opacity="0.06"><animate attributeName="y" values="-10;330" dur="13s" repeatCount="indefinite" begin="10.5s"/>redis</text>
+    <text x="495" y="-10" fill="#d2a8ff" opacity="0.10"><animate attributeName="y" values="-10;330" dur="8.3s" repeatCount="indefinite" begin="12s"/>SQS</text>
+    <text x="695" y="-10" fill="#58a6ff" opacity="0.07"><animate attributeName="y" values="-10;330" dur="12.8s" repeatCount="indefinite" begin="11.5s"/>stream</text>
+    <text x="795" y="-10" fill="#ff7b72" opacity="0.11"><animate attributeName="y" values="-10;330" dur="7.4s" repeatCount="indefinite" begin="13s"/>ECS</text>
+    <text x="1055" y="-10" fill="#7ee787" opacity="0.09"><animate attributeName="y" values="-10;330" dur="10.6s" repeatCount="indefinite" begin="12.5s"/>λ</text>
+  </g>
+
+  <!-- center text -->
+  <text x="600" y="130" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="52" fill="#ffffff" opacity="0.95">Geunho Bang</text>
+  <text x="600" y="170" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="18" fill="#8b949e">Backend Engineer  ·  Commerce Platform  ·  3M+ Users</text>
+
+  <!-- bottom wave -->
+  <path fill="#0d1117" opacity="0.6">
+    <animate attributeName="d" dur="12s" repeatCount="indefinite" values="
+      M0,280 C200,260 400,300 600,280 C800,260 1000,300 1200,280 L1200,320 L0,320 Z;
+      M0,280 C200,300 400,260 600,280 C800,300 1000,260 1200,280 L1200,320 L0,320 Z;
+      M0,280 C200,260 400,300 600,280 C800,260 1000,300 1200,280 L1200,320 L0,320 Z
+    "/>
+  </path>
+  <path fill="#161b22" opacity="0.5">
+    <animate attributeName="d" dur="8s" repeatCount="indefinite" values="
+      M0,290 C200,310 400,270 600,290 C800,310 1000,270 1200,290 L1200,320 L0,320 Z;
+      M0,290 C200,270 400,310 600,290 C800,270 1000,310 1200,290 L1200,320 L0,320 Z;
+      M0,290 C200,310 400,270 600,290 C800,310 1000,270 1200,290 L1200,320 L0,320 Z
+    "/>
+  </path>
+
+</svg>
