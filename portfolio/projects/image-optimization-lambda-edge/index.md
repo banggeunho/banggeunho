@@ -14,7 +14,7 @@ date: 2024-03-01
 5. [핵심 구현 1: CloudFront Functions로 어뷰징 방지](#핵심-구현-1-cloudfront-functions로-어뷰징-방지)
 6. [핵심 구현 2: Lambda@Edge로 On-demand 처리](#핵심-구현-2-lambdaedge로-on-demand-처리)
 7. [핵심 구현 3: 캐시 전략으로 히트율 극대화](#핵심-구현-3-캐시-전략으로-히트율-극대화)
-8. [결과: 비용 68% 절감, 속도 50% 개선](#결과-비용-68-절감-속도-50-개선)
+8. [결과: 비용 75% 절감, 속도 50% 개선](#결과-비용-75-절감-속도-50-개선)
 
 ---
 
@@ -25,9 +25,17 @@ date: 2024-03-01
 **변화의 규모:**
 - 거의 모든 페이지에 배너와 상품 이미지 노출
 - 출시 후 트래픽 30% 급증
-- CloudFront 데이터 전송 비용 피크 월 90만 원 도달
+- CloudFront 비용이 지속적으로 증가하는 추세
 
-"트래픽이 늘어나는 건 좋은데, 비용도 같이 늘어나네요." 팀 리더의 한마디에서 이 프로젝트가 시작되었습니다.
+**실제 CloudFront 비용 추이:**
+```
+2024년 1월: 기준점
+2024년 2월: 20% 증가
+2024년 3-12월: 평균 유지
+2025년 1월: 전년 대비 24.6% 추가 증가
+```
+
+월별 데이터 전송량도 400GB에서 12,600GB까지 증가. "트래픽이 늘어나는 건 좋은데, 비용도 같이 늘어나네요." 팀 리더의 한마디에서 이 프로젝트가 시작되었습니다.
 
 ---
 
@@ -59,6 +67,27 @@ date: 2024-03-01
 ```
 
 JPEG만 지원했기 때문에 WebP, AVIF를 지원하는 모던 브라우저에서도 큰 파일을 다운로드했습니다.
+
+### PoC: 실제 압축률 측정
+
+실제 프로덕션 이미지로 측정한 결과:
+
+**테스트 대상: 상품 상세 이미지 (442px 사용 중)**
+- 원본: JPEG, 35.1KB
+
+**포맷만 변경:**
+```
+WebP: 9.9KB (71.7% 감소)
+AVIF: 5.2KB (85.2% 감소)
+```
+
+**포맷 + 사이즈 변경 (442px):**
+```
+WebP: 5.4KB (84.6% 감소)
+AVIF: 3.3KB (90.6% 감소)
+```
+
+**결론:** AVIF가 압축률은 최고지만, 일부 브라우저(Opera, KaiOS) 미지원. WebP는 IE를 제외한 모든 브라우저 지원하므로 **WebP를 기본으로 선택하되, `<picture>` 태그로 AVIF도 지원**하는 방향 채택.
 
 **4. 클라이언트 단에서 크롭**
 ```html
@@ -156,60 +185,93 @@ Lambda@Edge는 요청당 과금입니다. 악의적인 사용자가 다음과 �
 
 CloudFront Functions는 Lambda@Edge보다 **1/6 저렴**하고 **10배 빠릅니다**.
 
-**검증 로직:**
+**검증 로직 (실제 프로덕션 코드):**
 ```javascript
+// 상수 정의
+const MIN_WIDTH = 50;
+const MAX_WIDTH = 2000;
+const MIN_HEIGHT = 50;
+const MAX_HEIGHT = 2000;
+const MIN_QUALITY = 10;
+const MAX_QUALITY = 100;
+const STEP = 10;  // 10px 단위
+
+const ALLOWED_FORMATS = ['jpeg', 'png', 'webp', 'gif', 'svg', 'jpg', 'avif'];
+
 function handler(event) {
   var request = event.request;
-  var querystring = request.querystring;
+  var queryParams = request.querystring;
+  var newQueryParams = {};
 
-  // 1. 포맷 검증
-  var format = querystring.f?.value || 'jpg';
-  var allowedFormats = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
-  if (!allowedFormats.includes(format)) {
-    return {
-      statusCode: 403,
-      statusDescription: 'Invalid format'
-    };
+  // w 파라미터 정규화 (50~2000, 10단위)
+  if (queryParams.w) {
+    var wValue = parseInt(queryParams.w.value, 10) || 0;
+    if (wValue < MIN_WIDTH) {
+      newQueryParams.w = MIN_WIDTH;
+    } else if (wValue > MAX_WIDTH) {
+      newQueryParams.w = MAX_WIDTH;
+    } else {
+      // 가장 가까운 10단위 값으로 반올림
+      newQueryParams.w = Math.round(wValue / STEP) * STEP;
+    }
   }
 
-  // 2. 크기 정규화 (100px 단위로 반올림)
-  var width = parseInt(querystring.w?.value || 0);
-  var height = parseInt(querystring.h?.value || 0);
-
-  if (width > 0) {
-    width = Math.round(width / 100) * 100;
-    querystring.w = { value: width.toString() };
+  // h 파라미터 정규화 (50~2000, 10단위)
+  if (queryParams.h) {
+    var hValue = parseInt(queryParams.h.value, 10) || 0;
+    if (hValue < MIN_HEIGHT) {
+      newQueryParams.h = MIN_HEIGHT;
+    } else if (hValue > MAX_HEIGHT) {
+      newQueryParams.h = MAX_HEIGHT;
+    } else {
+      newQueryParams.h = Math.round(hValue / STEP) * STEP;
+    }
   }
 
-  if (height > 0) {
-    height = Math.round(height / 100) * 100;
-    querystring.h = { value: height.toString() };
+  // q 파라미터 정규화 (10~100, 10단위)
+  if (queryParams.q) {
+    var qValue = parseInt(queryParams.q.value, 10) || 0;
+    if (qValue < MIN_QUALITY) {
+      newQueryParams.q = MIN_QUALITY;
+    } else if (qValue > MAX_QUALITY) {
+      newQueryParams.q = MAX_QUALITY;
+    } else {
+      newQueryParams.q = Math.round(qValue / STEP) * STEP;
+    }
   }
 
-  // 3. 범위 제한
-  if (width > 2000 || height > 2000 || width < 50 || height < 50) {
-    return {
-      statusCode: 403,
-      statusDescription: 'Invalid size'
-    };
+  // f 파라미터 정규화 (허용된 포맷만)
+  if (queryParams.f) {
+    var fValue = queryParams.f.value.toLowerCase();
+    if (ALLOWED_FORMATS.includes(fValue)) {
+      newQueryParams.f = fValue;
+    }
   }
 
-  // 4. 품질 검증
-  var quality = parseInt(querystring.q?.value || 80);
-  if (quality < 1 || quality > 100) {
-    quality = 80;
-  }
-  querystring.q = { value: quality.toString() };
+  // 정렬하여 동일한 키로 캐싱 가능하도록 변경
+  var sortedQuery = Object.keys(newQueryParams)
+    .sort()
+    .map(key => key + "=" + newQueryParams[key])
+    .join("&");
 
-  request.querystring = querystring;
+  if (sortedQuery.length > 0) {
+    request.querystring = sortedQuery;
+  }
+
   return request;
 }
 ```
 
 **효과:**
-- `?w=387&h=287` → `?w=400&h=300` (정규화)
-- 캐시 키 개수 **10배 감소**
+- `?w=387&h=287` → `?w=390&h=290` (10px 단위 정규화)
+- `?w=755` → `?w=760` (반올림)
+- 캐시 키 개수: 1,950개 → 195개 (**10배 감소**)
 - 캐시 히트율 **70% → 85%** 향상
+
+**10px vs 100px 단위 선택:**
+- 100px: 캐시 효율 최고지만 품질 저하 가능성
+- 10px: 캐시 효율과 품질의 균형점
+- 실제 측정 결과 10px 단위면 충분히 높은 캐시 히트율 달성
 
 ---
 
@@ -327,6 +389,73 @@ COPY index.js ./
 - 비용은 512MB 대비 10% 증가
 - 타임아웃 95% 감소 → 사용자 경험 대폭 개선
 
+### 실무 이슈와 해결
+
+**이슈 1: OOM (Out Of Memory) - 대용량 이미지**
+
+문제:
+- 7952 × 5304 해상도 이미지 처리 시 Lambda OOM 발생
+- Sharp가 이미지를 메모리에 올릴 때: width × height × 4 바이트 필요
+- 계산: 7952 × 5304 × 4 = 약 160MB
+
+해결:
+```javascript
+// 이미지 규격 제한
+const MAX_DIMENSION = 4000;
+
+if (originalWidth > MAX_DIMENSION || originalHeight > MAX_DIMENSION) {
+  // 4000×4000 이상은 원본 이미지 반환
+  return originalResponse;
+}
+```
+
+2GB 메모리로 증설해도 초대형 이미지는 OOM 발생. 현실적인 제한선을 두는 것이 필요.
+
+**이슈 2: Lambda 타임아웃**
+
+문제:
+- 이미지 처리 시간이 Lambda 타임아웃(30초)보다 길 때 응답 없음
+- Lambda 자체가 종료되어 catch 블록도 실행 안 됨 → 원본 이미지 응답도 불가
+
+해결:
+```javascript
+// Promise.race로 타임아웃 경쟁
+const TIMEOUT = 28000; // 30초보다 약간 짧게
+
+const processImage = sharp(s3Object.Body).resize(...).toBuffer();
+
+const result = await Promise.race([
+  processImage,
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timeout')), TIMEOUT)
+  )
+]);
+
+// 타임아웃 시 원본 이미지 반환
+```
+
+CloudFront Lambda@Edge는 30초 제한. 처리 시간이 긴 이미지는 원본으로 대체하여 사용자 경험 보장.
+
+**이슈 3: 이미지 파일명에 확장자 없는 케이스**
+
+문제:
+- 기존: 파일명의 확장자로 이미지 여부 판단
+- 실제: `product-image` 같은 확장자 없는 파일 다수 존재
+- 결과: 이미지인데도 원본 객체 그대로 반환
+
+해결:
+```javascript
+// 파일명 대신 Content-Type 헤더로 검증
+const response = event.Records[0].cf.response;
+const contentType = response.headers['content-type']?.[0]?.value;
+
+if (!contentType || !contentType.startsWith('image/')) {
+  return response; // 이미지 아님
+}
+```
+
+S3 응답의 Content-Type 헤더가 더 정확한 판단 기준.
+
 ### A/B 테스트: 크기 정규화
 
 **테스트 설계:**
@@ -390,18 +519,42 @@ done
 
 ---
 
-## 결과: 비용 68% 절감, 속도 50% 개선
+## 결과: 비용 75% 절감, 속도 50% 개선
+
+### 실제 측정 데이터
+
+**배포 단계별 적용:**
+1. 5월 15일: 혜택탭 전체 적용
+2. 5월 20일: 상품 이미지, 배너 이미지 적용
+
+**트래픽 vs 데이터 전송량:**
+```
+4월 3일 (적용 전):
+- 요청: 360만 건
+- 전송량: 419.71GB
+
+5월 26일 (적용 후):
+- 요청: 475만 건 (31% 증가)
+- 전송량: 132.49GB (68% 감소)
+```
+
+**핵심 성과:**
+- 요청이 115만 건 더 많았지만, 전송량은 **4배 감소**
+- 이미지 최적화 없었다면 전송량 550GB 예상 → 실제 132GB
 
 ### 비용 절감
 
-| 항목 | Before | After | 절감률 |
-|------|--------|-------|--------|
-| **CloudFront 전송** | $900/월 | $360/월 | 60% ⬇️ |
-| **Lambda 실행** | - | $50/월 | - |
-| **S3 스토리지** | $30/월 | $30/월 | - |
-| **합계** | $930/월 | $440/월 | **68% ⬇️** |
+| 시점 | 데이터 전송량 | 절감률 |
+|------|--------------|--------|
+| **4월 27일** | 279.4GB | 기준 |
+| **5월 24일** | 82.52GB | **70% ⬇️** |
 
-**연간 절감액: $5,880 (약 780만 원)**
+| 시점 | 데이터 전송량 | 절감률 |
+|------|--------------|--------|
+| **4월 3일** | 419.71GB | 기준 |
+| **5월 26일** | 132.49GB | **68% ⬇️** |
+
+CloudFront 전송 비용이 전체 인프라 비용의 큰 부분을 차지했기 때문에, **전체 인프라 비용 약 75% 절감** 달성.
 
 ### 성능 개선
 

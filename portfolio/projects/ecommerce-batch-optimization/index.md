@@ -13,8 +13,9 @@ date: 2023-09-01
 4. [아키텍처 설계: 템플릿 메소드 패턴 선택 이유](#아키텍처-설계-템플릿-메소드-패턴-선택-이유)
 5. [핵심 구현 1: CompletableFuture로 병렬 처리](#핵심-구현-1-completablefuture로-병렬-처리)
 6. [핵심 구현 2: 템플릿 메소드 패턴으로 코드 중복 제거](#핵심-구현-2-템플릿-메소드-패턴으로-코드-중복-제거)
-7. [핵심 구현 3: Jenkins 기반 재수집 시스템](#핵심-구현-3-jenkins-기반-재수집-시스템)
-8. [결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일](#결과-처리-시간-30분-3분-신규-커머스-추가-2주-2일)
+7. [핵심 구현 3: 벌크 처리로 DB I/O 최적화](#핵심-구현-3-벌크-처리로-db-io-최적화)
+8. [핵심 구현 4: Jenkins 기반 재수집 시스템](#핵심-구현-4-jenkins-기반-재수집-시스템)
+9. [결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일](#결과-처리-시간-30분-3분-신규-커머스-추가-2주-2일)
 
 ---
 
@@ -50,7 +51,7 @@ date: 2023-09-01
 
 **2. 코드 중복 (70% 수준)**
 
-각 커머스별로 거의 동일한 로직을 중복 구현:
+각 커머스별로 거의 동일한 로직을 중복 구현. **각 커머스 수집 클래스가 1,000줄 이상**의 코드를 포함하고 있었습니다:
 
 ```java
 // 위메프
@@ -87,7 +88,19 @@ public void collectLotteOrders() {
 
 **합계: 2주**
 
-**4. 에러 전파**
+**4. 비효율적인 DB I/O**
+
+주문 하나마다 2번의 DB I/O 발생:
+```
+주문 10,000건 처리 시:
+1. 배송지 저장: 10,000번
+2. 주문 정보 저장: 10,000번
+→ 총 20,000번의 DB I/O
+```
+
+이로 인해 DB 커넥션 풀이 고갈되고 전체 배치 처리 시간이 크게 증가했습니다.
+
+**5. 에러 전파**
 
 한 커머스에서 에러가 발생하면 전체 배치가 중단:
 ```
@@ -402,7 +415,145 @@ After:
 
 ---
 
-## 핵심 구현 3: Jenkins 기반 재수집 시스템
+## 핵심 구현 3: 벌크 처리로 DB I/O 최적화
+
+### 문제: 주문 10,000건 = DB I/O 20,000번
+
+기존 방식은 주문 하나를 처리할 때마다 2번의 DB I/O가 발생했습니다:
+
+```java
+// 기존 방식 (주문 하나씩 처리)
+for (Order order : orders) {
+  // 1. 배송지 저장
+  Address address = addressRepository.save(order.getAddress());
+
+  // 2. 주문 정보 저장 (배송지 ID 매핑)
+  order.setAddressId(address.getId());
+  orderRepository.save(order);
+}
+
+// 주문 10,000건 → DB I/O 20,000번
+```
+
+**문제점:**
+- DB 커넥션 풀 고갈
+- 네트워크 왕복 시간 누적
+- 트랜잭션 오버헤드
+
+### 해결: 벌크 처리로 3번의 DB I/O
+
+```java
+// 개선된 방식 (벌크 처리)
+public void saveOrdersBulk(List<Order> orders) {
+  // 1. 배송지 벌크 저장 (1번의 DB I/O)
+  List<Address> addresses = orders.stream()
+    .map(Order::getAddress)
+    .collect(Collectors.toList());
+  addressRepository.saveAll(addresses);
+
+  // 2. 저장된 배송지 조회 (1번의 DB I/O)
+  List<Address> savedAddresses = addressRepository.findByBatchUuid(batchUuid);
+
+  // 3. 배송지 ID 매핑 후 주문 벌크 저장 (1번의 DB I/O)
+  for (int i = 0; i < orders.size(); i++) {
+    orders.get(i).setAddressId(savedAddresses.get(i).getId());
+  }
+  orderRepository.saveAll(orders);
+}
+
+// 주문 10,000건 → DB I/O 3번!
+```
+
+**개선 효과:**
+- DB I/O: 20,000번 → 3번 (**6,666배 감소**)
+- 배치 처리 시간: 30분 → 8분 (CompletableFuture 적용 전 기준)
+
+### 동시성 문제와 해결
+
+**문제 발생:**
+
+벌크 처리 후 배송지 ID를 조회하는 방식에서 동시성 이슈가 발생했습니다:
+
+```java
+// 문제가 있는 코드
+// 1. 배송지 20개 벌크 저장
+addressRepository.saveAll(addresses);
+
+// 2. 마지막 ID 조회
+Long lastId = addressRepository.findMaxId(); // 520
+
+// 3. ID 범위 계산
+// 500번부터 520번까지가 방금 저장된 배송지라고 가정
+List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
+  .boxed()
+  .collect(Collectors.toList());
+```
+
+**문제 상황:**
+```
+Thread 1 (위메프): 배송지 20개 저장 → 마지막 ID: 520
+Thread 2 (롯데ON): 동시에 배송지 15개 저장 → 마지막 ID: 535
+Thread 1: 마지막 ID 조회 → 535를 가져옴
+Thread 1: 515~535를 자신의 배송지로 착각 ❌
+```
+
+**해결책 1: UUID로 배치 식별**
+
+```java
+// UUID로 배치 식별
+String batchUuid = UUID.randomUUID().toString();
+
+// 1. UUID와 함께 배송지 저장
+for (int i = 0; i < addresses.size(); i++) {
+  addresses.get(i).setBatchUuid(batchUuid);
+  addresses.get(i).setSequence(i); // 순서 보장
+}
+addressRepository.saveAll(addresses);
+
+// 2. UUID로 조회 (동시성 안전)
+List<Address> savedAddresses = addressRepository
+  .findByBatchUuidOrderBySequence(batchUuid);
+```
+
+**해결책 2: Sequence로 순서 보장**
+
+```sql
+-- addresses 테이블
+CREATE TABLE addresses (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  batch_uuid VARCHAR(36),     -- 배치 식별
+  sequence INT,                -- 순서 보장
+  address_line VARCHAR(255),
+  ...
+  INDEX idx_batch_uuid (batch_uuid)
+);
+```
+
+**왜 Sequence가 필요한가?**
+
+INSERT 문의 순서대로 데이터가 저장된다는 보장이 없기 때문입니다:
+```
+INSERT INTO addresses VALUES (...), (...), (...);
+
+저장 순서: 1, 2, 3 (예상)
+실제 순서: 2, 1, 3 (가능) ❌
+```
+
+Sequence를 함께 저장하면 정확한 순서로 조회 가능:
+```sql
+SELECT * FROM addresses
+WHERE batch_uuid = '...'
+ORDER BY sequence ASC;
+```
+
+**최종 결과:**
+- 동시성 문제 완전 해결
+- 배송지-주문 매핑 정확도 100%
+- 데이터 정합성 보장
+
+---
+
+## 핵심 구현 4: Jenkins 기반 재수집 시스템
 
 ### Jenkins 파라미터화 배치
 
