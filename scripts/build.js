@@ -67,8 +67,8 @@ function scanProjects() {
  * Wrap H2 sections in <section class="content-section">
  */
 function wrapSections(html) {
-  // Split by h2 tags
-  const parts = html.split(/(<h2>)/);
+  // Split by h2 tags (with or without attributes like id)
+  const parts = html.split(/(<h2[^>]*>)/);
 
   if (parts.length <= 1) return html; // No h2 tags
 
@@ -80,7 +80,7 @@ function wrapSections(html) {
       const content = parts[i + 1];
 
       // Find next h2 or end of content
-      const nextH2Index = content.indexOf('<h2>');
+      const nextH2Index = content.search(/<h2[^>]*>/);
       const sectionContent = nextH2Index > 0
         ? content.substring(0, nextH2Index)
         : content;
