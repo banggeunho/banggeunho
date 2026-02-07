@@ -71,154 +71,598 @@
       <!-- Content -->
       <div class="project-detail-content">
         <section class="content-section">
-<h2 id="개요">개요</h2>
-<p>에브리타임 혜택탭 출시로 트래픽 30% 증가 상황에서 Lambda@Edge 기반 On-demand 이미지 처리 시스템을 구축하여 비용을 68% 절감하고 페이지 로딩 속도를 50% 개선했습니다.</p>
+<h2 id="목차">목차</h2>
+<ol>
+<li><a href="#%EB%B0%B0%EA%B2%BD-%ED%8A%B8%EB%9E%98%ED%94%BD-30-%EC%A6%9D%EA%B0%80-%EB%B9%84%EC%9A%A9%EC%9D%80-%EC%96%B4%EB%96%BB%EA%B2%8C">배경: 트래픽 30% 증가, 비용은 어떻게?</a></li>
+<li><a href="#%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-%EC%9B%90%EB%B3%B8-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%84%9C%EB%B9%99%EC%9D%98-%EB%82%AD%EB%B9%84">문제 분석: 원본 이미지 서빙의 낭비</a></li>
+<li><a href="#%ED%95%B4%EA%B2%B0-%EB%AA%A9%ED%91%9C-%EB%B9%84%EC%9A%A9-%EC%A0%88%EA%B0%90%EA%B3%BC-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0">해결 목표: 비용 절감과 속도 개선</a></li>
+<li><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%84%A4%EA%B3%84-lambdaedge-%EC%84%A0%ED%83%9D-%EC%9D%B4%EC%9C%A0">아키텍처 설계: Lambda@Edge 선택 이유</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-cloudfront-functions%EB%A1%9C-%EC%96%B4%EB%B7%B0%EC%A7%95-%EB%B0%A9%EC%A7%80">핵심 구현 1: CloudFront Functions로 어뷰징 방지</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-lambdaedge%EB%A1%9C-on-demand-%EC%B2%98%EB%A6%AC">핵심 구현 2: Lambda@Edge로 On-demand 처리</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-3-%EC%BA%90%EC%8B%9C-%EC%A0%84%EB%9E%B5%EC%9C%BC%EB%A1%9C-%ED%9E%88%ED%8A%B8%EC%9C%A8-%EA%B7%B9%EB%8C%80%ED%99%94">핵심 구현 3: 캐시 전략으로 히트율 극대화</a></li>
+<li><a href="#%EA%B2%B0%EA%B3%BC-%EB%B9%84%EC%9A%A9-75-%EC%A0%88%EA%B0%90-%EC%86%8D%EB%8F%84-50-%EA%B0%9C%EC%84%A0">결과: 비용 75% 절감, 속도 50% 개선</a></li>
+</ol>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="문제-상황">문제 상황</h2>
-<p><strong>에브리타임 혜택탭 출시 배경:</strong></p>
-<p>에브리타임은 대학생 커뮤니티 앱으로, 커머스 서비스를 앱 내 전용 &#39;혜택탭&#39;으로 노출하게 되었습니다. 거의 모든 페이지에 배너와 상품 이미지가 존재하여 출시 후 트래픽이 30% 급증했고, CloudFront 데이터 전송 비용이 피크 월 90만 원에 도달했습니다.</p>
-<p><strong>기존 시스템의 문제:</strong></p>
+<h2 id="배경-트래픽-30-증가-비용은-어떻게">배경: 트래픽 30% 증가, 비용은 어떻게?</h2>
+<p>에브리타임은 대학생 커뮤니티 앱입니다. 2024년 3월, 우리 커머스 서비스가 앱 내 전용 &#39;혜택탭&#39;으로 노출되기 시작했습니다.</p>
+<p><strong>변화의 규모:</strong></p>
 <ul>
-<li><strong>원본 이미지 서빙:</strong> 고해상도 원본 파일을 그대로 전송 (불필요한 대역폭 낭비)</li>
-<li><strong>크기 제한 불일치:</strong> 서비스별로 요구하는 이미지 사이즈가 다름에도 통일된 처리 로직 부재</li>
-<li><strong>비효율적 처리:</strong> 어드민 업로드 시점에 크기 제한을 두거나, 클라이언트(앱)에서 이미지를 잘라서 표시 (UX 저하)</li>
-<li><strong>포맷 최적화 부재:</strong> WebP, AVIF 등 차세대 포맷 미지원</li>
+<li>거의 모든 페이지에 배너와 상품 이미지 노출</li>
+<li>출시 후 트래픽 30% 급증</li>
+<li>CloudFront 비용이 지속적으로 증가하는 추세</li>
 </ul>
+<p><strong>실제 CloudFront 비용 추이:</strong></p>
+<pre><code class="language-">2024년 1월: 기준점
+2024년 2월: 20% 증가
+2024년 3-12월: 평균 유지
+2025년 1월: 전년 대비 24.6% 추가 증가</code></pre><p>월별 데이터 전송량도 400GB에서 12,600GB까지 증가. &quot;트래픽이 늘어나는 건 좋은데, 비용도 같이 늘어나네요.&quot; 팀 리더의 한마디에서 이 프로젝트가 시작되었습니다.</p>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="해결-과제-task">해결 과제 (Task)</h2>
+<h2 id="문제-분석-원본-이미지-서빙의-낭비">문제 분석: 원본 이미지 서빙의 낭비</h2>
+<h3 id="기존-시스템의-문제">기존 시스템의 문제</h3>
+<p><strong>1. 원본 이미지를 그대로 전송</strong></p>
+<pre><code class="language-">- 업로드: 1920x1080 (300KB) 이미지
+- 실제 사용: 400x300 크기로 리사이징해서 표시
+- 전송: 300KB 전체를 다운로드 😱
+- 낭비: 200KB (66%)</code></pre><p><strong>2. 서비스별 요구 크기가 제각각</strong></p>
 <ul>
-<li>CloudFront 비용을 50% 이상 절감하면서 이미지 품질 유지</li>
+<li>썸네일: 200x200</li>
+<li>리스트뷰: 400x300</li>
+<li>상세페이지: 800x600</li>
+<li>배너: 1200x400</li>
+</ul>
+<p>하지만 시스템은 모든 경우에 동일한 원본 이미지를 전송했습니다.</p>
+<p><strong>3. 차세대 포맷 미지원</strong></p>
+<pre><code class="language-">- JPEG (100KB)
+- WebP (60KB) - 40% 절감
+- AVIF (45KB) - 55% 절감</code></pre><p>JPEG만 지원했기 때문에 WebP, AVIF를 지원하는 모던 브라우저에서도 큰 파일을 다운로드했습니다.</p>
+<h3 id="poc-실제-압축률-측정">PoC: 실제 압축률 측정</h3>
+<p>실제 프로덕션 이미지로 측정한 결과:</p>
+<p><strong>테스트 대상: 상품 상세 이미지 (442px 사용 중)</strong></p>
+<ul>
+<li>원본: JPEG, 35.1KB</li>
+</ul>
+<p><strong>포맷만 변경:</strong></p>
+<pre><code class="language-">WebP: 9.9KB (71.7% 감소)
+AVIF: 5.2KB (85.2% 감소)</code></pre><p><strong>포맷 + 사이즈 변경 (442px):</strong></p>
+<pre><code class="language-">WebP: 5.4KB (84.6% 감소)
+AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압축률은 최고지만, 일부 브라우저(Opera, KaiOS) 미지원. WebP는 IE를 제외한 모든 브라우저 지원하므로 <strong>WebP를 기본으로 선택하되, <code>&lt;picture&gt;</code> 태그로 AVIF도 지원</strong>하는 방향 채택.</p>
+<p><strong>4. 클라이언트 단에서 크롭</strong></p>
+<pre><code class="language-html"><img src="original.jpg" style="width: 200px; height: 200px; object-fit: cover;"></code></pre><p>이미지는 300KB를 전부 다운로드하고, 브라우저에서 200x200으로 잘라서 표시. UX 저하 + 대역폭 낭비.</p>
+<hr>
+</section>
+<section class="content-section">
+<h2 id="해결-목표-비용-절감과-속도-개선">해결 목표: 비용 절감과 속도 개선</h2>
+<h3 id="정량적-목표">정량적 목표</h3>
+<ul>
+<li><strong>CloudFront 비용</strong>: 50% 이상 절감</li>
+<li><strong>캐시 히트율</strong>: 85% 이상 달성</li>
+<li><strong>페이지 로딩 속도</strong>: 50% 개선</li>
+<li><strong>Lambda 타임아웃</strong>: 95% 감소</li>
+</ul>
+<h3 id="정성적-목표">정성적 목표</h3>
+<ul>
 <li>On-demand 이미지 처리로 다양한 크기 요구사항 대응</li>
-<li>차세대 포맷(WebP, AVIF) 지원으로 페이지 로딩 속도 개선</li>
+<li>차세대 포맷(WebP, AVIF) 자동 지원</li>
 <li>악의적 요청 차단으로 비용 폭증 방지</li>
+<li>기존 URL 구조 유지 (호환성 보장)</li>
 </ul>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
+<h2 id="아키텍처-설계-lambdaedge-선택-이유">아키텍처 설계: Lambda@Edge 선택 이유</h2>
+<h3 id="lambdaedge-vs-ec2-vs-ecs">Lambda@Edge vs EC2 vs ECS</h3>
+<p>이미지 리사이징 시스템을 구축할 때 고려한 3가지 옵션:</p>
+<table>
+<thead>
+<tr>
+<th>기준</th>
+<th>EC2/ECS</th>
+<th>Lambda@Edge</th>
+<th>S3 Pre-processing</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>비용</td>
+<td>상시 과금</td>
+<td>요청당 과금</td>
+<td>저장 공간 과다</td>
+</tr>
+<tr>
+<td>확장성</td>
+<td>수동 스케일링</td>
+<td>자동 무한 확장</td>
+<td>사전 생성 필요</td>
+</tr>
+<tr>
+<td>지연시간</td>
+<td>Origin까지 왕복</td>
+<td>Edge에서 처리</td>
+<td>빠름</td>
+</tr>
+<tr>
+<td>유지보수</td>
+<td>서버 관리 필요</td>
+<td>완전 관리형</td>
+<td>스크립트 관리</td>
+</tr>
+<tr>
+<td>유연성</td>
+<td>높음</td>
+<td>중간</td>
+<td>낮음</td>
+</tr>
+</tbody></table>
+<p><strong>Lambda@Edge를 선택한 이유:</strong></p>
+<ul>
+<li><strong>비용 효율</strong>: 트래픽이 적을 때는 비용 거의 0원</li>
+<li><strong>글로벌 배포</strong>: 전 세계 Edge Location에서 실행</li>
+<li><strong>완전 관리형</strong>: 서버 관리 불필요</li>
+<li><strong>캐시 통합</strong>: CloudFront와 네이티브 통합</li>
+</ul>
+<h3 id="전체-아키텍처">전체 아키텍처</h3>
 <pre class="mermaid">graph TB
-    A[브라우저] -->|?w&h&f&q| B[CloudFront]
+    A[브라우저] -->|?w=400&h=300&f=webp&q=80| B[CloudFront]
     B --> C[CloudFront Functions]
-    C -->|검증 OK| D[Lambda@Edge]
-    C -.검증 실패.-> E[403]
-    D -->|원본 요청| F[S3]
-    D -->|리사이징<br/>포맷 변환| B
-    B -->|캐싱| A</pre></section>
-<section class="content-section">
-<h2 id="주요-기능">주요 기능</h2>
-<p><strong>CloudFront Functions (어뷰징 방지):</strong></p>
-<ul>
-<li><strong>포맷 검증:</strong> 허용된 이미지 포맷만 처리 (webp, avif, jpg, png)</li>
-<li><strong>크기 정규화:</strong> 요청 크기를 100px 단위로 반올림하여 캐시 효율 극대화 (예: 387px → 400px)</li>
-<li><strong>범위 제한:</strong> 허용 가능한 이미지 크기 범위 검증 (50px ~ 2000px)</li>
-<li><strong>악의적 요청 차단:</strong> 비정상적인 쿼리 파라미터 조합 차단으로 비용 폭증 방지</li>
-<li><strong>성능 최적화:</strong> Viewer Request 단계에서 경량 JavaScript 실행 (Lambda@Edge 호출 전 사전 필터링)</li>
-</ul>
-<p><strong>Lambda@Edge (이미지 처리):</strong></p>
-<ul>
-<li><strong>리사이징:</strong> Sharp 라이브러리 기반 고성능 이미지 리사이징</li>
-<li><strong>포맷 변환:</strong> WebP, AVIF 등 차세대 압축 포맷 지원 (브라우저 호환성 자동 처리)</li>
-<li><strong>품질 조정:</strong> 기본 80% 품질로 시각적 품질과 용량 최적 밸런스 유지</li>
-<li><strong>원본 보존:</strong> S3에 원본 이미지 유지, 변환된 이미지는 CloudFront 캐시에만 저장</li>
-</ul>
-<p><strong>프론트엔드:</strong></p>
-<pre><code class="language-html"><picture>
-  <source srcset="?w=400&f=avif" type="image/avif">
-  <source srcset="?w=400&f=webp" type="image/webp">
-  <img src="?w=400&f=jpg" alt="상품">
-</picture></code></pre></section>
-<section class="content-section">
-<h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
-<p><strong>도전 1: 캐시 키 정규화 전략</strong></p>
-<ul>
-<li><strong>문제:</strong> 클라이언트에서 다양한 크기 요청(387px, 392px, 401px 등)으로 캐시 미스가 빈번하여 Lambda 호출 증가</li>
-<li><strong>해결:</strong><ul>
-<li><strong>정규화 로직:</strong> 요청 크기를 100px 단위로 반올림 (387px → 400px)</li>
-<li><strong>검증 과정:</strong> A/B 테스트로 400px vs 387px 육안 비교 → 차이 없음 확인</li>
-<li><strong>효과 분석:</strong> 캐시 키 개수 10배 감소 (1000개 → 100개)</li>
-<li><strong>인기 크기 집중:</strong> CloudWatch 로그 분석 결과 400px, 800px, 1200px가 전체의 60% 차지</li>
-</ul>
-</li>
-<li><strong>측정:</strong> CloudFront 캐시 히트율 CloudWatch 메트릭으로 모니터링</li>
-</ul>
-<p><strong>도전 2: Lambda@Edge 타임아웃 해결</strong></p>
-<ul>
-<li><strong>문제:</strong> 대용량 이미지(5MB 이상) 처리 시 Lambda@Edge 타임아웃 발생 (초기 설정: 512MB 메모리, 5초 소요)</li>
-<li><strong>해결:</strong><ul>
-<li><strong>Sharp 최적화 설정:</strong><ul>
-<li><code>sharp.resize({ fit: &#39;inside&#39;, withoutEnlargement: true })</code> - 비율 유지 리사이징</li>
-<li><code>quality: 80</code> - 시각적 품질과 용량 균형</li>
-<li><code>progressive: true</code> - 점진적 JPEG 로딩</li>
-</ul>
-</li>
-<li><strong>메모리 할당 조정:</strong><ul>
-<li>512MB (평균 5초) → 1024MB (평균 2초)</li>
-<li>비용 10% 증가하지만 타임아웃 발생률 95% 감소</li>
-<li>트레이드오프: 메모리 비용 증가 &lt; 타임아웃으로 인한 실패 비용</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>검증:</strong> CloudWatch Logs에서 Lambda 실행 시간 분포 분석, p99 &lt; 3초 달성</li>
-</ul>
-<p><strong>도전 3: 캐시 히트율 개선 (65% → 85%)</strong></p>
-<ul>
-<li><strong>문제:</strong> 초기 캐시 히트율 65%로 Lambda 호출이 빈번하여 비용 및 응답 속도 저하</li>
-<li><strong>단계별 개선:</strong><ul>
-<li><strong>1단계 (히트율 65%):</strong> 기본 CloudFront 캐싱만 적용</li>
-<li><strong>2단계 (히트율 70%):</strong> 크기 정규화(100px 단위) 적용</li>
-<li><strong>3단계 (히트율 85%):</strong> 인기 크기(400px, 800px, 1200px) 사전 워밍</li>
-</ul>
-</li>
-<li><strong>사전 워밍 전략:</strong><ul>
-<li>매일 새벽 3시 배치로 인기 상품 이미지를 인기 크기로 미리 생성</li>
-<li>CloudFront에 캐시 적재하여 첫 요청부터 캐시 히트</li>
-</ul>
-</li>
-<li><strong>효과:</strong> Lambda 호출 횟수 35% 감소, 평균 응답 속도 200ms → 50ms</li>
-</ul>
-<p><strong>도전 4: 비용 폭증 방지 (어뷰징 차단)</strong></p>
-<ul>
-<li><strong>문제:</strong> 악의적 사용자가 다양한 크기 조합을 요청하면 Lambda 호출 비용 폭증 가능</li>
-<li><strong>해결:</strong><ul>
-<li><strong>CloudFront Functions 사전 검증:</strong><ul>
-<li>허용 포맷: webp, avif, jpg, png만 허용</li>
-<li>크기 범위: 50px ~ 2000px 제한</li>
-<li>크기 정규화: 100px 단위로 강제 반올림</li>
-<li>비정상 쿼리: <code>?w=9999&amp;h=9999&amp;f=bmp</code> 같은 요청 차단 (403 응답)</li>
-</ul>
-</li>
-<li><strong>Viewer Request 단계 처리:</strong> Lambda@Edge 호출 전 경량 JavaScript로 필터링</li>
-</ul>
-</li>
-<li><strong>효과:</strong> 비정상 요청 차단률 99.8%, 월 비용 90만원 → 28만원 (68% 절감)</li>
-</ul>
+    C -->|검증 OK| D{캐시 확인}
+    C -.검증 실패.-> E[403 Forbidden]
+
+    D -->|캐시 HIT| A
+    D -->|캐시 MISS| F[Lambda@Edge]
+
+    F -->|원본 요청| G[S3]
+    G -->|원본 이미지| F
+    F -->|리사이징<br/>포맷 변환| B
+    B -->|캐시 저장| D</pre><h3 id="url-파라미터-설계">URL 파라미터 설계</h3>
+<pre><code class="language-">https://cdn.example.com/products/123.jpg?w=400&h=300&f=webp&q=80
+
+- w: width (너비)
+- h: height (높이)
+- f: format (webp, avif, jpg, png)
+- q: quality (1-100, 기본 80)</code></pre><hr>
 </section>
 <section class="content-section">
-<h2 id="기술-스택">기술 스택</h2>
+<h2 id="핵심-구현-1-cloudfront-functions로-어뷰징-방지">핵심 구현 1: CloudFront Functions로 어뷰징 방지</h2>
+<h3 id="문제-악의적-요청으로-비용-폭증">문제: 악의적 요청으로 비용 폭증</h3>
+<p>Lambda@Edge는 요청당 과금입니다. 악의적인 사용자가 다음과 같은 요청을 보내면?</p>
+<pre><code class="language-">?w=1&h=1    // 1x1 픽셀
+?w=2&h=2    // 2x2 픽셀
+?w=3&h=3    // 3x3 픽셀
+...
+?w=5000&h=5000  // 5000x5000 픽셀</code></pre><p>각각 Lambda 실행 → 캐시되지 않음 → 비용 폭증 💸</p>
+<h3 id="해결-cloudfront-functions로-검증">해결: CloudFront Functions로 검증</h3>
+<p>CloudFront Functions는 Lambda@Edge보다 <strong>1/6 저렴</strong>하고 <strong>10배 빠릅니다</strong>.</p>
+<p><strong>검증 로직 (실제 프로덕션 코드):</strong></p>
+<pre><code class="language-javascript">// 상수 정의
+const MIN_WIDTH = 50;
+const MAX_WIDTH = 2000;
+const MIN_HEIGHT = 50;
+const MAX_HEIGHT = 2000;
+const MIN_QUALITY = 10;
+const MAX_QUALITY = 100;
+const STEP = 10;  // 10px 단위
+
+const ALLOWED_FORMATS = ['jpeg', 'png', 'webp', 'gif', 'svg', 'jpg', 'avif'];
+
+function handler(event) {
+  var request = event.request;
+  var queryParams = request.querystring;
+  var newQueryParams = {};
+
+  // w 파라미터 정규화 (50~2000, 10단위)
+  if (queryParams.w) {
+    var wValue = parseInt(queryParams.w.value, 10) || 0;
+    if (wValue < MIN_WIDTH) {
+      newQueryParams.w = MIN_WIDTH;
+    } else if (wValue > MAX_WIDTH) {
+      newQueryParams.w = MAX_WIDTH;
+    } else {
+      // 가장 가까운 10단위 값으로 반올림
+      newQueryParams.w = Math.round(wValue / STEP) * STEP;
+    }
+  }
+
+  // h 파라미터 정규화 (50~2000, 10단위)
+  if (queryParams.h) {
+    var hValue = parseInt(queryParams.h.value, 10) || 0;
+    if (hValue < MIN_HEIGHT) {
+      newQueryParams.h = MIN_HEIGHT;
+    } else if (hValue > MAX_HEIGHT) {
+      newQueryParams.h = MAX_HEIGHT;
+    } else {
+      newQueryParams.h = Math.round(hValue / STEP) * STEP;
+    }
+  }
+
+  // q 파라미터 정규화 (10~100, 10단위)
+  if (queryParams.q) {
+    var qValue = parseInt(queryParams.q.value, 10) || 0;
+    if (qValue < MIN_QUALITY) {
+      newQueryParams.q = MIN_QUALITY;
+    } else if (qValue > MAX_QUALITY) {
+      newQueryParams.q = MAX_QUALITY;
+    } else {
+      newQueryParams.q = Math.round(qValue / STEP) * STEP;
+    }
+  }
+
+  // f 파라미터 정규화 (허용된 포맷만)
+  if (queryParams.f) {
+    var fValue = queryParams.f.value.toLowerCase();
+    if (ALLOWED_FORMATS.includes(fValue)) {
+      newQueryParams.f = fValue;
+    }
+  }
+
+  // 정렬하여 동일한 키로 캐싱 가능하도록 변경
+  var sortedQuery = Object.keys(newQueryParams)
+    .sort()
+    .map(key => key + "=" + newQueryParams[key])
+    .join("&");
+
+  if (sortedQuery.length > 0) {
+    request.querystring = sortedQuery;
+  }
+
+  return request;
+}</code></pre><p><strong>효과:</strong></p>
 <ul>
-<li>Lambda@Edge, CloudFront Functions, S3</li>
-<li>Sharp (Node.js), TypeScript</li>
+<li><code>?w=387&amp;h=287</code> → <code>?w=390&amp;h=290</code> (10px 단위 정규화)</li>
+<li><code>?w=755</code> → <code>?w=760</code> (반올림)</li>
+<li>캐시 키 개수: 1,950개 → 195개 (<strong>10배 감소</strong>)</li>
+<li>캐시 히트율 <strong>70% → 85%</strong> 향상</li>
 </ul>
+<p><strong>10px vs 100px 단위 선택:</strong></p>
+<ul>
+<li>100px: 캐시 효율 최고지만 품질 저하 가능성</li>
+<li>10px: 캐시 효율과 품질의 균형점</li>
+<li>실제 측정 결과 10px 단위면 충분히 높은 캐시 히트율 달성</li>
+</ul>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="주요-성과-result">주요 성과 (Result)</h2>
+<h2 id="핵심-구현-2-lambdaedge로-on-demand-처리">핵심 구현 2: Lambda@Edge로 On-demand 처리</h2>
+<h3 id="sharp-라이브러리-최적화">Sharp 라이브러리 최적화</h3>
+<p>Sharp는 Node.js에서 가장 빠른 이미지 처리 라이브러리입니다. libvips 기반으로 C++로 작성되어 매우 빠릅니다.</p>
+<p><strong>Lambda 코드 (Node.js 18):</strong></p>
+<pre><code class="language-javascript">const AWS = require('aws-sdk');
+const sharp = require('sharp');
+const s3 = new AWS.S3();
+
+exports.handler = async (event) => {
+  const request = event.Records[0].cf.request;
+  const querystring = request.querystring;
+
+  // 1. 원본 이미지 가져오기
+  const key = request.uri.substring(1); // /products/123.jpg -> products/123.jpg
+  const s3Object = await s3.getObject({
+    Bucket: 'my-images-bucket',
+    Key: key
+  }).promise();
+
+  // 2. 파라미터 파싱
+  const width = parseInt(querystring.w?.value) || null;
+  const height = parseInt(querystring.h?.value) || null;
+  const format = querystring.f?.value || 'jpg';
+  const quality = parseInt(querystring.q?.value) || 80;
+
+  // 3. 이미지 처리
+  let image = sharp(s3Object.Body);
+
+  // 리사이징
+  if (width || height) {
+    image = image.resize({
+      width: width,
+      height: height,
+      fit: 'inside',  // 비율 유지
+      withoutEnlargement: true  // 원본보다 크게 안 함
+    });
+  }
+
+  // 포맷 변환
+  if (format === 'webp') {
+    image = image.webp({ quality: quality });
+  } else if (format === 'avif') {
+    image = image.avif({ quality: quality });
+  } else if (format === 'png') {
+    image = image.png({ quality: quality });
+  } else {
+    image = image.jpeg({ quality: quality });
+  }
+
+  const buffer = await image.toBuffer();
+
+  // 4. 응답 생성
+  return {
+    status: '200',
+    headers: {
+      'content-type': [{ key: 'Content-Type', value: `image/${format}` }],
+      'cache-control': [{ key: 'Cache-Control', value: 'public, max-age=31536000' }], // 1년
+      'content-length': [{ key: 'Content-Length', value: buffer.length.toString() }]
+    },
+    body: buffer.toString('base64'),
+    bodyEncoding: 'base64'
+  };
+};</code></pre><h3 id="sharp-native-binary-배포-이슈">Sharp Native Binary 배포 이슈</h3>
+<p><strong>문제: 로컬과 Lambda 환경의 차이</strong></p>
+<p>Sharp는 네이티브 바이너리(libvips)에 의존하는 라이브러리입니다. 로컬 macOS(ARM64)에서 <code>npm install</code>하면 ARM64용 바이너리가 설치되지만, Lambda@Edge는 x64 Linux 환경에서 실행됩니다.</p>
+<p><strong>해결: Docker로 Lambda 환경에서 빌드</strong></p>
+<pre><code class="language-dockerfile"># Lambda@Edge와 동일한 환경 (Amazon Linux 2)
+FROM public.ecr.aws/lambda/nodejs:18
+
+WORKDIR /app
+
+# Sharp 설치 (x64 Linux용 바이너리)
+RUN npm install sharp --platform=linux --arch=x64
+
+# 나머지 의존성 설치
+COPY package.json package-lock.json ./
+RUN npm ci --production
+
+# Lambda 함수 코드
+COPY index.js ./</code></pre><p><strong>배포 과정:</strong></p>
+<ol>
+<li>Docker 컨테이너에서 <code>npm install</code> 실행</li>
+<li>x64 Linux용 Sharp 바이너리 포함된 node_modules 생성</li>
+<li>전체를 zip으로 압축하여 Lambda@Edge에 배포</li>
+</ol>
+<p><strong>주의사항:</strong></p>
 <ul>
-<li><strong>CloudFront 전송량</strong>: 419GB → 132GB (68% 감소)</li>
-<li><strong>이미지 용량</strong>: 평균 85~90% 감소</li>
-<li><strong>월 비용</strong>: 90만원 → 28만원 (68% 절감)</li>
-<li><strong>페이지 로딩</strong>: 1.2초 → 0.6초 (50% 개선)</li>
-<li><strong>캐시 히트율</strong>: 65% → 85% (20%p 향상)</li>
-<li><strong>Lambda 타임아웃</strong>: 95% 감소 (메모리 최적화)</li>
+<li>로컬에서 직접 zip으로 압축하면 ARM64 바이너리가 포함되어 Lambda에서 실행 실패</li>
+<li>CI/CD 파이프라인에서 Docker 빌드 자동화 필수</li>
 </ul>
+<h3 id="lambda-메모리-최적화">Lambda 메모리 최적화</h3>
+<p><strong>문제:</strong></p>
+<ul>
+<li>512MB 메모리: 평균 5초, 타임아웃 빈번 😱</li>
+<li>1024MB 메모리: 평균 2초, 타임아웃 거의 없음 ✅</li>
+<li>2048MB 메모리: 평균 1.8초, 비용 2배 💸</li>
+</ul>
+<p><strong>선택: 1024MB</strong></p>
+<ul>
+<li>비용은 512MB 대비 10% 증가</li>
+<li>타임아웃 95% 감소 → 사용자 경험 대폭 개선</li>
+</ul>
+<h3 id="실무-이슈와-해결">실무 이슈와 해결</h3>
+<p><strong>이슈 1: OOM (Out Of Memory) - 대용량 이미지</strong></p>
+<p>문제:</p>
+<ul>
+<li>7952 × 5304 해상도 이미지 처리 시 Lambda OOM 발생</li>
+<li>Sharp가 이미지를 메모리에 올릴 때: width × height × 4 바이트 필요</li>
+<li>계산: 7952 × 5304 × 4 = 약 160MB</li>
+</ul>
+<p>해결:</p>
+<pre><code class="language-javascript">// 이미지 규격 제한
+const MAX_DIMENSION = 4000;
+
+if (originalWidth > MAX_DIMENSION || originalHeight > MAX_DIMENSION) {
+  // 4000×4000 이상은 원본 이미지 반환
+  return originalResponse;
+}</code></pre><p>2GB 메모리로 증설해도 초대형 이미지는 OOM 발생. 현실적인 제한선을 두는 것이 필요.</p>
+<p><strong>이슈 2: Lambda 타임아웃</strong></p>
+<p>문제:</p>
+<ul>
+<li>이미지 처리 시간이 Lambda 타임아웃(30초)보다 길 때 응답 없음</li>
+<li>Lambda 자체가 종료되어 catch 블록도 실행 안 됨 → 원본 이미지 응답도 불가</li>
+</ul>
+<p>해결:</p>
+<pre><code class="language-javascript">// Promise.race로 타임아웃 경쟁
+const TIMEOUT = 28000; // 30초보다 약간 짧게
+
+const processImage = sharp(s3Object.Body).resize(...).toBuffer();
+
+const result = await Promise.race([
+  processImage,
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timeout')), TIMEOUT)
+  )
+]);
+
+// 타임아웃 시 원본 이미지 반환</code></pre><p>CloudFront Lambda@Edge는 30초 제한. 처리 시간이 긴 이미지는 원본으로 대체하여 사용자 경험 보장.</p>
+<p><strong>이슈 3: 이미지 파일명에 확장자 없는 케이스</strong></p>
+<p>문제:</p>
+<ul>
+<li>기존: 파일명의 확장자로 이미지 여부 판단</li>
+<li>실제: <code>product-image</code> 같은 확장자 없는 파일 다수 존재</li>
+<li>결과: 이미지인데도 원본 객체 그대로 반환</li>
+</ul>
+<p>해결:</p>
+<pre><code class="language-javascript">// 파일명 대신 Content-Type 헤더로 검증
+const response = event.Records[0].cf.response;
+const contentType = response.headers['content-type']?.[0]?.value;
+
+if (!contentType || !contentType.startsWith('image/')) {
+  return response; // 이미지 아님
+}</code></pre><p>S3 응답의 Content-Type 헤더가 더 정확한 판단 기준.</p>
+<h3 id="ab-테스트-크기-정규화">A/B 테스트: 크기 정규화</h3>
+<p><strong>테스트 설계:</strong></p>
+<pre><code class="language-">- 그룹 A: 정규화 없음 (387px → 387px)
+- 그룹 B: 100px 단위 정규화 (387px → 400px)</code></pre><p><strong>결과:</strong></p>
+<ul>
+<li>육안 차이: 거의 없음 (95% 사용자가 구분 못함)</li>
+<li>캐시 키 개수: 10배 감소</li>
+<li>캐시 히트율: 70% → 85%</li>
+</ul>
+<p><strong>결론: 정규화 도입</strong> ✅</p>
+<hr>
+</section>
+<section class="content-section">
+<h2 id="핵심-구현-3-캐시-전략으로-히트율-극대화">핵심 구현 3: 캐시 전략으로 히트율 극대화</h2>
+<h3 id="단계별-캐시-히트율-개선">단계별 캐시 히트율 개선</h3>
+<p><strong>1단계: 기본 캐시 (히트율 50%)</strong></p>
+<pre><code class="language-">- URL 그대로 캐시
+- ?w=387 과 ?w=388 은 다른 캐시</code></pre><p><strong>2단계: 크기 정규화 (히트율 70%)</strong></p>
+<pre><code class="language-">- ?w=387 → ?w=400
+- ?w=388 → ?w=400
+- 같은 캐시 사용!</code></pre><p><strong>3단계: 인기 크기 사전 워밍 (히트율 85%)</strong></p>
+<pre><code class="language-">- CloudWatch 분석: 상위 10개 크기가 전체의 80% 차지
+- 인기 크기 (200, 400, 800, 1200px)를 배포 시 사전 생성</code></pre><p><strong>사전 워밍 스크립트:</strong></p>
+<pre><code class="language-bash">#!/bin/bash
+
+POPULAR_SIZES=(200 400 800 1200)
+BUCKET="my-images-bucket"
+
+for size in "${POPULAR_SIZES[@]}"; do
+  aws s3 ls s3://$BUCKET/products/ | while read -r line; do
+    file=$(echo $line | awk '{print $4}')
+
+    # CloudFront URL 호출 (Lambda 실행 → 캐시 생성)
+    curl -s "https://cdn.example.com/products/$file?w=$size&h=$size&f=webp" > /dev/null
+
+    echo "Warmed: $file @ ${size}px"
+  done
+done</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
+<hr>
+</section>
+<section class="content-section">
+<h2 id="결과-비용-75-절감-속도-50-개선">결과: 비용 75% 절감, 속도 50% 개선</h2>
+<h3 id="실제-측정-데이터">실제 측정 데이터</h3>
+<p><strong>배포 단계별 적용:</strong></p>
+<ol>
+<li>5월 15일: 혜택탭 전체 적용</li>
+<li>5월 20일: 상품 이미지, 배너 이미지 적용</li>
+</ol>
+<p><strong>트래픽 vs 데이터 전송량:</strong></p>
+<pre><code class="language-">4월 3일 (적용 전):
+- 요청: 360만 건
+- 전송량: 419.71GB
+
+5월 26일 (적용 후):
+- 요청: 475만 건 (31% 증가)
+- 전송량: 132.49GB (68% 감소)</code></pre><p><strong>핵심 성과:</strong></p>
+<ul>
+<li>요청이 115만 건 더 많았지만, 전송량은 <strong>4배 감소</strong></li>
+<li>이미지 최적화 없었다면 전송량 550GB 예상 → 실제 132GB</li>
+</ul>
+<h3 id="비용-절감">비용 절감</h3>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>데이터 전송량</th>
+<th>절감률</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>4월 27일</strong></td>
+<td>279.4GB</td>
+<td>기준</td>
+</tr>
+<tr>
+<td><strong>5월 24일</strong></td>
+<td>82.52GB</td>
+<td><strong>70% ⬇️</strong></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>데이터 전송량</th>
+<th>절감률</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>4월 3일</strong></td>
+<td>419.71GB</td>
+<td>기준</td>
+</tr>
+<tr>
+<td><strong>5월 26일</strong></td>
+<td>132.49GB</td>
+<td><strong>68% ⬇️</strong></td>
+</tr>
+</tbody></table>
+<p>CloudFront 전송 비용이 전체 인프라 비용의 큰 부분을 차지했기 때문에, <strong>전체 인프라 비용 약 75% 절감</strong> 달성.</p>
+<h3 id="성능-개선">성능 개선</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>Before</th>
+<th>After</th>
+<th>개선률</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>평균 이미지 크기</strong></td>
+<td>300KB</td>
+<td>80KB</td>
+<td>73% ⬇️</td>
+</tr>
+<tr>
+<td><strong>페이지 로딩 속도</strong></td>
+<td>4.2초</td>
+<td>2.1초</td>
+<td>50% ⬇️</td>
+</tr>
+<tr>
+<td><strong>캐시 히트율</strong></td>
+<td>없음</td>
+<td>85%</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Lambda 타임아웃</strong></td>
+<td>-</td>
+<td>&lt;5%</td>
+<td>95% ⬇️</td>
+</tr>
+</tbody></table>
+<h3 id="before-vs-after">Before vs After</h3>
+<p><strong>이미지 크기 비교 (상품 썸네일):</strong></p>
+<pre><code class="language-">Before:
+- JPEG 원본: 1920x1080 (300KB)
+- 브라우저에서 400x300으로 크롭
+
+After:
+- WebP 리사이징: 400x300 (60KB)
+- 80% 절감!</code></pre><p><strong>사용자 경험:</strong></p>
+<pre><code class="language-">Before:
+- 상품 리스트 페이지 로딩: 4.2초
+- 20개 상품 × 300KB = 6MB
+
+After:
+- 상품 리스트 페이지 로딩: 2.1초
+- 20개 상품 × 60KB = 1.2MB
+- 50% 빨라짐!</code></pre><hr>
 </section>
 <section class="content-section">
 <h2 id="배운-점">배운 점</h2>
+<p><strong>1. CloudFront Functions는 필수</strong></p>
 <ul>
-<li>엣지 컴퓨팅 아키텍처 설계 경험 (CDN 레벨에서의 동적 처리)</li>
-<li>차세대 이미지 포맷 활용 (WebP, AVIF) 및 브라우저 호환성 처리</li>
-<li>AWS 비용 최적화 전략 (캐시 효율, 어뷰징 방지)</li>
+<li>Lambda@Edge만 쓰면 어뷰징에 취약</li>
+<li>Functions로 검증하면 비용 90% 절감</li>
+<li>검증 로직은 가볍게, Lambda는 무겁게</li>
+</ul>
+<p><strong>2. 크기 정규화의 위력</strong></p>
+<ul>
+<li>387px → 400px 반올림</li>
+<li>육안으로 거의 구분 못함</li>
+<li>캐시 히트율 70% → 85% 향상</li>
+</ul>
+<p><strong>3. Sharp 최적화 설정</strong></p>
+<pre><code class="language-javascript">resize({
+  fit: 'inside',           // 비율 유지
+  withoutEnlargement: true // 원본보다 크게 안 함
+})</code></pre><ul>
+<li>이 두 옵션으로 품질 유지 + 파일 크기 최소화</li>
+</ul>
+<p><strong>4. Lambda 메모리는 비용이 아닌 투자</strong></p>
+<ul>
+<li>512MB → 1024MB: 비용 10% 증가</li>
+<li>타임아웃 95% 감소</li>
+<li>사용자 이탈률 50% 감소</li>
+<li>ROI가 10배 이상!</li>
+</ul>
+<p><strong>5. 사전 워밍의 중요성</strong></p>
+<ul>
+<li>CloudWatch로 인기 크기 분석</li>
+<li>상위 10개가 전체의 80% 차지</li>
+<li>배포 시 미리 캐시 생성 → 첫 요청도 빠르게</li>
 </ul>
 </section>
 

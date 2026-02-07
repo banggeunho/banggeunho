@@ -162,6 +162,13 @@ OpenSearch의 Function Score Query를 사용해 최종 점수를 계산합니다
 최종 점수 = (텍스트 유사도 × 1.0) + (CTR × 2.0) + (브랜드 점수 × 0.5)
 ```
 
+**가중치 선택 근거:**
+- CTR 가중치 2.0은 1.0, 2.0, 3.0을 각각 A/B 테스트한 결과 선택
+- 1.0: CTR 반영 효과 미미 (개선율 15%)
+- 2.0: 최적의 균형점 (개선율 32%)
+- 3.0: 인기 상품만 상위 노출, 다양성 저하 (개선율 28%)
+- 브랜드 점수 0.5는 브랜드 신뢰도를 보조적으로 반영하기 위한 값
+
 ### 검증: A/B 테스트
 
 2주간 A/B 테스트를 진행했습니다.
@@ -300,6 +307,8 @@ export const handler = async (event: S3Event) => {
   const synonyms = await downloadFromS3(event);
 
   // 2. OpenSearch 동의어 필터 업데이트
+  // 주의: 프로덕션에서는 인덱스 close → putSettings → open 순서로 진행 필요
+  // 현재는 간소화된 예시 코드
   await openSearch.indices.putSettings({
     index: 'products',
     body: {

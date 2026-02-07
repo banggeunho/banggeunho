@@ -56,8 +56,6 @@
           
             <span>MySQL</span>
           
-            <span>ISMS-P</span>
-          
         </div>
         
         
@@ -71,186 +69,472 @@
       <!-- Content -->
       <div class="project-detail-content">
         <section class="content-section">
-<h2 id="개요">개요</h2>
-<p>기존 이니시스(신용카드), 카카오페이(간편결제) 결제 수단에 토스페이를 추가하여 결제 옵션을 다양화하고 전체 거래액의 30%(111억 원)를 달성했습니다. ISMS-P 보안 인증 심사와 병행하며 통상 3개월 작업을 6주 만에 완료한 프로젝트입니다.</p>
+<h2 id="목차">목차</h2>
+<ol>
+<li><a href="#%EB%B0%B0%EA%B2%BD-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%ED%95%A9%EC%84%B1%EC%9D%84-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EA%B2%B0%EC%A0%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C">배경: 데이터 정합성을 고려한 결제 시스템</a></li>
+<li><a href="#%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-4%EA%B0%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%98-%EB%8F%99%EC%8B%9C-%EA%B0%9C%EB%B0%9C">문제 분석: 4개 시스템의 동시 개발</a></li>
+<li><a href="#%ED%95%B4%EA%B2%B0-%EB%AA%A9%ED%91%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EB%8B%AC%EC%84%B1%ED%95%98%EB%A0%A4-%ED%96%88%EB%82%98">해결 목표: 무엇을 달성하려 했나</a></li>
+<li><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%84%A4%EA%B3%84-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EA%B8%B0%EB%B0%98-%EB%B3%B4%EC%83%81-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98-%EC%84%A0%ED%83%9D-%EC%9D%B4%EC%9C%A0">아키텍처 설계: 이벤트 기반 보상 트랜잭션 선택 이유</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-%EB%B3%91%EB%A0%AC-%EA%B0%9C%EB%B0%9C-%EC%A0%84%EB%9E%B5">핵심 구현 1: 병렬 개발 전략</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EA%B8%B0%EB%B0%98-%EB%B3%B4%EC%83%81-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9C%BC%EB%A1%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%ED%95%A9%EC%84%B1-%EB%B3%B4%EC%9E%A5">핵심 구현 2: 이벤트 기반 보상 트랜잭션으로 데이터 정합성 보장</a></li>
+<li><a href="#%EA%B2%B0%EA%B3%BC-%EC%88%AB%EC%9E%90%EB%A1%9C-%EC%A6%9D%EB%AA%85%ED%95%98%EB%8A%94-%EA%B0%9C%EC%84%A0-%ED%9A%A8%EA%B3%BC">결과: 숫자로 증명하는 개선 효과</a></li>
+</ol>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="프로젝트-배경">프로젝트 배경</h2>
-<p><strong>비즈니스 요구사항:</strong></p>
-<ul>
-<li>결제 수단 다양화로 사용자 편의성 향상</li>
-<li>토스 생태계 연동으로 신규 고객 유입</li>
-<li>결제 성공률 개선 및 시장 점유율 확대</li>
-</ul>
-<p><strong>기술적 도전:</strong></p>
-<ul>
-<li><strong>영향 범위 광범위:</strong> 결제, 주문, 정산, 어드민 시스템 전 영역에 걸친 변경 작업</li>
-<li><strong>ISMS-P 인증 동시 진행:</strong> 보안 인증 심사와 신규 결제 수단 개발을 병행 수행 (정보보호 관리체계 인증)</li>
-<li><strong>타이트한 일정:</strong> 통상 3개월 소요되는 작업을 비즈니스 요구사항에 따라 6주 내 완료 필요</li>
-<li><strong>데이터 정합성 보장:</strong> 결제-주문-정산 전 과정의 트랜잭션 일관성 유지</li>
-</ul>
+<h2 id="배경-데이터-정합성을-고려한-결제-시스템">배경: 데이터 정합성을 고려한 결제 시스템</h2>
+<p>&quot;토스페이 결제를 추가해주세요.&quot;</p>
+<p>커머스 플랫폼에 신규 결제 수단을 추가하는 작업. 단순해 보이지만, 결제-주문-정산 시스템 간 데이터 정합성을 보장하는 것이 핵심 과제였습니다. 토스 생태계와의 연동으로 신규 고객을 유입하고, 결제 수단 다양화로 결제 성공률을 개선해야 했습니다.</p>
+<p><strong>가장 중요하게 고민한 것은 안전성이었습니다.</strong> 결제는 승인됐는데 주문이 실패하면? 주문은 생성됐는데 정산 데이터가 누락되면? 네트워크 장애로 중복 결제가 발생하면? 이런 모든 시나리오를 사전에 설계하고 대응 방안을 마련하는 데 집중했습니다.</p>
+<p>결과적으로 이 프로젝트는 **전체 거래액의 30%(111억 원)**를 토스페이가 차지하는 성공으로 이어졌습니다.</p>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="해결-과제-task">해결 과제 (Task)</h2>
+<h2 id="문제-분석-4개-시스템의-동시-개발">문제 분석: 4개 시스템의 동시 개발</h2>
+<p>결제 시스템은 단순히 &quot;결제 버튼 클릭 → 승인&quot; 으로 끝나지 않습니다. 실제로는 4개의 독립적인 시스템이 유기적으로 동작해야 합니다.</p>
+<h3 id="영향을-받는-시스템">영향을 받는 시스템</h3>
+<p><strong>1. 결제 시스템</strong></p>
 <ul>
-<li>4개 시스템(결제/주문/정산/어드민)을 6주 내 동시 개발 및 배포</li>
-<li>ISMS-P 보안 인증 요구사항을 충족하며 신규 PG사 연동</li>
-<li>결제-주문-정산 전 과정의 데이터 정합성 보장 (Saga 패턴)</li>
-<li>결제 성공률 개선 및 사용자 편의성 향상</li>
+<li>토스페이 API 연동 (인증, 승인, 취소, 환불)</li>
+<li>기존 PG(이니시스, 카카오페이)와 라우팅 로직 통합</li>
+<li>Webhook 수신 및 처리</li>
 </ul>
+<p><strong>2. 주문 시스템</strong></p>
+<ul>
+<li>결제 완료 → 주문 생성 플로우</li>
+<li>결제 실패 시 주문 롤백</li>
+<li>주문 상태 관리 (결제 대기 → 결제 완료 → 배송 준비)</li>
+</ul>
+<p><strong>3. 정산 시스템</strong></p>
+<ul>
+<li>토스페이 수수료 정책 반영</li>
+<li>일별/월별 정산 데이터 집계</li>
+<li>정산 내역 조회 및 엑셀 다운로드</li>
+</ul>
+<p><strong>4. 어드민 시스템</strong></p>
+<ul>
+<li>결제 내역 조회 및 필터링</li>
+<li>수동 환불 처리</li>
+<li>정산 대시보드 및 통계</li>
+</ul>
+<h3 id="왜-어려웠을까">왜 어려웠을까?</h3>
+<p><strong>4개 시스템 동시 개발:</strong></p>
+<ul>
+<li>4개 시스템을 동시 개발하면 의존성 지옥 발생 가능</li>
+<li>API 명세 불일치로 인한 통합 실패 리스크</li>
+</ul>
+<p><strong>데이터 정합성 보장:</strong></p>
+<ul>
+<li>결제는 승인됐는데 주문은 실패하면?</li>
+<li>주문은 생성됐는데 정산 데이터가 누락되면?</li>
+<li>네트워크 장애로 중복 요청이 들어오면?</li>
+<li>이런 모든 예외 케이스를 사전에 설계하고 대응 방안 마련 필요</li>
+</ul>
+<p><strong>안전성과 확장성:</strong></p>
+<ul>
+<li>장애 발생 시 자동 복구 메커니즘</li>
+<li>향후 다른 PG 추가 시에도 확장 가능한 구조</li>
+<li>멱등성 보장으로 중복 처리 방지</li>
+</ul>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="시스템-아키텍처-action">시스템 아키텍처 (Action)</h2>
+<h2 id="해결-목표-무엇을-달성하려-했나">해결 목표: 무엇을 달성하려 했나</h2>
+<p>우리는 명확한 목표를 설정했습니다.</p>
+<h3 id="정량적-목표">정량적 목표</h3>
+<ul>
+<li><strong>결제 성공률</strong>: 95% 이상 유지</li>
+<li><strong>데이터 정합성</strong>: 불일치 케이스 0건</li>
+<li><strong>시스템 안정성</strong>: 자동 복구율 100%</li>
+</ul>
+<h3 id="정성적-목표">정성적 목표</h3>
+<ul>
+<li>4개 시스템을 병렬로 개발하되 블로킹 없이 진행</li>
+<li>결제-주문-정산 전 과정의 데이터 일관성 보장</li>
+<li>장애 발생 시 자동 보상 트랜잭션으로 복구</li>
+<li>멱등성 보장으로 중복 처리 방지</li>
+<li>확장 가능한 아키텍처 (향후 다른 PG 추가 용이)</li>
+</ul>
+<hr>
+</section>
+<section class="content-section">
+<h2 id="아키텍처-설계-이벤트-기반-보상-트랜잭션-선택-이유">아키텍처 설계: 이벤트 기반 보상 트랜잭션 선택 이유</h2>
+<h3 id="기존-pg-구조">기존 PG 구조</h3>
 <pre class="mermaid">graph LR
     A[결제 요청] --> B{PG 라우팅}
-    B -->|기존| C[이니시스]
-    B -->|기존| D[카카오페이]
-    B -->|신규| E[토스페이]
+    B -->|신용카드| C[이니시스]
+    B -->|간편결제| D[카카오페이]
+    C --> E[결제 승인]
+    D --> E
+    E --> F[주문 생성]
+    F --> G[정산 데이터]</pre><h3 id="토스페이-추가-후-아키텍처">토스페이 추가 후 아키텍처</h3>
+<pre class="mermaid">graph TB
+    A[사용자] -->|결제 요청| B[Payment API]
+    B --> C{PG 선택}
+    C -->|신용카드| D[이니시스]
+    C -->|카카오| E[카카오페이]
+    C -->|토스| F[토스페이]
 
-    E --> F[결제 승인]
-    F --> G[주문 생성]
-    G --> H[정산 데이터]
+    F -->|승인| G[결제 완료]
+    G -->|이벤트| H[주문 생성]
+    H -->|성공| I[정산 데이터]
 
-    I[어드민] --> J[결제 내역]
-    I --> K[정산 관리]
-    I --> L[통계 대시보드]</pre></section>
-<section class="content-section">
-<h2 id="주요-기능">주요 기능</h2>
-<p><strong>결제 시스템:</strong></p>
+    G -.실패.-> J[자동 환불]
+    H -.실패.-> J</pre><h3 id="이벤트-기반-보상-트랜잭션을-선택한-이유">이벤트 기반 보상 트랜잭션을 선택한 이유</h3>
+<p><strong>문제 상황:</strong></p>
 <ul>
-<li>토스페이 API 연동 (승인, 취소, 환불)</li>
-<li>기존 결제 로직과 통합 (전략 패턴으로 PG사별 분기 처리)</li>
-<li>Webhook 기반 실시간 결제 상태 동기화</li>
+<li>결제 승인은 성공했지만 주문 생성이 실패하는 경우</li>
+<li>네트워크 장애로 정산 데이터 적재가 누락되는 경우</li>
+<li>중복 요청으로 같은 주문에 대해 결제가 2번 승인되는 경우</li>
 </ul>
-<p><strong>주문 시스템:</strong></p>
+<p><strong>해결책: 이벤트 기반 보상 트랜잭션</strong></p>
 <ul>
-<li>결제 수단별 주문 처리 로직 확장</li>
-<li>트랜잭션 관리 강화 (데이터 정합성)</li>
+<li>분산 트랜잭션을 여러 단계로 나누고, 각 단계마다 이벤트 발행</li>
+<li>실패 시 보상 트랜잭션(Compensating Transaction) 자동 실행</li>
+<li>각 단계가 독립적으로 동작하되, 전체 플로우의 데이터 일관성 보장</li>
+<li>멱등성 키를 활용해 중복 처리 방지</li>
 </ul>
-<p><strong>정산 시스템:</strong></p>
-<ul>
-<li>PG사별 정산 데이터 포맷 통합</li>
-<li>자동 정산 배치 작업 확장</li>
-</ul>
-<p><strong>어드민 시스템:</strong></p>
-<ul>
-<li>토스페이 결제 내역 조회</li>
-<li>결제 수단별 통계 대시보드</li>
-<li>수동 환불 처리 기능</li>
-</ul>
-</section>
-<section class="content-section">
-<h2 id="개발-프로세스">개발 프로세스</h2>
-<p><strong>태스크 분석 및 우선순위:</strong></p>
+<p><strong>설계 시 고려한 사항:</strong></p>
 <ol>
-<li>영향 범위 파악 (결제/주문/정산/어드민)</li>
-<li>태스크 분해 및 일정 산정</li>
-<li>ISMS-P 요구사항 반영</li>
-</ol>
-<p><strong>병렬 개발 전략:</strong></p>
+<li><p><strong>자동 복구 메커니즘</strong></p>
 <ul>
-<li>결제 API 연동 (2주)</li>
-<li>주문/정산 로직 확장 (2주)</li>
-<li>어드민 기능 개발 (1주)</li>
-<li>QA 및 버그 수정 (1주)</li>
+<li>주문 생성 실패 → 자동 환불 이벤트 발행</li>
+<li>정산 데이터 누락 → 재시도 큐에 적재</li>
+<li>네트워크 타임아웃 → 멱등성 키로 중복 방지</li>
 </ul>
-</section>
-<section class="content-section">
-<h2 id="기술적-도전과-해결">기술적 도전과 해결</h2>
-<p><strong>도전 1: 짧은 일정 (3개월 → 6주)</strong></p>
+</li>
+<li><p><strong>데이터 일관성 보장</strong></p>
 <ul>
-<li><strong>문제:</strong> 결제/주문/정산/어드민 4개 영역을 모두 수정해야 하는 대규모 작업을 6주 내 완료</li>
-<li><strong>해결:</strong><ul>
-<li><strong>태스크 분해 및 우선순위:</strong><ul>
-<li>전체 작업을 60개 세부 태스크로 분해</li>
-<li>영향도-긴급도 매트릭스로 우선순위 결정</li>
-<li>P0(핵심): 결제 승인/취소/환불 API (2주)</li>
-<li>P1(중요): 주문·정산 로직 확장 (2주)</li>
-<li>P2(부가): 통계·대시보드 (2차 배포로 분리)</li>
-</ul>
-</li>
-<li><strong>병렬 개발 전략:</strong><ul>
-<li>결제 API 연동: 본인 담당 (2주)</li>
-<li>주문·정산 로직: 동료 백엔드 개발자 담당 (2주)</li>
-<li>어드민 UI: 프론트엔드 개발자 담당 (2주)</li>
-<li>주 2회 동기화 회의로 인터페이스 정합성 유지</li>
-</ul>
-</li>
-<li><strong>핵심 플로우 우선:</strong><ul>
-<li>1단계: 결제 승인/취소/환불만 구현 후 QA</li>
-<li>2단계: 주문·정산 연동</li>
-<li>3단계: 어드민 기능 추가</li>
-<li>각 단계마다 프로덕션 배포하여 리스크 분산</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>효과:</strong> 3개월 예상 작업을 6주 만에 완료, ISMS-P 인증 동시 통과</li>
-</ul>
-<p><strong>도전 2: 데이터 정합성 보장 (Saga 패턴)</strong></p>
-<ul>
-<li><strong>문제:</strong> 결제 승인 후 주문 생성 실패 시 고객 과금 문제 발생 가능</li>
-<li><strong>해결:</strong><ul>
-<li><strong>Saga 패턴 구현:</strong> 결제 승인 실패 → 자동 환불 이벤트 발행 → 주문 상태 롤백 → SQS 재시도</li>
-<li><strong>구체적 플로우:</strong><ol>
-<li>결제 승인 성공 → <code>payment_order_mapping</code> 테이블에 매핑 기록</li>
-<li>주문 생성 실패 시 → 이벤트 발행 (<code>OrderFailedEvent</code>)</li>
-<li>이벤트 컨슈머가 TossPay 환불 API 호출</li>
-<li>환불 실패 시 SQS DLQ(Dead Letter Queue)로 전송 → 수동 처리</li>
-</ol>
-</li>
-<li><strong>멱등성 보장:</strong><ul>
-<li>TossPay Webhook 수신 시 <code>payment_key</code>로 중복 검증</li>
-<li>동일 <code>payment_key</code> 재수신 시 DB 업데이트 스킵</li>
-<li>실패 시 SQS로 이벤트 재발행하여 재시도</li>
-</ul>
-</li>
-<li><strong>트랜잭션 매핑 테이블:</strong><ul>
 <li><code>payment_order_mapping</code> 테이블로 결제-주문 1:1 매핑</li>
-<li>UNIQUE 제약조건으로 중복 결제 원천 차단</li>
+<li>유니크 제약 조건으로 중복 결제 원천 차단</li>
+<li>이벤트 로그 테이블로 전체 플로우 추적 가능</li>
 </ul>
 </li>
-</ul>
-</li>
-<li><strong>검증:</strong> 결제 성공률 2.5% 향상, 결제-주문 불일치 케이스 0건 달성</li>
-</ul>
-<p><strong>도전 3: ISMS-P 인증과 병행 개발</strong></p>
+<li><p><strong>확장성 고려</strong></p>
 <ul>
-<li><strong>문제:</strong> 보안 인증 심사 중 신규 결제 수단 추가로 인한 추가 검토 필요</li>
-<li><strong>해결:</strong><ul>
-<li>개발 초기부터 ISMS-P 보안 요구사항 체크리스트 반영</li>
-<li>카드번호/계좌번호 등 민감정보 마스킹 처리</li>
-<li>결제 관련 모든 API 요청/응답 로깅 및 암호화</li>
-<li>개인정보 처리방침 업데이트 및 법무 검토 완료</li>
+<li>새로운 PG 추가 시 이벤트 리스너만 추가하면 됨</li>
+<li>정산/어드민 시스템이 독립적으로 이벤트 구독</li>
+<li>시스템 간 강결합 없이 느슨한 결합 유지</li>
 </ul>
 </li>
-</ul>
+</ol>
+<p><strong>장점:</strong></p>
+<table>
+<thead>
+<tr>
+<th>기준</th>
+<th>기존 방식</th>
+<th>이벤트 기반 보상 트랜잭션</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>트랜잭션 범위</td>
+<td>단일 DB 트랜잭션</td>
+<td>분산 트랜잭션</td>
+</tr>
+<tr>
+<td>실패 처리</td>
+<td>수동 롤백</td>
+<td>자동 보상 트랜잭션</td>
+</tr>
+<tr>
+<td>중복 처리 방지</td>
+<td>애플리케이션 로직</td>
+<td>멱등성 키 + DB 제약</td>
+</tr>
+<tr>
+<td>확장성</td>
+<td>제한적</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>복잡도</td>
+<td>낮음</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="기술-스택">기술 스택</h2>
+<h2 id="핵심-구현-1-병렬-개발-전략">핵심 구현 1: 병렬 개발 전략</h2>
+<h3 id="도전-4개-시스템을-어떻게-동시-개발할까">도전: 4개 시스템을 어떻게 동시 개발할까?</h3>
+<p><strong>문제:</strong></p>
 <ul>
-<li>NestJS, MySQL, Redis</li>
-<li>TossPay API, Webhook</li>
-<li>Docker, GitLab CI/CD</li>
+<li>결제 API가 완성되어야 주문 시스템 개발 가능?</li>
+<li>아니면 모두가 완성될 때까지 기다려야 할까?</li>
 </ul>
+<p><strong>해결: API 인터페이스 선정의</strong></p>
+<p>1단계에서 API 명세를 먼저 확정했습니다.</p>
+<p><strong>결제 API 명세 (예시):</strong></p>
+<pre><code class="language-typescript">// 결제 승인 요청
+POST /payments/approve
+{
+  "paymentKey": "tosspay_xxx",
+  "orderId": "order_123",
+  "amount": 50000
+}
+
+// 응답
+{
+  "success": true,
+  "paymentId": "pay_456",
+  "status": "APPROVED",
+  "approvedAt": "2024-09-01T10:00:00Z"
+}</code></pre><p><strong>이벤트 스키마:</strong></p>
+<pre><code class="language-typescript">// 결제 완료 이벤트
+{
+  "eventType": "PAYMENT_APPROVED",
+  "paymentId": "pay_456",
+  "orderId": "order_123",
+  "amount": 50000,
+  "pg": "TOSS"
+}</code></pre><h3 id="병렬-개발-타임라인">병렬 개발 타임라인</h3>
+<table>
+<thead>
+<tr>
+<th>주차</th>
+<th>결제팀 (본인)</th>
+<th>주문팀 (동료A)</th>
+<th>정산팀 (동료B)</th>
+<th>어드민팀 (동료C)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1-2주</td>
+<td>토스페이 API 연동</td>
+<td>이벤트 리스너 구현</td>
+<td>정산 로직 설계</td>
+<td>UI 설계</td>
+</tr>
+<tr>
+<td>3-4주</td>
+<td>Webhook 처리</td>
+<td>주문 생성 로직</td>
+<td>정산 데이터 적재</td>
+<td>CRUD 구현</td>
+</tr>
+<tr>
+<td>5주</td>
+<td>통합 테스트</td>
+<td>통합 테스트</td>
+<td>통합 테스트</td>
+<td>통합 테스트</td>
+</tr>
+<tr>
+<td>6주</td>
+<td>프로덕션 배포</td>
+<td>프로덕션 배포</td>
+<td>프로덕션 배포</td>
+<td>프로덕션 배포</td>
+</tr>
+</tbody></table>
+<p><strong>핵심:</strong></p>
+<ul>
+<li>API 명세가 확정되면 각 팀이 독립적으로 개발 가능</li>
+<li>Mock 서버로 개발 진행 → 실제 통합은 5주차에 진행</li>
+<li>생산성 2배 향상 (4개 시스템을 순차 개발하면 12주 소요)</li>
+</ul>
+<hr>
 </section>
 <section class="content-section">
-<h2 id="주요-성과-result">주요 성과 (Result)</h2>
+<h2 id="핵심-구현-2-이벤트-기반-보상-트랜잭션으로-데이터-정합성-보장">핵심 구현 2: 이벤트 기반 보상 트랜잭션으로 데이터 정합성 보장</h2>
+<h3 id="트랜잭션-플로우">트랜잭션 플로우</h3>
+<p><strong>정상 플로우:</strong></p>
+<pre><code class="language-">1. 결제 승인 요청
+2. 토스페이 API 호출
+3. 결제 승인 성공
+4. 주문 생성 이벤트 발행
+5. 주문 생성 성공
+6. 정산 데이터 적재</code></pre><p><strong>실패 시 보상 트랜잭션:</strong></p>
+<pre><code class="language-">1. 결제 승인 성공
+2. 주문 생성 이벤트 발행
+3. 주문 생성 실패 ❌
+4. 자동 환불 이벤트 발행 🔄
+5. 토스페이 환불 API 호출
+6. 주문 상태 롤백</code></pre><h3 id="구현-코드-예시">구현 코드 (예시)</h3>
+<p><strong>결제 승인 후 이벤트 발행:</strong></p>
+<pre><code class="language-typescript">async approvePayment(dto: ApprovePaymentDto) {
+  // 1. 토스페이 승인
+  const approval = await this.tossPayService.approve(dto);
+
+  // 2. DB에 결제 정보 저장
+  const payment = await this.paymentRepository.save({
+    paymentKey: approval.paymentKey,
+    orderId: dto.orderId,
+    amount: dto.amount,
+    status: 'APPROVED',
+    pg: 'TOSS'
+  });
+
+  // 3. 주문 생성 이벤트 발행
+  await this.eventBus.publish(new PaymentApprovedEvent({
+    paymentId: payment.id,
+    orderId: dto.orderId,
+    amount: dto.amount
+  }));
+
+  return payment;
+}</code></pre><p><strong>주문 생성 실패 시 자동 환불:</strong></p>
+<pre><code class="language-typescript">@EventHandler(OrderCreationFailedEvent)
+async handleOrderCreationFailed(event: OrderCreationFailedEvent) {
+  const payment = await this.paymentRepository.findOne(event.paymentId);
+
+  // 자동 환불 처리
+  await this.tossPayService.refund({
+    paymentKey: payment.paymentKey,
+    reason: '주문 생성 실패'
+  });
+
+  // 결제 상태 업데이트
+  await this.paymentRepository.update(payment.id, {
+    status: 'REFUNDED',
+    refundReason: '주문 생성 실패'
+  });
+}</code></pre><h3 id="멱등성-보장">멱등성 보장</h3>
+<p><strong>문제:</strong></p>
 <ul>
-<li><strong>거래액</strong>: 전체 거래액의 30% (약 111억 원) 달성</li>
-<li><strong>개발 기간</strong>: 통상 3개월 → 6주 완료 (50% 단축)</li>
-<li><strong>결제 성공률</strong>: 2.5% 향상</li>
-<li><strong>보안 인증</strong>: ISMS-P 인증 동시 통과</li>
-<li><strong>데이터 정합성</strong>: 결제-주문 불일치 케이스 0건</li>
-<li><strong>병렬 개발</strong>: 3명 개발자 동시 작업으로 생산성 2배 향상</li>
+<li>네트워크 장애로 중복 요청이 들어오면?</li>
+<li>같은 주문에 대해 결제가 2번 승인되면?</li>
 </ul>
+<p><strong>해결: payment_order_mapping 테이블</strong></p>
+<pre><code class="language-sql">CREATE TABLE payment_order_mapping (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  order_id VARCHAR(255) UNIQUE,  -- 주문 ID (유니크 제약)
+  payment_id BIGINT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);</code></pre><pre><code class="language-typescript">// 주문 생성 전 중복 체크
+const existing = await this.mappingRepository.findOne({
+  orderId: dto.orderId
+});
+
+if (existing) {
+  throw new ConflictException('이미 결제가 진행된 주문입니다');
+}</code></pre><p><strong>토스페이 Webhook 멱등성:</strong></p>
+<pre><code class="language-typescript">@Post('/webhook')
+async handleWebhook(@Body() body: TossWebhookDto) {
+  // 멱등성 키 검증
+  const existing = await this.webhookLogRepository.findOne({
+    paymentKey: body.paymentKey,
+    eventType: body.eventType
+  });
+
+  if (existing) {
+    return { success: true }; // 이미 처리됨
+  }
+
+  // Webhook 처리
+  await this.processWebhook(body);
+
+  // 로그 저장
+  await this.webhookLogRepository.save({
+    paymentKey: body.paymentKey,
+    eventType: body.eventType
+  });
+}</code></pre><hr>
+</section>
+<section class="content-section">
+<h2 id="결과-숫자로-증명하는-개선-효과">결과: 숫자로 증명하는 개선 효과</h2>
+<h3 id="비즈니스-성과">비즈니스 성과</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>거래액 비중</strong></td>
+<td>전체의 30% (111억 원)</td>
+</tr>
+<tr>
+<td><strong>결제 성공률</strong></td>
+<td>96.5%</td>
+</tr>
+<tr>
+<td><strong>데이터 정합성</strong></td>
+<td>불일치 케이스 0건</td>
+</tr>
+<tr>
+<td><strong>자동 복구율</strong></td>
+<td>100% (보상 트랜잭션)</td>
+</tr>
+</tbody></table>
+<h3 id="기술적-성과">기술적 성과</h3>
+<p><strong>병렬 개발:</strong></p>
+<ul>
+<li>4개 시스템 동시 개발로 생산성 2배 향상</li>
+<li>API 명세 선정의로 블로킹 없이 진행</li>
+</ul>
+<p><strong>이벤트 기반 보상 트랜잭션:</strong></p>
+<ul>
+<li>결제-주문-정산 데이터 정합성 100% 보장</li>
+<li>자동 보상 트랜잭션으로 수동 롤백 작업 0건</li>
+<li>멱등성 보장으로 중복 처리 방지</li>
+</ul>
+<h3 id="before-vs-after">Before vs After</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>결제 수단</td>
+<td>2개 (이니시스, 카카오페이)</td>
+<td>3개 (토스페이 추가)</td>
+</tr>
+<tr>
+<td>토스페이 거래액</td>
+<td>0원</td>
+<td>111억 원 (30%)</td>
+</tr>
+<tr>
+<td>개발 방식</td>
+<td>순차 개발</td>
+<td>병렬 개발 (API 명세 선정의)</td>
+</tr>
+<tr>
+<td>데이터 정합성</td>
+<td>수동 체크</td>
+<td>자동 보장 (보상 트랜잭션)</td>
+</tr>
+<tr>
+<td>장애 복구</td>
+<td>수동 처리</td>
+<td>자동 복구 (이벤트 기반)</td>
+</tr>
+</tbody></table>
+<hr>
 </section>
 <section class="content-section">
 <h2 id="배운-점">배운 점</h2>
+<p><strong>1. 병렬 개발의 핵심은 API 명세</strong></p>
 <ul>
-<li>복잡한 시스템 통합 경험 (결제-주문-정산 전 영역 변경)</li>
-<li>짧은 일정 내 효율적 태스크 관리 및 우선순위 결정</li>
-<li>보안 인증 요구사항 대응 및 규제 준수 프로세스 이해</li>
+<li>인터페이스만 확정되면 각 팀이 독립적으로 개발 가능</li>
+<li>Mock 서버로 개발 → 실제 통합은 마지막에</li>
+<li>개발 속도 2배 향상</li>
+</ul>
+<p><strong>2. 안전성 고려가 설계의 시작점</strong></p>
+<ul>
+<li>&quot;결제는 승인됐는데 주문은 실패하면?&quot;부터 시작</li>
+<li>모든 예외 케이스를 사전에 도출하고 대응 방안 설계</li>
+<li>이벤트 기반 보상 트랜잭션으로 자동 복구 메커니즘 구축</li>
+</ul>
+<p><strong>3. 이벤트 기반 아키텍처의 장점</strong></p>
+<ul>
+<li>결제 시스템은 여러 독립적인 시스템으로 구성</li>
+<li>각 시스템이 이벤트로 느슨하게 결합</li>
+<li>실패 시 보상 트랜잭션으로 데이터 정합성 자동 보장</li>
+<li>새로운 시스템 추가 시 이벤트 리스너만 구현하면 됨</li>
+</ul>
+<p><strong>4. 멱등성은 선택이 아닌 필수</strong></p>
+<ul>
+<li>네트워크 장애는 언제든 발생 가능</li>
+<li>중복 요청을 막지 못하면 결제 2중 처리 발생</li>
+<li><code>payment_order_mapping</code> 테이블의 유니크 제약으로 DB 레벨에서 보장</li>
+<li>토스페이 Webhook도 <code>paymentKey</code>로 멱등성 검증</li>
 </ul>
 </section>
 
