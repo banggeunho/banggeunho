@@ -208,9 +208,9 @@
 <li>상품 A: 상품명에 &quot;운동화&quot;가 3번 등장 → 높은 점수</li>
 <li>상품 B: 상품명에 &quot;운동화&quot;가 1번만 등장 → 낮은 점수</li>
 </ul>
-<p>하지만 <strong>상품 B의 CTR이 25%</strong>, **상품 A의 CTR은 5%**라면 어떨까요? 사용자는 명백히 상품 B를 선호하는데, 검색 결과는 상품 A를 상위에 노출하고 있었습니다.</p>
+<p>하지만 <strong>상품 B의 CTR이 25%</strong>, <strong>상품 A의 CTR은 5%</strong>라면 어떨까요? 사용자는 명백히 상품 B를 선호하는데, 검색 결과는 상품 A를 상위에 노출하고 있었습니다.</p>
 <h3 id="해결-사용자-행동-데이터를-랭킹에-반영">해결: 사용자 행동 데이터를 랭킹에 반영</h3>
-<p>우리는 **CTR(Click-Through Rate, 클릭률)**을 랭킹 점수에 반영하기로 했습니다.</p>
+<p>우리는 <strong>CTR(Click-Through Rate, 클릭률)</strong>을 랭킹 점수에 반영하기로 했습니다.</p>
 <p><strong>1단계: Redshift에서 CTR 집계</strong></p>
 <p>매일 새벽 2시, 최근 7일간의 검색 데이터를 집계합니다.</p>
 <pre><code class="language-sql">SELECT
