@@ -134,10 +134,16 @@ function processProject(projectName) {
   // 3. Convert markdown to HTML
   let htmlContent = marked.parse(markdownContent);
 
-  // 4. Convert mermaid code blocks to proper format
+  // 4. Fix remaining raw **bold** markers (marked GFM bug with CJK chars)
+  htmlContent = htmlContent.replace(
+    /\*\*([^*<>]+?)\*\*/g,
+    '<strong>$1</strong>'
+  );
+
+  // 5. Convert mermaid code blocks to proper format
   htmlContent = convertMermaidBlocks(htmlContent);
 
-  // 5. Wrap H2 sections in <section class="content-section">
+  // 6. Wrap H2 sections in <section class="content-section">
   htmlContent = wrapSections(htmlContent);
 
   // 6. Load template

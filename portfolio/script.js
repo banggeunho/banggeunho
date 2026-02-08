@@ -131,44 +131,39 @@ function renderSkills() {
 function renderAbout() {
   if (!portfolioData.about) return;
 
-  // Render intro paragraphs
-  const aboutText = document.querySelector('.about-text');
-  if (aboutText) {
-    const existingParagraphs = aboutText.querySelectorAll('p');
-    portfolioData.about.intro.forEach((text, index) => {
-      if (existingParagraphs[index]) {
-        existingParagraphs[index].textContent = text;
-      }
-    });
+  // Render intro text in hero description
+  const heroIntro = document.getElementById('hero-intro');
+  if (heroIntro && portfolioData.about.intro.length > 0) {
+    // Use first intro paragraph in hero
+    heroIntro.textContent = portfolioData.about.intro[0];
   }
 
-  // Render highlights
-  const highlightsContainer = document.querySelector('.about-highlights');
-  if (highlightsContainer) {
-    highlightsContainer.innerHTML = '';
-    portfolioData.about.highlights.forEach(highlight => {
-      const div = document.createElement('div');
-      div.className = 'highlight';
-      div.innerHTML = `
-        <span class="highlight-number">${highlight.number}</span>
-        <span class="highlight-label">${highlight.label}</span>
-      `;
-      highlightsContainer.appendChild(div);
-    });
-  }
-
-  // Render expertise cards
-  const detailsContainer = document.querySelector('.about-details');
-  if (detailsContainer) {
-    detailsContainer.innerHTML = '';
-    portfolioData.about.expertise.forEach(item => {
+  // Render highlights as metric cards
+  const metricsContainer = document.getElementById('hero-metrics');
+  if (metricsContainer && portfolioData.about.highlights.length > 0) {
+    metricsContainer.innerHTML = '';
+    portfolioData.about.highlights.forEach((highlight, index) => {
       const card = document.createElement('div');
-      card.className = 'detail-card fade-in';
+      card.className = 'metric-card';
+      card.style.animationDelay = `${0.3 + index * 0.1}s`;
       card.innerHTML = `
-        <h3>${item.title}</h3>
-        <p>${item.description}</p>
+        <div class="metric-number">${highlight.number}</div>
+        <div class="metric-label">${highlight.label}</div>
       `;
-      detailsContainer.appendChild(card);
+      metricsContainer.appendChild(card);
+    });
+  }
+
+  // Render expertise as tags
+  const expertiseContainer = document.getElementById('hero-expertise');
+  if (expertiseContainer && portfolioData.about.expertise.length > 0) {
+    expertiseContainer.innerHTML = '';
+    portfolioData.about.expertise.forEach(item => {
+      const tag = document.createElement('span');
+      tag.className = 'expertise-tag';
+      tag.textContent = item.title;
+      tag.title = item.description; // Tooltip on hover
+      expertiseContainer.appendChild(tag);
     });
   }
 }
@@ -273,7 +268,7 @@ function renderProjects() {
 (function initReveal() {
   function observeElements() {
     const targets = document.querySelectorAll(
-      '.section-title, .about-text, .about-details, .detail-card, .project-card, .contact-content, .content-section, .skill-category'
+      '.section-title, .project-card, .contact-content, .content-section, .skill-category'
     );
 
     // Immediately show all elements without animation
