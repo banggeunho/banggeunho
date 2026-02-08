@@ -1,68 +1,86 @@
 <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="800" height="450" fill="#0d1117"/>
-
-  <!-- Gradient Background -->
   <defs>
-    <linearGradient id="pipelineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    <linearGradient id="pipeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
     </linearGradient>
-    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:0.8" />
-      <stop offset="50%" style="stop-color:#a371f7;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#f778ba;stop-opacity:0.8" />
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF9900"/>
+      <stop offset="50%" style="stop-color:#a371f7"/>
+      <stop offset="100%" style="stop-color:#58a6ff"/>
     </linearGradient>
-    <radialGradient id="glowPurple" cx="50%" cy="50%">
-      <stop offset="0%" style="stop-color:#a371f7;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#a371f7;stop-opacity:0" />
+    <radialGradient id="pipeGlow" cx="50%" cy="42%">
+      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0"/>
     </radialGradient>
+    <!-- Particle for animation -->
+    <circle id="particle" r="3"/>
   </defs>
 
-  <rect width="800" height="450" fill="url(#pipelineGradient)"/>
+  <rect width="800" height="450" fill="url(#pipeBg)"/>
+  <circle cx="400" cy="185" r="200" fill="url(#pipeGlow)"/>
 
-  <!-- Glow Effect -->
-  <circle cx="400" cy="180" r="200" fill="url(#glowPurple)"/>
+  <!-- Source: Kinesis icon -->
+  <g transform="translate(220, 170)">
+    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#FF9900" stroke-width="2.5"/>
+    <path d="M -12 -15 Q 5 0, -12 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 0 -15 Q 17 0, 0 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 12 -15 Q 29 0, 12 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
 
-  <!-- Data Flow Pipeline -->
-  <circle cx="250" cy="180" r="30" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
-  <text x="250" y="190" font-family="monospace" font-size="24" font-weight="700" fill="#58a6ff" text-anchor="middle">S</text>
+  <!-- Flow line 1 -->
+  <line x1="260" y1="170" x2="330" y2="170" stroke="url(#flowGrad)" stroke-width="3" stroke-dasharray="8,6" opacity="0.7">
+    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1s" repeatCount="indefinite"/>
+  </line>
 
-  <!-- Flow Lines -->
-  <path d="M 280 180 L 340 180" stroke="url(#flowGradient)" stroke-width="4" stroke-dasharray="10,5">
-    <animate attributeName="stroke-dashoffset" from="15" to="0" dur="1.5s" repeatCount="indefinite"/>
-  </path>
+  <!-- Firehose icon -->
+  <g transform="translate(370, 170)">
+    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#a371f7" stroke-width="2.5"/>
+    <!-- Fire/stream symbol -->
+    <path d="M -8 12 Q -8 -5, 0 -15 Q 8 -5, 8 12 Q 4 6, 0 10 Q -4 6, -8 12Z" fill="#a371f7" opacity="0.8"/>
+    <path d="M -4 12 Q -4 2, 0 -5 Q 4 2, 4 12 Q 2 8, 0 10 Q -2 8, -4 12Z" fill="#d2a8ff" opacity="0.9"/>
+  </g>
 
-  <!-- Processing Node -->
-  <rect x="340" y="150" width="60" height="60" rx="8" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
-  <path d="M 360 170 L 370 180 L 360 190 L 350 180 Z" fill="#a371f7" opacity="0.6"/>
-  <path d="M 375 170 L 385 180 L 375 190 L 365 180 Z" fill="#a371f7" opacity="0.8"/>
+  <!-- Flow line 2 -->
+  <line x1="410" y1="170" x2="480" y2="170" stroke="url(#flowGrad)" stroke-width="3" stroke-dasharray="8,6" opacity="0.7">
+    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1s" repeatCount="indefinite"/>
+  </line>
 
-  <path d="M 400 180 L 460 180" stroke="url(#flowGradient)" stroke-width="4" stroke-dasharray="10,5">
-    <animate attributeName="stroke-dashoffset" from="15" to="0" dur="1.5s" repeatCount="indefinite"/>
-  </path>
+  <!-- Destination: S3/Redshift icon -->
+  <g transform="translate(520, 170)">
+    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#58a6ff" stroke-width="2.5"/>
+    <!-- Database/bucket symbol -->
+    <ellipse cx="0" cy="-10" rx="16" ry="6" fill="none" stroke="#58a6ff" stroke-width="2"/>
+    <path d="M -16 -10 L -16 10" stroke="#58a6ff" stroke-width="2"/>
+    <path d="M 16 -10 L 16 10" stroke="#58a6ff" stroke-width="2"/>
+    <ellipse cx="0" cy="10" rx="16" ry="6" fill="none" stroke="#58a6ff" stroke-width="2"/>
+  </g>
 
-  <!-- Firehose -->
-  <path d="M 460 150 L 460 210 L 520 190 L 520 170 Z" fill="#1c2128" stroke="url(#flowGradient)" stroke-width="3"/>
-  <path d="M 465 160 L 465 200 L 515 185 L 515 175 Z" fill="#a371f7" opacity="0.3"/>
+  <!-- Animated data particles -->
+  <circle r="3" fill="#FF9900" opacity="0.8">
+    <animateMotion dur="2.5s" repeatCount="indefinite" path="M 260,170 L 520,170"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3" fill="#a371f7" opacity="0.8">
+    <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.8s" path="M 260,170 L 520,170"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
+  </circle>
+  <circle r="3" fill="#58a6ff" opacity="0.8">
+    <animateMotion dur="2.5s" repeatCount="indefinite" begin="1.6s" path="M 260,170 L 520,170"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="1.6s"/>
+  </circle>
 
-  <path d="M 520 180 L 570 180" stroke="url(#flowGradient)" stroke-width="4"/>
-  <path d="M 555 173 L 570 180 L 555 187" stroke="url(#flowGradient)" stroke-width="4" fill="none"/>
-
-  <!-- Destination -->
-  <rect x="570" y="160" width="40" height="40" rx="4" fill="#1c2128" stroke="#7ee787" stroke-width="3"/>
-  <path d="M 580 180 L 590 190 L 600 170" stroke="#7ee787" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-  <!-- Data Particles -->
-  <circle cx="310" cy="175" r="2" fill="#58a6ff" opacity="0.8"/>
-  <circle cx="330" cy="185" r="2" fill="#a371f7" opacity="0.8"/>
-  <circle cx="430" cy="175" r="2" fill="#f778ba" opacity="0.8"/>
-  <circle cx="450" cy="185" r="2" fill="#58a6ff" opacity="0.8"/>
+  <!-- Labels under icons -->
+  <text x="220" y="225" font-family="system-ui" font-size="12" fill="#FF9900" text-anchor="middle" opacity="0.6">Kinesis</text>
+  <text x="370" y="225" font-family="system-ui" font-size="12" fill="#a371f7" text-anchor="middle" opacity="0.6">Firehose</text>
+  <text x="520" y="225" font-family="system-ui" font-size="12" fill="#58a6ff" text-anchor="middle" opacity="0.6">S3 / Redshift</text>
 
   <!-- Title -->
   <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="700" fill="#c9d1d9" text-anchor="middle">데이터 파이프라인</text>
 
-  <!-- Tech Tag -->
-  <rect x="320" y="360" width="160" height="36" rx="18" fill="#1c2128" stroke="#a371f7" stroke-width="2"/>
-  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#a371f7" text-anchor="middle">AWS Firehose</text>
+  <!-- Tech Tags -->
+  <rect x="290" y="360" width="110" height="32" rx="16" fill="#1c2128" stroke="#FF9900" stroke-width="1.5"/>
+  <text x="345" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#FF9900" text-anchor="middle">AWS Firehose</text>
+  <rect x="410" y="360" width="100" height="32" rx="16" fill="#1c2128" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="460" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#58a6ff" text-anchor="middle">Redshift</text>
 </svg>
