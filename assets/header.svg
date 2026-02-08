@@ -69,7 +69,7 @@
   </defs>
 
   <!-- Centered in left section: x=250 (middle of 0-500) -->
-  <g id="isometric-building" transform="translate(250, 320)" filter="url(#building-shadow)">
+  <g id="isometric-building" transform="translate(250, 370)" filter="url(#building-shadow)">
 
     <!-- LAYER 1: LANGUAGES (0-2s) -->
     <g id="layer-languages">
@@ -785,7 +785,7 @@
   <!-- RIGHT SECTION: TEXT & TECH STACK -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
 
-  <g id="right-section" transform="translate(550, 30)">
+  <g id="right-section" transform="translate(550, 75)">
 
     <!-- Header -->
     <text x="0" y="0" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700" font-size="60" fill="#ffffff" letter-spacing="1">Geunho Bang</text>
