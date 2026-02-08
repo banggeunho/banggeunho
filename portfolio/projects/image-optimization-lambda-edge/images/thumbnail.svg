@@ -1,51 +1,50 @@
 <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="800" height="450" fill="#0d1117"/>
-
-  <!-- Gradient Background -->
   <defs>
-    <linearGradient id="lambdaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    <linearGradient id="imgBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
     </linearGradient>
-    <radialGradient id="glowOrange" cx="50%" cy="50%">
-      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0" />
+    <radialGradient id="imgGlow" cx="50%" cy="40%">
+      <stop offset="0%" style="stop-color:#8C4FFF;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#8C4FFF;stop-opacity:0"/>
     </radialGradient>
   </defs>
 
-  <rect width="800" height="450" fill="url(#lambdaGradient)"/>
+  <rect width="800" height="450" fill="url(#imgBg)"/>
+  <circle cx="400" cy="175" r="200" fill="url(#imgGlow)"/>
 
-  <!-- Glow Effect -->
-  <circle cx="400" cy="180" r="200" fill="url(#glowOrange)"/>
+  <!-- CloudFront icon - Globe with distribution lines -->
+  <g transform="translate(330, 160)">
+    <circle cx="0" cy="0" r="38" fill="none" stroke="#C8511B" stroke-width="3"/>
+    <!-- Globe lines -->
+    <ellipse cx="0" cy="0" rx="18" ry="38" fill="none" stroke="#C8511B" stroke-width="1.5" opacity="0.6"/>
+    <line x1="-38" y1="0" x2="38" y2="0" stroke="#C8511B" stroke-width="1.5" opacity="0.5"/>
+    <path d="M -35 -15 Q 0 -10, 35 -15" stroke="#C8511B" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M -35 15 Q 0 20, 35 15" stroke="#C8511B" stroke-width="1" fill="none" opacity="0.4"/>
+    <!-- CF label -->
+    <text x="0" y="5" font-family="system-ui" font-size="14" font-weight="700" fill="#C8511B" text-anchor="middle">CF</text>
+  </g>
 
-  <!-- Lambda Symbol -->
-  <path d="M 340 120 L 380 180 L 340 240" stroke="#FF9900" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 380 180 L 460 180" stroke="#FF9900" stroke-width="8" stroke-linecap="round"/>
+  <!-- Arrow between -->
+  <path d="M 378 160 L 420 160" stroke="#7ee787" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 410 153 L 420 160 L 410 167" stroke="#7ee787" stroke-width="3" fill="none" stroke-linecap="round"/>
 
-  <!-- Image Frame 1 (Original) -->
-  <rect x="290" y="140" width="60" height="60" rx="4" fill="#1c2128" stroke="#c9d1d9" stroke-width="2" opacity="0.5"/>
-  <rect x="300" y="150" width="20" height="20" fill="#58a6ff" opacity="0.3"/>
-  <rect x="325" y="155" width="15" height="15" fill="#7ee787" opacity="0.3"/>
+  <!-- Lambda icon - Lambda symbol in rounded square -->
+  <g transform="translate(470, 160)">
+    <rect x="-32" y="-32" width="64" height="64" rx="12" fill="none" stroke="#8C4FFF" stroke-width="3"/>
+    <!-- Lambda λ symbol -->
+    <text x="0" y="12" font-family="Georgia, serif" font-size="44" font-weight="400" fill="#8C4FFF" text-anchor="middle">&#955;</text>
+  </g>
 
-  <!-- Arrow -->
-  <path d="M 360 170 L 440 170" stroke="#7ee787" stroke-width="3" stroke-linecap="round"/>
-  <path d="M 425 163 L 440 170 L 425 177" stroke="#7ee787" stroke-width="3" stroke-linecap="round" fill="none"/>
-
-  <!-- Image Frame 2 (Optimized) -->
-  <rect x="450" y="155" width="50" height="50" rx="4" fill="#1c2128" stroke="#7ee787" stroke-width="2"/>
-  <rect x="458" y="163" width="17" height="17" fill="#58a6ff" opacity="0.5"/>
-  <rect x="478" y="167" width="13" height="13" fill="#7ee787" opacity="0.5"/>
-
-  <!-- Speed Lines -->
-  <line x1="510" y1="165" x2="530" y2="165" stroke="#FF9900" stroke-width="2" opacity="0.5"/>
-  <line x1="510" y1="180" x2="540" y2="180" stroke="#FF9900" stroke-width="2" opacity="0.3"/>
-  <line x1="510" y1="195" x2="535" y2="195" stroke="#FF9900" stroke-width="2" opacity="0.4"/>
+  <!-- Cost reduction -->
+  <text x="400" y="250" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="500" fill="#7ee787" text-anchor="middle" opacity="0.6">-75% cost</text>
 
   <!-- Title -->
   <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#c9d1d9" text-anchor="middle">이미지 최적화</text>
 
-  <!-- Tech Tag -->
-  <rect x="320" y="360" width="160" height="36" rx="18" fill="#1c2128" stroke="#FF9900" stroke-width="2"/>
-  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FF9900" text-anchor="middle">Lambda@Edge</text>
+  <!-- Tech Tags -->
+  <rect x="278" y="360" width="105" height="32" rx="16" fill="#1c2128" stroke="#C8511B" stroke-width="1.5"/>
+  <text x="330" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#C8511B" text-anchor="middle">CloudFront</text>
+  <rect x="393" y="360" width="125" height="32" rx="16" fill="#1c2128" stroke="#8C4FFF" stroke-width="1.5"/>
+  <text x="455" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#8C4FFF" text-anchor="middle">Lambda@Edge</text>
 </svg>

@@ -49,17 +49,6 @@ img {
   display: block;
 }
 
-/* ========== Accent Bar ========== */
-.accent-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--purple) 50%, var(--green) 100%);
-  z-index: 101;
-}
-
 /* ========== Navigation ========== */
 .nav {
   position: fixed;
@@ -252,7 +241,7 @@ img {
 .hero-grid {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   padding: 2rem;
   display: grid;
@@ -339,14 +328,6 @@ img {
   flex-shrink: 0;
 }
 
-.hero-cta {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  opacity: 0;
-  animation: fadeInUp 0.6s ease 0.5s forwards;
-}
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -368,7 +349,7 @@ img {
 /* Metrics Cards */
 .hero-metrics {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
@@ -377,7 +358,7 @@ img {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(225, 228, 232, 0.6);
   border-radius: 12px;
-  padding: 1.75rem 2rem;
+  padding: 1.25rem 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   position: relative;
@@ -413,7 +394,7 @@ img {
 }
 
 .metric-number {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--accent);
   font-family: var(--font-mono);
@@ -1151,10 +1132,6 @@ img {
   }
 
   .hero-contact {
-    justify-content: center;
-  }
-
-  .hero-cta {
     justify-content: center;
   }
 

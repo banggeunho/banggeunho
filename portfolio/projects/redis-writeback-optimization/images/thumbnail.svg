@@ -1,51 +1,46 @@
 <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="800" height="450" fill="#0d1117"/>
-
-  <!-- Gradient Background -->
   <defs>
-    <linearGradient id="redisGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1c2128;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    <linearGradient id="redisBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1c2128"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
     </linearGradient>
-    <radialGradient id="glowRed" cx="50%" cy="50%">
-      <stop offset="0%" style="stop-color:#DC382D;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#DC382D;stop-opacity:0" />
+    <radialGradient id="redisGlow" cx="50%" cy="40%">
+      <stop offset="0%" style="stop-color:#DC382D;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#DC382D;stop-opacity:0"/>
     </radialGradient>
   </defs>
 
-  <rect width="800" height="450" fill="url(#redisGradient)"/>
+  <rect width="800" height="450" fill="url(#redisBg)"/>
+  <circle cx="400" cy="175" r="200" fill="url(#redisGlow)"/>
 
-  <!-- Glow Effect -->
-  <circle cx="400" cy="180" r="200" fill="url(#glowRed)"/>
+  <!-- Redis Official Logo - Stacked diamonds -->
+  <g transform="translate(400, 155)">
+    <!-- Bottom layer -->
+    <path d="M 0 35 L -60 10 L 0 -5 L 60 10 Z" fill="#A41E11" opacity="0.7"/>
+    <!-- Middle layer -->
+    <path d="M 0 20 L -60 -5 L 0 -20 L 60 -5 Z" fill="#D82C20" opacity="0.85"/>
+    <!-- Top layer -->
+    <path d="M 0 5 L -60 -20 L 0 -35 L 60 -20 Z" fill="#FF4438"/>
+    <!-- Star on top -->
+    <path d="M 0 -35 L 5 -25 L 15 -25 L 7 -18 L 10 -8 L 0 -15 L -10 -8 L -7 -18 L -15 -25 L -5 -25 Z" fill="#fff" opacity="0.9" transform="scale(0.7)"/>
+  </g>
 
-  <!-- Redis Cube Icon -->
-  <path d="M 400 120 L 470 155 L 470 215 L 400 250 L 330 215 L 330 155 Z" fill="#1c2128" stroke="#DC382D" stroke-width="3"/>
-  <path d="M 400 120 L 400 180" stroke="#DC382D" stroke-width="2" opacity="0.5"/>
-  <path d="M 330 155 L 400 180 L 470 155" stroke="#DC382D" stroke-width="2"/>
-
-  <!-- Performance Graph -->
-  <path d="M 280 260 L 310 250 L 340 235 L 370 245 L 400 220 L 430 210 L 460 200 L 490 190 L 520 185" 
-        stroke="#7ee787" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-  <!-- Graph Dots -->
-  <circle cx="280" cy="260" r="4" fill="#7ee787"/>
-  <circle cx="370" cy="245" r="4" fill="#7ee787"/>
-  <circle cx="460" cy="200" r="4" fill="#7ee787"/>
-  <circle cx="520" cy="185" r="4" fill="#7ee787"/>
-
-  <!-- Speed Indicator -->
-  <text x="540" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="#7ee787">↑</text>
-
-  <!-- Cache Layers -->
-  <rect x="350" y="155" width="100" height="8" rx="2" fill="#DC382D" opacity="0.6"/>
-  <rect x="355" y="168" width="90" height="8" rx="2" fill="#DC382D" opacity="0.4"/>
-  <rect x="360" y="181" width="80" height="8" rx="2" fill="#DC382D" opacity="0.3"/>
+  <!-- Performance graph line -->
+  <g transform="translate(0, 10)">
+    <path d="M 250 240 L 300 238 L 340 230 L 380 225 L 420 210 L 460 195 L 500 185 L 540 180"
+          stroke="#7ee787" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <circle cx="380" cy="225" r="3" fill="#7ee787" opacity="0.8"/>
+    <circle cx="460" cy="195" r="3" fill="#7ee787" opacity="0.8"/>
+    <circle cx="540" cy="180" r="3" fill="#7ee787" opacity="0.8"/>
+    <text x="548" y="178" font-family="system-ui" font-size="16" font-weight="700" fill="#7ee787" opacity="0.7">50x</text>
+  </g>
 
   <!-- Title -->
   <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#c9d1d9" text-anchor="middle">성능 최적화</text>
 
-  <!-- Tech Tag -->
-  <rect x="360" y="360" width="80" height="36" rx="18" fill="#1c2128" stroke="#DC382D" stroke-width="2"/>
-  <text x="400" y="384" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#DC382D" text-anchor="middle">Redis</text>
+  <!-- Tech Tags -->
+  <rect x="320" y="360" width="70" height="32" rx="16" fill="#1c2128" stroke="#DC382D" stroke-width="1.5"/>
+  <text x="355" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#DC382D" text-anchor="middle">Redis</text>
+  <rect x="400" y="360" width="90" height="32" rx="16" fill="#1c2128" stroke="#7ee787" stroke-width="1.5"/>
+  <text x="445" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#7ee787" text-anchor="middle">Write-back</text>
 </svg>
