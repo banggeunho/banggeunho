@@ -69,7 +69,7 @@
   </defs>
 
   <!-- Centered in left section: x=250 (middle of 0-500) -->
-  <g id="isometric-building" transform="translate(280, 400) scale(1.25)" filter="url(#building-shadow)">
+  <g id="isometric-building" transform="translate(280, 320) scale(1.25)" filter="url(#building-shadow)">
 
     <!-- LAYER 1: LANGUAGES (0-2s) -->
     <g id="layer-languages">
