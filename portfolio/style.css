@@ -478,56 +478,53 @@ img {
 
 /* ========== Skills Section ========== */
 .skills-categories {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .skill-category {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: box-shadow 0.3s, transform 0.3s;
-}
-
-.skill-category:hover {
-  box-shadow: 0 4px 12px var(--shadow-hover);
-  transform: translateY(-2px);
+  padding: 0;
 }
 
 .skill-category h3 {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--accent);
 }
 
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .skill-tag {
-  display: inline-block;
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
   font-weight: 500;
-  background: var(--tag-color, #f0f3f6);
-  color: var(--tag-text, var(--text-primary));
+  background: var(--bg-card);
+  color: var(--text-primary);
   border: 1px solid var(--border);
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  cursor: pointer;
+  cursor: default;
+}
+
+.skill-tag svg {
+  flex-shrink: 0;
 }
 
 .skill-tag:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px var(--shadow);
-  border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--shadow);
+  border-color: var(--tag-color, var(--accent));
 }
 
 /* ========== Buttons ========== */
@@ -1195,13 +1192,15 @@ img {
     font-size: 2rem;
   }
 
-  .skills-categories {
-    grid-template-columns: 1fr;
+  .skill-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    gap: 0.4rem;
   }
 
-  .skill-tag {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.7rem;
+  .skill-tag svg {
+    width: 14px;
+    height: 14px;
   }
 
   .section-title {
@@ -1232,7 +1231,7 @@ img {
 }
 
 .skill-tag:focus {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--tag-color, var(--accent));
   outline-offset: 2px;
 }
 
