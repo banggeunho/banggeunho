@@ -286,7 +286,7 @@ for (const event of events) {
 // 배치 전송 (빠름)
 await firehose.putRecordBatch({
   DeliveryStreamName: 'user-events-stream',
-  Records: events.map(e => ({
+  Records: events.map(e =&gt; ({
     Data: JSON.stringify(e) + '\n'
   }))
 });  // 100ms × 1번 = 100ms</code></pre><hr>

@@ -107,7 +107,7 @@ public void collectWemepOrders() {
     // 2. API 호출
     String response = callWemepAPI(token);
     // 3. 파싱
-    List<Order> orders = parseWemepResponse(response);
+    List&lt;Order&gt; orders = parseWemepResponse(response);
     // 4. 저장
     saveOrders(orders);
   }
@@ -118,7 +118,7 @@ public void collectLotteOrders() {
   for (String apiKey : lotteApiKeys) {
     String token = authenticateLotte(apiKey);
     String response = callLotteAPI(token);
-    List<Order> orders = parseLotteResponse(response);
+    List&lt;Order&gt; orders = parseLotteResponse(response);
     saveOrders(orders);
   }
 }
@@ -235,25 +235,25 @@ public void collectLotteOrders() {
   // 템플릿 메소드 (플로우 정의)
   public final void collect() {
     // 1. 판매자 목록 로드
-    List<String> apiKeys = getApiKeys();
+    List&lt;String&gt; apiKeys = getApiKeys();
 
     // 2. 판매자별 병렬 수집
-    List<Order> allOrders = collectFromSellers(apiKeys);
+    List&lt;Order&gt; allOrders = collectFromSellers(apiKeys);
 
     // 3. 벌크 저장 (공통 로직)
     saveOrdersBulk(allOrders);
 
-    log.info("{} collected {} orders from {} sellers",
+    log.info(&quot;{} collected {} orders from {} sellers&quot;,
       getName(), allOrders.size(), apiKeys.size());
   }
 
   // 하위 클래스에서 구현해야 하는 추상 메서드
   protected abstract String authenticate(String apiKey);
   protected abstract String fetchOrders(String token);
-  protected abstract List<Order> parseResponse(String response);
+  protected abstract List&lt;Order&gt; parseResponse(String response);
 
   // 공통 로직 (하위 클래스에서 재사용)
-  protected abstract List<String> getApiKeys();
+  protected abstract List&lt;String&gt; getApiKeys();
   public abstract String getName();
 }</code></pre><h3 id="구체적-구현-위메프">구체적 구현 (위메프)</h3>
 <p><strong>WemepCollector:</strong></p>
@@ -264,7 +264,7 @@ public class WemepCollector extends CommerceCollector {
   protected String authenticate(String apiKey) {
     // OAuth 인증
     return restTemplate.postForObject(
-      "https://api.wemep.com/oauth/token",
+      &quot;https://api.wemep.com/oauth/token&quot;,
       new OAuth2Request(apiKey, clientSecret),
       TokenResponse.class
     ).getAccessToken();
@@ -276,15 +276,15 @@ public class WemepCollector extends CommerceCollector {
     headers.setBearerAuth(token);
 
     return restTemplate.exchange(
-      "https://api.wemep.com/orders",
+      &quot;https://api.wemep.com/orders&quot;,
       HttpMethod.GET,
-      new HttpEntity<>(headers),
+      new HttpEntity&lt;&gt;(headers),
       String.class
     ).getBody();
   }
 
   @Override
-  protected List<Order> parseResponse(String response) {
+  protected List&lt;Order&gt; parseResponse(String response) {
     // JSON 파싱
     WemepOrderResponse res = objectMapper.readValue(
       response, WemepOrderResponse.class);
@@ -295,13 +295,13 @@ public class WemepCollector extends CommerceCollector {
   }
 
   @Override
-  protected List<String> getApiKeys() {
-    return sellerRepository.findApiKeysByCommerce("WEMEP");
+  protected List&lt;String&gt; getApiKeys() {
+    return sellerRepository.findApiKeysByCommerce(&quot;WEMEP&quot;);
   }
 
   @Override
   public String getName() {
-    return "WEMEP";
+    return &quot;WEMEP&quot;;
   }
 }</code></pre><h3 id="다른-커머스-구현-롯데on">다른 커머스 구현 (롯데ON)</h3>
 <p><strong>LotteCollector:</strong></p>
@@ -318,27 +318,27 @@ public class LotteCollector extends CommerceCollector {
   protected String fetchOrders(String apiKey) {
     // XML 응답 (JSON과 다름)
     HttpHeaders headers = new HttpHeaders();
-    headers.set("X-API-KEY", apiKey);
+    headers.set(&quot;X-API-KEY&quot;, apiKey);
 
     return restTemplate.exchange(
-      "https://api.lotteon.com/orders.xml",
+      &quot;https://api.lotteon.com/orders.xml&quot;,
       HttpMethod.GET,
-      new HttpEntity<>(headers),
+      new HttpEntity&lt;&gt;(headers),
       String.class
     ).getBody();
   }
 
   @Override
-  protected List<Order> parseResponse(String response) {
+  protected List&lt;Order&gt; parseResponse(String response) {
     // XML 파싱 (JSON과 다름)
     Document doc = DocumentBuilderFactory.newInstance()
       .newDocumentBuilder()
       .parse(new InputSource(new StringReader(response)));
 
-    NodeList orderNodes = doc.getElementsByTagName("order");
-    List<Order> orders = new ArrayList<>();
+    NodeList orderNodes = doc.getElementsByTagName(&quot;order&quot;);
+    List&lt;Order&gt; orders = new ArrayList&lt;&gt;();
 
-    for (int i = 0; i < orderNodes.getLength(); i++) {
+    for (int i = 0; i &lt; orderNodes.getLength(); i++) {
       Element orderEl = (Element) orderNodes.item(i);
       orders.add(transformToEntity(orderEl));
     }
@@ -347,13 +347,13 @@ public class LotteCollector extends CommerceCollector {
   }
 
   @Override
-  protected List<String> getApiKeys() {
-    return sellerRepository.findApiKeysByCommerce("LOTTE");
+  protected List&lt;String&gt; getApiKeys() {
+    return sellerRepository.findApiKeysByCommerce(&quot;LOTTE&quot;);
   }
 
   @Override
   public String getName() {
-    return "LOTTE";
+    return &quot;LOTTE&quot;;
   }
 }</code></pre><h3 id="코드-재사용-효과">코드 재사용 효과</h3>
 <pre><code class="language-">Before:
@@ -374,32 +374,32 @@ After:
 <h3 id="순차-처리-vs-병렬-처리">순차 처리 vs 병렬 처리</h3>
 <p>기존에는 각 판매자(API Key)별로 순차적으로 데이터를 가져와서 적재하는 방식이었습니다.</p>
 <p><strong>Before (판매자별 순차):</strong></p>
-<pre><code class="language-java">public List<Order> collectFromSellers(List<String> apiKeys) {
-  List<Order> allOrders = new ArrayList<>();
+<pre><code class="language-java">public List&lt;Order&gt; collectFromSellers(List&lt;String&gt; apiKeys) {
+  List&lt;Order&gt; allOrders = new ArrayList&lt;&gt;();
 
   for (String apiKey : apiKeys) {
     String token = authenticate(apiKey);      // 인증
     String response = fetchOrders(token);     // API 호출 (느림)
-    List<Order> orders = parseResponse(response);
+    List&lt;Order&gt; orders = parseResponse(response);
     allOrders.addAll(orders);
   }
   // 판매자 20개 × 평균 1.5분 = 30분
 
   return allOrders;
 }</code></pre><p><strong>After (판매자별 병렬):</strong></p>
-<pre><code class="language-java">public List<Order> collectFromSellers(List<String> apiKeys) {
+<pre><code class="language-java">public List&lt;Order&gt; collectFromSellers(List&lt;String&gt; apiKeys) {
   ExecutorService executor = Executors.newFixedThreadPool(10);
 
-  List<CompletableFuture<List<Order>>> futures = apiKeys.stream()
-    .map(apiKey -> CompletableFuture.supplyAsync(
-      () -> {
+  List&lt;CompletableFuture&lt;List&lt;Order&gt;&gt;&gt; futures = apiKeys.stream()
+    .map(apiKey -&gt; CompletableFuture.supplyAsync(
+      () -&gt; {
         try {
           String token = authenticate(apiKey);
           String response = fetchOrders(token);
           return parseResponse(response);
         } catch (Exception e) {
-          log.error("Failed: {} - {}", getName(), apiKey, e);
-          return Collections.<Order>emptyList();
+          log.error(&quot;Failed: {} - {}&quot;, getName(), apiKey, e);
+          return Collections.&lt;Order&gt;emptyList();
         }
       },
       executor
@@ -407,7 +407,7 @@ After:
     .collect(Collectors.toList());
 
   // 모든 판매자 수집 완료 대기
-  List<Order> allOrders = futures.stream()
+  List&lt;Order&gt; allOrders = futures.stream()
     .map(CompletableFuture::join)
     .flatMap(Collection::stream)
     .collect(Collectors.toList());
@@ -472,26 +472,26 @@ for (Order order : orders) {
 }
 
 // 주문 10,000건 → DB I/O 20,000번</code></pre><h3 id="해결-벌크-처리로-3번의-db-io">해결: 벌크 처리로 3번의 DB I/O</h3>
-<pre><code class="language-java">public void saveOrdersBulk(List<Order> orders) {
+<pre><code class="language-java">public void saveOrdersBulk(List&lt;Order&gt; orders) {
   String batchUuid = UUID.randomUUID().toString();
 
   // 1. 개인정보 DB - 배송지 벌크 저장 (1번의 DB I/O)
-  List<Address> addresses = orders.stream()
+  List&lt;Address&gt; addresses = orders.stream()
     .map(Order::getAddress)
     .collect(Collectors.toList());
 
-  for (int i = 0; i < addresses.size(); i++) {
+  for (int i = 0; i &lt; addresses.size(); i++) {
     addresses.get(i).setBatchUuid(batchUuid);
     addresses.get(i).setSequence(i);
   }
   personalInfoDb.saveAll(addresses);
 
   // 2. 개인정보 DB - 저장된 배송지 조회 (1번의 DB I/O)
-  List<Address> savedAddresses = personalInfoDb
+  List&lt;Address&gt; savedAddresses = personalInfoDb
     .findByBatchUuidOrderBySequence(batchUuid);
 
   // 3. 주문 DB - FK 매핑 후 벌크 저장 (1번의 DB I/O)
-  for (int i = 0; i < orders.size(); i++) {
+  for (int i = 0; i &lt; orders.size(); i++) {
     orders.get(i).setAddressId(savedAddresses.get(i).getId());
   }
   orderDb.saveAll(orders);
@@ -509,7 +509,7 @@ Long lastId = personalInfoDb.findMaxId(); // 520
 
 // 3. ID 범위 계산 (동시성 문제!)
 // 500번부터 520번까지가 이번 배치라고 가정
-List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
+List&lt;Long&gt; ids = IntStream.rangeClosed(lastId - 20, lastId)
   .boxed()
   .collect(Collectors.toList());</code></pre><p><strong>문제 상황:</strong></p>
 <pre><code class="language-">위메프 배치: 배송지 20개 저장 → 마지막 ID: 520
@@ -520,14 +520,14 @@ List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
 String batchUuid = UUID.randomUUID().toString();
 
 // 1. UUID와 Sequence를 함께 저장
-for (int i = 0; i < addresses.size(); i++) {
+for (int i = 0; i &lt; addresses.size(); i++) {
   addresses.get(i).setBatchUuid(batchUuid);
   addresses.get(i).setSequence(i); // 순서 보장
 }
 personalInfoDb.saveAll(addresses);
 
 // 2. UUID로 조회 (동시성 안전)
-List<Address> savedAddresses = personalInfoDb
+List&lt;Address&gt; savedAddresses = personalInfoDb
   .findByBatchUuidOrderBySequence(batchUuid);</code></pre><p><strong>Sequence가 필요한 이유:</strong></p>
 <p>벌크 INSERT 시 삽입 순서와 조회 순서가 일치한다는 보장이 없습니다.</p>
 <pre><code class="language-sql">INSERT INTO addresses VALUES (...), (...), (...);
@@ -566,13 +566,13 @@ ORDER BY sequence ASC;</code></pre><hr>
   stages {
     stage('Re-collect Orders') {
       steps {
-        sh """
+        sh &quot;&quot;&quot;
           java -jar batch.jar \
             --job=reCollectOrders \
             --startDate=${params.START_DATE} \
             --endDate=${params.END_DATE} \
             --commerce=${params.COMMERCE}
-        """
+        &quot;&quot;&quot;
       }
     }
   }
@@ -582,7 +582,7 @@ ORDER BY sequence ASC;</code></pre><hr>
       slackSend(
         channel: '#batch-alerts',
         color: 'danger',
-        message: "재수집 실패: ${params.COMMERCE} (${params.START_DATE} ~ ${params.END_DATE})"
+        message: &quot;재수집 실패: ${params.COMMERCE} (${params.START_DATE} ~ ${params.END_DATE})&quot;
       )
     }
   }
@@ -606,17 +606,17 @@ public class SlackNotifier {
 
   public void notifyBatchFailure(String commerce, Exception e) {
     String message = String.format(
-      ":x: *배치 실패*\n" +
-      "커머스: %s\n" +
-      "에러: %s\n" +
-      "시간: %s\n" +
-      "<https://jenkins.example.com|재실행>",
+      &quot;:x: *배치 실패*\n&quot; +
+      &quot;커머스: %s\n&quot; +
+      &quot;에러: %s\n&quot; +
+      &quot;시간: %s\n&quot; +
+      &quot;&lt;https://jenkins.example.com|재실행&gt;&quot;,
       commerce,
       e.getMessage(),
       LocalDateTime.now()
     );
 
-    slackClient.postMessage("#batch-alerts", message);
+    slackClient.postMessage(&quot;#batch-alerts&quot;, message);
   }
 }</code></pre><hr>
 </section>

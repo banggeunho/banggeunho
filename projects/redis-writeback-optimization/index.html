@@ -89,7 +89,7 @@
 <h2 id="문제-분석-row-level-lock과-deadlock">문제 분석: Row-level Lock과 Deadlock</h2>
 <h3 id="기존-구조의-문제">기존 구조의 문제</h3>
 <p><strong>배너 이벤트 발생 시 동작:</strong></p>
-<pre><code class="language-javascript">router.post("/api/banner/performance/impression", async (req, res, next) => {
+<pre><code class="language-javascript">router.post(&quot;/api/banner/performance/impression&quot;, async (req, res, next) =&gt; {
   const { bannerId } = req.body;
   const date = new Date();
 
@@ -120,7 +120,7 @@
 INSERT INTO banner_clicks (banner_id, clicked_at) VALUES (1, NOW());
 
 -- 집계는 별도 쿼리
-SELECT COUNT(*) FROM banner_clicks WHERE banner_id = 1 AND clicked_at >= '2024-05-01';</code></pre><p><strong>불채택 이유:</strong></p>
+SELECT COUNT(*) FROM banner_clicks WHERE banner_id = 1 AND clicked_at &gt;= '2024-05-01';</code></pre><p><strong>불채택 이유:</strong></p>
 <ul>
 <li>데이터 적재량 증가로 인한 스토리지 비용 부담 (일일 70만 건 × 365일)</li>
 <li>실시간 집계 쿼리(<code>COUNT</code>, <code>GROUP BY</code>)가 느림</li>
@@ -246,7 +246,7 @@ async getStats(@Param('id') bannerId: number) {
   return {
     impressions: parseInt(stats.IMPRESSION || '0'),
     clicks: parseInt(stats.CLICK || '0'),
-    ctr: stats.IMPRESSION > 0
+    ctr: stats.IMPRESSION &gt; 0
       ? (parseInt(stats.CLICK) / parseInt(stats.IMPRESSION) * 100).toFixed(2)
       : 0
   };
@@ -257,7 +257,7 @@ async getStats(@Param('id') bannerId: number) {
 <h3 id="배치-아키텍처">배치 아키텍처</h3>
 <p>EventBridge Scheduler가 10분마다 Lambda를 트리거하여 Redis 데이터를 RDS에 동기화합니다.</p>
 <p><strong>Lambda 함수:</strong></p>
-<pre><code class="language-typescript">export const handler = async () => {
+<pre><code class="language-typescript">export const handler = async () =&gt; {
   let cursor = '0';
   const statsData = [];
 
@@ -286,7 +286,7 @@ async getStats(@Param('id') bannerId: number) {
   if (statsData.length === 0) return;
 
   // 2. RDS에 Bulk INSERT
-  await db.transaction(async (trx) => {
+  await db.transaction(async (trx) =&gt; {
     await trx('banner_daily_stats')
       .insert(statsData)
       .onConflict(['date', 'banner_id'])

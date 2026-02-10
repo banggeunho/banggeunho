@@ -223,9 +223,9 @@
   product_id,
   SUM(clicks)::FLOAT / SUM(impressions)::FLOAT AS ctr
 FROM search_logs
-WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+WHERE created_at &gt;= CURRENT_DATE - INTERVAL '7 days'
 GROUP BY product_id
-HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><strong>2단계: CTR을 포함하여 상품 데이터 색인</strong></p>
+HAVING SUM(impressions) &gt;= 100  -- 최소 노출 100회 이상</code></pre><p><strong>2단계: CTR을 포함하여 상품 데이터 색인</strong></p>
 <p>집계된 CTR 데이터를 상품 정보와 함께 OpenSearch에 색인합니다. 이렇게 하면 검색 시 별도의 CTR 조회 없이, Function Score Query로 CTR을 랭킹에 바로 반영할 수 있습니다.</p>
 <h3 id="검증-ab-테스트">검증: A/B 테스트</h3>
 <p>1주일간 세션 기반 A/B 테스트를 진행했습니다.</p>
@@ -278,7 +278,7 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><s
 <td>1분</td>
 </tr>
 </tbody></table>
-<pre><code class="language-typescript">async getSearchMetadata(category: string): Promise<SearchMetadata> {
+<pre><code class="language-typescript">async getSearchMetadata(category: string): Promise&lt;SearchMetadata&gt; {
   const cacheKey = `search:meta:${category}`;
 
   const cached = await this.redis.get(cacheKey);
@@ -323,7 +323,7 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><s
 async updateSynonyms(@Body() dto: SynonymDto) {
   // 동의어를 OpenSearch 형식의 TXT로 변환
   const synonymText = dto.entries
-    .map(e => `${e.word},${e.synonyms.join(',')}`)
+    .map(e =&gt; `${e.word},${e.synonyms.join(',')}`)
     .join('\n');
 
   await this.s3.upload({
@@ -335,7 +335,7 @@ async updateSynonyms(@Body() dto: SynonymDto) {
   return { message: '동의어가 등록되었습니다. 5분 내 반영됩니다.' };
 }</code></pre><p><strong>3단계: S3 이벤트 → Lambda → 재색인</strong></p>
 <p>S3에 TXT 파일이 업로드되면 Lambda가 자동으로 트리거되어 OpenSearch를 재색인합니다.</p>
-<pre><code class="language-typescript">export const handler = async (event: S3Event) => {
+<pre><code class="language-typescript">export const handler = async (event: S3Event) =&gt; {
   // 1. S3에서 동의어/사전 TXT 다운로드
   const synonyms = await downloadFromS3(event);
 

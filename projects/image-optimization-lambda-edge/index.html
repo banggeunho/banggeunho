@@ -124,7 +124,7 @@ AVIF: 5.2KB (85.2% 감소)</code></pre><p><strong>포맷 + 사이즈 변경 (442
 <pre><code class="language-">WebP: 5.4KB (84.6% 감소)
 AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압축률은 최고지만, Opera Mini 등 일부 브라우저에서 미지원. WebP는 IE를 제외한 모든 브라우저에서 지원하므로 <strong>WebP를 기본으로 선택하되, <code>&lt;picture&gt;</code> 태그로 AVIF도 지원</strong>하는 방향을 채택했습니다.</p>
 <p><strong>4. 클라이언트 단에서 크롭</strong></p>
-<pre><code class="language-html"><img src="original.jpg" style="width: 200px; height: 200px; object-fit: cover;"></code></pre><p>이미지는 300KB를 전부 다운로드하고, 브라우저에서 200x200으로 잘라서 표시. UX 저하 + 대역폭 낭비.</p>
+<pre><code class="language-html">&lt;img src=&quot;original.jpg&quot; style=&quot;width: 200px; height: 200px; object-fit: cover;&quot;&gt;</code></pre><p>이미지는 300KB를 전부 다운로드하고, 브라우저에서 200x200으로 잘라서 표시. UX 저하 + 대역폭 낭비.</p>
 <hr>
 </section>
 <section class="content-section">
@@ -210,7 +210,7 @@ AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압�
     G -->|원본 이미지| F
     F -->|리사이징<br/>포맷 변환| B
     B -->|캐시 저장| D</pre><h3 id="url-파라미터-설계">URL 파라미터 설계</h3>
-<pre><code class="language-">https://cdn.example.com/products/123.jpg?w=400&h=300&f=webp&q=80
+<pre><code class="language-">https://cdn.example.com/products/123.jpg?w=400&amp;h=300&amp;f=webp&amp;q=80
 
 - w: width (너비)
 - h: height (높이)
@@ -221,11 +221,11 @@ AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압�
 <h2 id="핵심-구현-1-cloudfront-functions로-어뷰징-방지">핵심 구현 1: CloudFront Functions로 어뷰징 방지</h2>
 <h3 id="문제-악의적-요청으로-비용-폭증">문제: 악의적 요청으로 비용 폭증</h3>
 <p>Lambda@Edge는 요청당 과금입니다. 악의적인 사용자가 다음과 같은 요청을 보내면?</p>
-<pre><code class="language-">?w=1&h=1    // 1x1 픽셀
-?w=2&h=2    // 2x2 픽셀
-?w=3&h=3    // 3x3 픽셀
+<pre><code class="language-">?w=1&amp;h=1    // 1x1 픽셀
+?w=2&amp;h=2    // 2x2 픽셀
+?w=3&amp;h=3    // 3x3 픽셀
 ...
-?w=5000&h=5000  // 5000x5000 픽셀</code></pre><p>각각 Lambda 실행 → 캐시되지 않음 → 비용 폭증 💸</p>
+?w=5000&amp;h=5000  // 5000x5000 픽셀</code></pre><p>각각 Lambda 실행 → 캐시되지 않음 → 비용 폭증 💸</p>
 <h3 id="해결-cloudfront-functions로-검증">해결: CloudFront Functions로 검증</h3>
 <p>CloudFront Functions는 Lambda@Edge보다 <strong>1/6 저렴</strong>하고 <strong>10배 빠릅니다</strong>.</p>
 <p><strong>검증 로직 (실제 프로덕션 코드):</strong></p>
@@ -248,9 +248,9 @@ function handler(event) {
   // w 파라미터 정규화 (50~2000, 10단위)
   if (queryParams.w) {
     var wValue = parseInt(queryParams.w.value, 10) || 0;
-    if (wValue < MIN_WIDTH) {
+    if (wValue &lt; MIN_WIDTH) {
       newQueryParams.w = MIN_WIDTH;
-    } else if (wValue > MAX_WIDTH) {
+    } else if (wValue &gt; MAX_WIDTH) {
       newQueryParams.w = MAX_WIDTH;
     } else {
       // 가장 가까운 10단위 값으로 반올림
@@ -261,9 +261,9 @@ function handler(event) {
   // h 파라미터 정규화 (50~2000, 10단위)
   if (queryParams.h) {
     var hValue = parseInt(queryParams.h.value, 10) || 0;
-    if (hValue < MIN_HEIGHT) {
+    if (hValue &lt; MIN_HEIGHT) {
       newQueryParams.h = MIN_HEIGHT;
-    } else if (hValue > MAX_HEIGHT) {
+    } else if (hValue &gt; MAX_HEIGHT) {
       newQueryParams.h = MAX_HEIGHT;
     } else {
       newQueryParams.h = Math.round(hValue / STEP) * STEP;
@@ -273,9 +273,9 @@ function handler(event) {
   // q 파라미터 정규화 (10~100, 10단위)
   if (queryParams.q) {
     var qValue = parseInt(queryParams.q.value, 10) || 0;
-    if (qValue < MIN_QUALITY) {
+    if (qValue &lt; MIN_QUALITY) {
       newQueryParams.q = MIN_QUALITY;
-    } else if (qValue > MAX_QUALITY) {
+    } else if (qValue &gt; MAX_QUALITY) {
       newQueryParams.q = MAX_QUALITY;
     } else {
       newQueryParams.q = Math.round(qValue / STEP) * STEP;
@@ -293,10 +293,10 @@ function handler(event) {
   // 정렬하여 동일한 키로 캐싱 가능하도록 변경
   var sortedQuery = Object.keys(newQueryParams)
     .sort()
-    .map(key => key + "=" + newQueryParams[key])
-    .join("&");
+    .map(key =&gt; key + &quot;=&quot; + newQueryParams[key])
+    .join(&quot;&amp;&quot;);
 
-  if (sortedQuery.length > 0) {
+  if (sortedQuery.length &gt; 0) {
     request.querystring = sortedQuery;
   }
 
@@ -325,12 +325,12 @@ function handler(event) {
 const sharp = require('sharp');
 const s3 = new AWS.S3();
 
-exports.handler = async (event) => {
+exports.handler = async (event) =&gt; {
   const request = event.Records[0].cf.request;
   const querystring = request.querystring;
 
   // 1. 원본 이미지 가져오기
-  const key = request.uri.substring(1); // /products/123.jpg -> products/123.jpg
+  const key = request.uri.substring(1); // /products/123.jpg -&gt; products/123.jpg
   const s3Object = await s3.getObject({
     Bucket: 'my-images-bucket',
     Key: key
@@ -434,7 +434,7 @@ COPY index.js ./</code></pre><p><strong>배포 과정:</strong></p>
 <pre><code class="language-javascript">// 이미지 규격 제한
 const MAX_DIMENSION = 4000;
 
-if (originalWidth > MAX_DIMENSION || originalHeight > MAX_DIMENSION) {
+if (originalWidth &gt; MAX_DIMENSION || originalHeight &gt; MAX_DIMENSION) {
   // 4000×4000 이상은 원본 이미지 반환
   return originalResponse;
 }</code></pre><p>2GB 메모리로 증설해도 초대형 이미지는 OOM 발생. 현실적인 제한선을 두는 것이 필요.</p>
@@ -452,8 +452,8 @@ const processImage = sharp(s3Object.Body).resize(...).toBuffer();
 
 const result = await Promise.race([
   processImage,
-  new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout')), TIMEOUT)
+  new Promise((_, reject) =&gt;
+    setTimeout(() =&gt; reject(new Error('Timeout')), TIMEOUT)
   )
 ]);
 
@@ -503,16 +503,16 @@ if (!contentType || !contentType.startsWith('image/')) {
 <pre><code class="language-bash">#!/bin/bash
 
 POPULAR_SIZES=(200 400 800 1200)
-BUCKET="my-images-bucket"
+BUCKET=&quot;my-images-bucket&quot;
 
-for size in "${POPULAR_SIZES[@]}"; do
+for size in &quot;${POPULAR_SIZES[@]}&quot;; do
   aws s3 ls s3://$BUCKET/products/ | while read -r line; do
     file=$(echo $line | awk '{print $4}')
 
     # CloudFront URL 호출 (Lambda 실행 → 캐시 생성)
-    curl -s "https://cdn.example.com/products/$file?w=$size&h=$size&f=webp" > /dev/null
+    curl -s &quot;https://cdn.example.com/products/$file?w=$size&amp;h=$size&amp;f=webp&quot; &gt; /dev/null
 
-    echo "Warmed: $file @ ${size}px"
+    echo &quot;Warmed: $file @ ${size}px&quot;
   done
 done</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
 <hr>
