@@ -44,8 +44,8 @@ date: 2024-04-01
 **1. 데이터 리드타임 (1~2일)**
 ```
 - 요청 접수: 수 시간 (업무 시간대 차이)
-- DB 조회: 2시간 (쿼리 작성 + 실행)
-- 데이터 전처리: 4시간 (중복 제거, 포맷 변환)
+- DB 조회: 1시간 (쿼리 작성 + 실행)
+- 데이터 전처리: 1시간 (중복 제거, 포맷 변환)
 - 적재: 1시간
 - 합계: 최소 반나절 → 보통 1~2일
 ```
@@ -69,19 +69,16 @@ df.to_csv('output.csv', encoding='utf-8')  # 인코딩 이슈?
 
 ---
 
-## 해결 목표: 30분~1시간 이내 데이터 제공
+## 해결 목표: 당일 데이터 제공
 
 ### 정량적 목표
-- **데이터 리드타임**: 1~2일 → 30분~1시간 이내
+- **데이터 리드타임**: 1~2일 → 당일 데이터 리드 가능
 - **처리 용량**: 월 평균 3,000만 건, 피크 5,000만 건
-- **스토리지 비용**: 70% 절감 (Parquet 적용)
-- **Athena 쿼리 속도**: 5배 향상
 
 ### 정성적 목표
 - 개발자 개입 없이 자동화
 - Tableau 대시보드 자동 업데이트
 - 데이터 유실률 0%
-- 히스토리 추적 가능 (S3 버전 관리)
 
 ---
 
@@ -130,7 +127,7 @@ graph TB
     end
 ```
 
-### 수집 이벤트 (8개)
+### 수집 이벤트 예시
 
 ```typescript
 // 구매
@@ -258,7 +255,7 @@ await firehose.putRecordBatch({
 
 **Parquet 변환 (PyArrow):**
 
-Firehose는 이벤트를 배치(최대 6MB 또는 900초)로 묶어서 Lambda에 전달합니다. Lambda는 배치 내 모든 레코드를 변환하여 반환합니다.
+Firehose는 이벤트를 배치(최대 3MB 또는 900초)로 묶어서 Lambda에 전달합니다. Lambda는 배치 내 모든 레코드를 변환하여 반환합니다.
 
 ```python
 import json
@@ -322,21 +319,6 @@ def lambda_handler(event, context):
 
 ### Athena 테이블 생성
 
-**Glue Crawler 자동 스키마 감지:**
-```yaml
-EventsCrawler:
-  Type: AWS::Glue::Crawler
-  Properties:
-    Name: events-crawler
-    Role: !GetAtt GlueServiceRole.Arn
-    DatabaseName: analytics
-    Targets:
-      S3Targets:
-        - Path: s3://my-events-bucket/events/
-    Schedule:
-      ScheduleExpression: cron(0 */6 * * ? *)  # 6시간마다 실행
-```
-
 **Athena 쿼리 (즉시 조회):**
 ```sql
 -- 일별 구매 금액
@@ -366,11 +348,11 @@ After (Parquet):
 
 ### Redshift 적재 (배치)
 
-**매일 새벽 2시 배치:**
+**30분 간격 배치:**
 ```sql
 -- COPY 명령어로 S3 → Redshift
 COPY analytics.events
-FROM 's3://my-events-bucket/events/year=2024/month=05/day=08/'
+FROM 's3://my-events-bucket/events/year=2026/month=01/day=08/'
 IAM_ROLE 'arn:aws:iam::123456789:role/RedshiftS3Role'
 FORMAT AS PARQUET;
 ```
@@ -391,15 +373,10 @@ SORTKEY(timestamp);
 
 S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으로 파티션으로 인식되며, Redshift에는 날짜별로 COPY 명령을 실행하여 적재합니다.
 
-### Tableau 연동
-
-**Athena 커넥터:**
-- 실시간 대시보드 (30분~1시간 지연)
-- 빠른 프로토타이핑
+### Tableau 연동 및 최신 데이터 적재
 
 **Redshift 커넥터:**
-- 정기 리포트 (1일 지연)
-- 복잡한 조인 쿼리
+- 증분 적재 방식 사용 (비용 절감)
 
 ---
 
@@ -407,12 +384,12 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 
 ### 리드타임 단축
 
-| 단계 | Before | After |
-|------|--------|-------|
+| 단계 | Before            | After |
+|------|-------------------|-------|
 | 데이터 수집 | 어드민 다운로드 / 개발팀 요청 | 자동 (Firehose) |
-| 전처리 | 수동 (4시간) | 자동 (Lambda) |
-| 적재 | 수동 (1시간) | 자동 (S3) |
-| **리드타임** | **1~2일** | **30분~1시간** |
+| 전처리 | 수동 (1시간)          | 자동 (Lambda) |
+| 적재 | 수동 (1시간)          | 자동 (S3) |
+| **리드타임** | **1~2일**          | **30분** |
 
 기존에는 데이터 담당자가 어드민에서 직접 다운로드하거나 개발팀에 데이터를 요청한 뒤, 전처리를 거쳐 수동으로 적재해야 했습니다. 파이프라인 구축 후 이 과정이 완전히 자동화되었습니다.
 
@@ -430,13 +407,12 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 - 월 평균 처리량: 3,000만 건
 - 월 피크 처리량: 5,000만 건
 - 일 평균: 100만 건
-- 데이터 유실: 측정 기간 6개월간 0건 (Firehose 자동 재시도)
+- 데이터 유실: 측정 기간 6개월간 0건 (AWS SDK, Firehose 자동 재시도)
 ```
 
 ### 자동화 성과
 
-- 수동 데이터 추출 요청: 0건
-- Tableau 대시보드 자동 업데이트: 8개
+- Tableau 대시보드 자동 업데이트
 - 개발팀 데이터 요청 대응 시간: 1~2일 → 불필요
 
 ---
@@ -446,15 +422,16 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 **1. AWS 관리형 서비스의 위력**
 - Firehose + Lambda + S3로 완전 자동화를 달성했습니다.
 - 서버 관리 불필요, 종량제 과금으로 비용을 최소화했습니다.
+- 비용 검증 필수
 
 **2. Parquet는 필수**
 - 스토리지 비용 70% 절감
 - Athena 쿼리 속도 5배 향상
-- 압축은 Snappy (빠르고 적절한 압축률)
+- 압축은 Snappy (빠르고 적절한 압축률, Recommend)
 
 **3. 분석 레이어 이원화**
-- Athena: 실시간 조회 (30분~1시간 지연)
-- Redshift: 배치 적재 (1일 지연)
+- Athena: 실시간 조회
+- Redshift: 배치 적재 (30분 지연)
 - 용도에 따라 적절한 도구를 선택하는 것이 중요합니다.
 
 **4. 데이터 파티셔닝**
@@ -466,18 +443,16 @@ s3://bucket/events/year=2024/month=05/day=08/
 
 **5. 히스토리 추적**
 - S3 버전 관리로 데이터 복구가 가능합니다.
-- Glue Crawler로 스키마 변경을 자동으로 감지합니다.
 
 ---
 
 ## 기술 스택
 
-| 분류 | 기술 |
-|------|------|
-| **이벤트 수집** | AWS Kinesis Data Firehose |
-| **데이터 변환** | AWS Lambda (Python, PyArrow) |
-| **스토리지** | S3 (Parquet + Snappy) |
-| **쿼리 엔진** | Athena (서버리스) |
-| **데이터 웨어하우스** | Redshift |
-| **스키마 관리** | AWS Glue Crawler |
-| **시각화** | Tableau |
+| 분류 | 기술                               |
+|------|----------------------------------|
+| **이벤트 수집** | AWS Data Firehose  (서버리스) |
+| **데이터 변환** | AWS Lambda (Python, PyArrow)     |
+| **스토리지** | S3 (Parquet + Snappy)            |
+| **쿼리 엔진** | Athena (서버리스)                    |
+| **데이터 웨어하우스** | Redshift (서버리스)                  |
+| **시각화** | Tableau                          |
