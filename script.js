@@ -99,7 +99,7 @@ function renderSkills() {
   const container = document.querySelector('.skills-categories');
   if (!container || !portfolioData.skills) return;
 
-  container.innerHTML = '';
+  while (container.firstChild) container.removeChild(container.firstChild);
 
   portfolioData.skills.categories.forEach(category => {
     const categoryDiv = document.createElement('div');
@@ -114,11 +114,25 @@ function renderSkills() {
     category.skills.forEach(skill => {
       const tag = document.createElement('span');
       tag.className = 'skill-tag';
-      tag.textContent = skill.name;
       tag.style.setProperty('--tag-color', skill.color);
-      if (skill.textColor) {
-        tag.style.setProperty('--tag-text', skill.textColor);
+
+      if (skill.icon) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '16');
+        svg.setAttribute('fill', skill.color);
+        svg.setAttribute('aria-hidden', 'true');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', skill.icon);
+        svg.appendChild(path);
+        tag.appendChild(svg);
       }
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = skill.name;
+      tag.appendChild(nameSpan);
+
       tagsDiv.appendChild(tag);
     });
 
