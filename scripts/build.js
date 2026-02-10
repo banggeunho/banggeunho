@@ -27,7 +27,12 @@ renderer.heading = function(text, level) {
 
 // Custom code renderer
 renderer.code = function(code, language) {
-  return `<pre><code class="language-${language || ''}">${code}</code></pre>`;
+  const escaped = code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  return `<pre><code class="language-${language || ''}">${escaped}</code></pre>`;
 };
 
 marked.use({
