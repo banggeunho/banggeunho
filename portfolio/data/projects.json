@@ -3,20 +3,11 @@
     {
       "id": "opensearch-search-engine",
       "title": "검색 엔진 전면 개편",
-      "description": "AWS OpenSearch 도입으로 CTR 32% 향상, 응답속도 600배 개선 (3초→5ms). CloudSearch 대비 월 비용 30% 절감",
+      "description": "AWS OpenSearch 도입으로 CTR 32% 향상, 응답속도 약 30배 개선 (1~2초→50ms). Redis 캐싱으로 월 비용 30% 절감",
       "image": "projects/opensearch-search-engine/images/thumbnail.svg",
       "tags": ["AWS OpenSearch", "NestJS", "Redis"],
       "github": "https://github.com/banggeunho",
       "link": "projects/opensearch-search-engine/"
-    },
-    {
-      "id": "tosspay-payment-integration",
-      "title": "토스페이 결제 시스템 연동",
-      "description": "결제/주문/정산/어드민 전 영역 통합. 6주 완료 → 전체 거래액의 30%(111억) 달성",
-      "image": "projects/tosspay-payment-integration/images/thumbnail.svg",
-      "tags": ["TossPay", "Payment", "NestJS"],
-      "github": "https://github.com/banggeunho",
-      "link": "projects/tosspay-payment-integration/"
     },
     {
       "id": "image-optimization-lambda-edge",
