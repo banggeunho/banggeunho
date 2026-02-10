@@ -94,8 +94,8 @@
 <h3 id="수동-프로세스의-문제점">수동 프로세스의 문제점</h3>
 <p><strong>1. 데이터 리드타임 (1~2일)</strong></p>
 <pre><code class="language-">- 요청 접수: 수 시간 (업무 시간대 차이)
-- DB 조회: 2시간 (쿼리 작성 + 실행)
-- 데이터 전처리: 4시간 (중복 제거, 포맷 변환)
+- DB 조회: 1시간 (쿼리 작성 + 실행)
+- 데이터 전처리: 1시간 (중복 제거, 포맷 변환)
 - 적재: 1시간
 - 합계: 최소 반나절 → 보통 1~2일</code></pre><p><strong>2. 개발자 리소스 낭비</strong></p>
 <ul>
@@ -115,20 +115,17 @@ df.to_csv('output.csv', encoding='utf-8')  # 인코딩 이슈?</code></pre><p><s
 <hr>
 </section>
 <section class="content-section">
-<h2 id="해결-목표-30분1시간-이내-데이터-제공">해결 목표: 30분~1시간 이내 데이터 제공</h2>
+<h2 id="해결-목표-당일-데이터-제공">해결 목표: 당일 데이터 제공</h2>
 <h3 id="정량적-목표">정량적 목표</h3>
 <ul>
-<li><strong>데이터 리드타임</strong>: 1<del>2일 → 30분</del>1시간 이내</li>
+<li><strong>데이터 리드타임</strong>: 1~2일 → 당일 데이터 리드 가능</li>
 <li><strong>처리 용량</strong>: 월 평균 3,000만 건, 피크 5,000만 건</li>
-<li><strong>스토리지 비용</strong>: 70% 절감 (Parquet 적용)</li>
-<li><strong>Athena 쿼리 속도</strong>: 5배 향상</li>
 </ul>
 <h3 id="정성적-목표">정성적 목표</h3>
 <ul>
 <li>개발자 개입 없이 자동화</li>
 <li>Tableau 대시보드 자동 업데이트</li>
 <li>데이터 유실률 0%</li>
-<li>히스토리 추적 가능 (S3 버전 관리)</li>
 </ul>
 <hr>
 </section>
@@ -198,7 +195,7 @@ df.to_csv('output.csv', encoding='utf-8')  # 인코딩 이슈?</code></pre><p><s
     subgraph 시각화["⑤ 시각화"]
         F -->|실시간 대시보드| H[Tableau]
         G -->|정기 리포트| H
-    end</pre><h3 id="수집-이벤트-8개">수집 이벤트 (8개)</h3>
+    end</pre><h3 id="수집-이벤트-예시">수집 이벤트 예시</h3>
 <pre><code class="language-typescript">// 구매
 POST /events/purchase
 { userId, productId, amount, timestamp }
@@ -327,7 +324,7 @@ await firehose.putRecordBatch({
 </tbody></table>
 <h3 id="lambda-transform-함수">Lambda Transform 함수</h3>
 <p><strong>Parquet 변환 (PyArrow):</strong></p>
-<p>Firehose는 이벤트를 배치(최대 6MB 또는 900초)로 묶어서 Lambda에 전달합니다. Lambda는 배치 내 모든 레코드를 변환하여 반환합니다.</p>
+<p>Firehose는 이벤트를 배치(최대 3MB 또는 900초)로 묶어서 Lambda에 전달합니다. Lambda는 배치 내 모든 레코드를 변환하여 반환합니다.</p>
 <pre><code class="language-python">import json
 import base64
 import pyarrow as pa
@@ -381,18 +378,7 @@ def lambda_handler(event, context):
 <section class="content-section">
 <h2 id="핵심-구현-3-athena와-redshift로-분석-자동화">핵심 구현 3: Athena와 Redshift로 분석 자동화</h2>
 <h3 id="athena-테이블-생성">Athena 테이블 생성</h3>
-<p><strong>Glue Crawler 자동 스키마 감지:</strong></p>
-<pre><code class="language-yaml">EventsCrawler:
-  Type: AWS::Glue::Crawler
-  Properties:
-    Name: events-crawler
-    Role: !GetAtt GlueServiceRole.Arn
-    DatabaseName: analytics
-    Targets:
-      S3Targets:
-        - Path: s3://my-events-bucket/events/
-    Schedule:
-      ScheduleExpression: cron(0 */6 * * ? *)  # 6시간마다 실행</code></pre><p><strong>Athena 쿼리 (즉시 조회):</strong></p>
+<p><strong>Athena 쿼리 (즉시 조회):</strong></p>
 <pre><code class="language-sql">-- 일별 구매 금액
 SELECT
   DATE(from_unixtime(timestamp / 1000)) as date,
@@ -412,10 +398,10 @@ After (Parquet):
 - 스캔 데이터: 2GB
 - 실행 시간: 10초 (5배 향상)
 - 비용: $0.01 (80% 절감)</code></pre><h3 id="redshift-적재-배치">Redshift 적재 (배치)</h3>
-<p><strong>매일 새벽 2시 배치:</strong></p>
+<p><strong>30분 간격 배치:</strong></p>
 <pre><code class="language-sql">-- COPY 명령어로 S3 → Redshift
 COPY analytics.events
-FROM 's3://my-events-bucket/events/year=2024/month=05/day=08/'
+FROM 's3://my-events-bucket/events/year=2026/month=01/day=08/'
 IAM_ROLE 'arn:aws:iam::123456789:role/RedshiftS3Role'
 FORMAT AS PARQUET;</code></pre><p><strong>테이블 구조:</strong></p>
 <pre><code class="language-sql">CREATE TABLE analytics.events (
@@ -428,16 +414,10 @@ FORMAT AS PARQUET;</code></pre><p><strong>테이블 구조:</strong></p>
 )
 DISTKEY(user_id)
 SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=/month=/day=</code>)은 Athena에서 자동으로 파티션으로 인식되며, Redshift에는 날짜별로 COPY 명령을 실행하여 적재합니다.</p>
-<h3 id="tableau-연동">Tableau 연동</h3>
-<p><strong>Athena 커넥터:</strong></p>
-<ul>
-<li>실시간 대시보드 (30분~1시간 지연)</li>
-<li>빠른 프로토타이핑</li>
-</ul>
+<h3 id="tableau-연동-및-최신-데이터-적재">Tableau 연동 및 최신 데이터 적재</h3>
 <p><strong>Redshift 커넥터:</strong></p>
 <ul>
-<li>정기 리포트 (1일 지연)</li>
-<li>복잡한 조인 쿼리</li>
+<li>증분 적재 방식 사용 (비용 절감)</li>
 </ul>
 <hr>
 </section>
@@ -459,7 +439,7 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 </tr>
 <tr>
 <td>전처리</td>
-<td>수동 (4시간)</td>
+<td>수동 (1시간)</td>
 <td>자동 (Lambda)</td>
 </tr>
 <tr>
@@ -470,7 +450,7 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 <tr>
 <td><strong>리드타임</strong></td>
 <td><strong>1~2일</strong></td>
-<td><strong>30분~1시간</strong></td>
+<td><strong>30분</strong></td>
 </tr>
 </tbody></table>
 <p>기존에는 데이터 담당자가 어드민에서 직접 다운로드하거나 개발팀에 데이터를 요청한 뒤, 전처리를 거쳐 수동으로 적재해야 했습니다. 파이프라인 구축 후 이 과정이 완전히 자동화되었습니다.</p>
@@ -499,10 +479,9 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 <pre><code class="language-">- 월 평균 처리량: 3,000만 건
 - 월 피크 처리량: 5,000만 건
 - 일 평균: 100만 건
-- 데이터 유실: 측정 기간 6개월간 0건 (Firehose 자동 재시도)</code></pre><h3 id="자동화-성과">자동화 성과</h3>
+- 데이터 유실: 측정 기간 6개월간 0건 (AWS SDK, Firehose 자동 재시도)</code></pre><h3 id="자동화-성과">자동화 성과</h3>
 <ul>
-<li>수동 데이터 추출 요청: 0건</li>
-<li>Tableau 대시보드 자동 업데이트: 8개</li>
+<li>Tableau 대시보드 자동 업데이트</li>
 <li>개발팀 데이터 요청 대응 시간: 1~2일 → 불필요</li>
 </ul>
 <hr>
@@ -513,17 +492,18 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 <ul>
 <li>Firehose + Lambda + S3로 완전 자동화를 달성했습니다.</li>
 <li>서버 관리 불필요, 종량제 과금으로 비용을 최소화했습니다.</li>
+<li>비용 검증 필수</li>
 </ul>
 <p><strong>2. Parquet는 필수</strong></p>
 <ul>
 <li>스토리지 비용 70% 절감</li>
 <li>Athena 쿼리 속도 5배 향상</li>
-<li>압축은 Snappy (빠르고 적절한 압축률)</li>
+<li>압축은 Snappy (빠르고 적절한 압축률, Recommend)</li>
 </ul>
 <p><strong>3. 분석 레이어 이원화</strong></p>
 <ul>
-<li>Athena: 실시간 조회 (30분~1시간 지연)</li>
-<li>Redshift: 배치 적재 (1일 지연)</li>
+<li>Athena: 실시간 조회</li>
+<li>Redshift: 배치 적재 (30분 지연)</li>
 <li>용도에 따라 적절한 도구를 선택하는 것이 중요합니다.</li>
 </ul>
 <p><strong>4. 데이터 파티셔닝</strong></p>
@@ -534,7 +514,6 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 <p><strong>5. 히스토리 추적</strong></p>
 <ul>
 <li>S3 버전 관리로 데이터 복구가 가능합니다.</li>
-<li>Glue Crawler로 스키마 변경을 자동으로 감지합니다.</li>
 </ul>
 <hr>
 </section>
@@ -549,7 +528,7 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 </thead>
 <tbody><tr>
 <td><strong>이벤트 수집</strong></td>
-<td>AWS Kinesis Data Firehose</td>
+<td>AWS Data Firehose  (서버리스)</td>
 </tr>
 <tr>
 <td><strong>데이터 변환</strong></td>
@@ -565,11 +544,7 @@ SORTKEY(timestamp);</code></pre><p>S3의 Hive 스타일 파티셔닝(<code>year=
 </tr>
 <tr>
 <td><strong>데이터 웨어하우스</strong></td>
-<td>Redshift</td>
-</tr>
-<tr>
-<td><strong>스키마 관리</strong></td>
-<td>AWS Glue Crawler</td>
+<td>Redshift (서버리스)</td>
 </tr>
 <tr>
 <td><strong>시각화</strong></td>
