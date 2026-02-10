@@ -1,174 +1,152 @@
 ---
 title: 배너 성과 집계 API 성능 최적화
-tags: [Redis, MySQL, NestJS, Write-back, Performance]
+tags: [Redis, MySQL, Lambda, EventBridge, Write-back]
 github: https://github.com/banggeunho
 thumbnail: images/thumbnail.svg
 date: 2024-05-01
 ---
 
 ## 목차
-1. [배경: 하루 수백만 건의 배너 클릭](#배경-하루-수백만-건의-배너-클릭)
-2. [문제 분석: DB가 버티지 못한다](#문제-분석-db가-버티지-못한다)
-3. [해결 목표: 부하 10배 감소, 속도 50배 개선](#해결-목표-부하-10배-감소-속도-50배-개선)
-4. [아키텍처 설계: Write-back 전략 선택 이유](#아키텍처-설계-write-back-전략-선택-이유)
+1. [배경: 일일 70만 건의 배너 이벤트 수집](#배경-일일-70만-건의-배너-이벤트-수집)
+2. [문제 분석: Row-level Lock과 Deadlock](#문제-분석-row-level-lock과-deadlock)
+3. [해결 방안 검토: 3가지 옵션 비교](#해결-방안-검토-3가지-옵션-비교)
+4. [아키텍처 설계: Redis Write-back 전략](#아키텍처-설계-redis-write-back-전략)
 5. [핵심 구현 1: Redis Hash로 실시간 집계](#핵심-구현-1-redis-hash로-실시간-집계)
-6. [핵심 구현 2: 10분 배치로 DB 동기화](#핵심-구현-2-10분-배치로-db-동기화)
+6. [핵심 구현 2: EventBridge + Lambda 배치 동기화](#핵심-구현-2-eventbridge--lambda-배치-동기화)
 7. [핵심 구현 3: SQS Fallback으로 데이터 유실 방지](#핵심-구현-3-sqs-fallback으로-데이터-유실-방지)
-8. [결과: DB 부하 10배 감소, 응답 속도 50배 개선](#결과-db-부하-10배-감소-응답-속도-50배-개선)
+8. [결과: DB 부하 10배 감소](#결과-db-부하-10배-감소)
 
 ---
 
-## 배경: 하루 수백만 건의 배너 클릭
+## 배경: 일일 70만 건의 배너 이벤트 수집
 
-에브리타임 혜택탭이 출시되면서 거의 모든 페이지에 프로모션 배너가 배치되었습니다. 배너가 노출될 때마다 성과 집계 API가 자동으로 호출되어, **전체 API 중 호출량 1위**를 기록하게 되었습니다.
+에브리타임 혜택탭이 출시되면서 거의 모든 페이지에 프로모션 배너가 배치되었습니다. 배너가 노출되거나 클릭될 때마다 성과 집계 API가 호출되어, **전체 API 중 호출량 1위**를 기록하게 되었습니다.
 
 **트래픽 규모:**
 ```
-- 일일 배너 노출: 300만 건
-- 일일 배너 클릭: 50만 건
-- 초당 평균 요청: 35 TPS
-- 피크 시간대: 120 TPS
+- 일일 배너 이벤트(노출+클릭): 약 70만 건
+- 초당 수~수십 건의 SQL UPDATE 발생
 ```
 
-그리고 매번 API 호출마다 MySQL DB에 UPDATE 쿼리를 실행했습니다.
-
-**결과:**
-- DB CPU 사용률 80% 이상 지속
-- API 응답 속도 평균 500ms (느림!)
-- 다른 API들까지 느려지는 연쇄 효과
+매번 API 호출마다 MySQL DB에 직접 UPDATE 쿼리를 실행하는 구조였습니다.
 
 ---
 
-## 문제 분석: DB가 버티지 못한다
+## 문제 분석: Row-level Lock과 Deadlock
 
 ### 기존 구조의 문제
 
-**배너 클릭 시 동작:**
-```typescript
-async incrementClick(bannerId: number) {
-  // DB에 직접 UPDATE
-  await this.db.query(
-    'UPDATE banner_stats SET clicks = clicks + 1 WHERE banner_id = ?',
-    [bannerId]
-  );
-}
+**배너 이벤트 발생 시 동작:**
+```javascript
+router.post("/api/banner/performance/impression", async (req, res, next) => {
+  const { bannerId } = req.body;
+  const date = new Date();
+
+  await usMapper.queryWithValues(`
+    INSERT INTO banner_performance (banner_id, impression, click, date) VALUES (?)
+    ON DUPLICATE KEY UPDATE impression = impression + 1
+  `, [[bannerId, 1, 0, date]]);
+
+  apiHandler.send(res, { success: true }, next);
+});
 ```
 
 **문제점:**
 
-**1. UPDATE 쿼리의 비효율**
+**1. `INSERT ON DUPLICATE KEY UPDATE`의 Lock 경합**
+
+이 구문은 단순 UPDATE와 달리, 먼저 Shared Lock(S)을 획득한 뒤 중복 키 감지 시 Exclusive Lock(X)으로 업그레이드하는 과정을 거칩니다. 같은 키(banner_id + date)에 동시 요청이 들어오면 Lock 대기가 발생합니다.
+
 ```
-- 매 요청마다 DB 트랜잭션 발생
-- 테이블 Lock 발생 (다른 요청 대기)
-- 디스크 I/O 발생 (WAL 쓰기)
+요청 A: INSERT 시도 → S Lock 획득 → 중복 감지 → X Lock 대기
+요청 B: INSERT 시도 → S Lock 획득 → 중복 감지 → X Lock 대기
+요청 C: INSERT 시도 → S Lock 획득 → 중복 감지 → X Lock 대기
 ```
 
-**2. DB IOPS 급증**
-```
-CloudWatch 지표:
-- Read IOPS: 1,000/sec (정상)
-- Write IOPS: 5,000/sec (과부하!)
-- CPU: 80% 이상 지속
-```
+**2. Deadlock 발생**
 
-**3. 다른 API 영향**
+동시에 같은 키에 여러 요청이 `INSERT ON DUPLICATE KEY UPDATE`를 실행하면, S Lock → X Lock 업그레이드 과정에서 서로의 S Lock 해제를 기다리며 교착 상태가 발생합니다.
+
 ```
-- 상품 조회 API: 100ms → 300ms
-- 주문 생성 API: 200ms → 600ms
-- DB 커넥션 풀 고갈
+트랜잭션 A: S Lock 획득 → X Lock 필요 (B의 S Lock 대기)
+트랜잭션 B: S Lock 획득 → X Lock 필요 (A의 S Lock 대기)
+→ Deadlock!
 ```
 
-### 왜 Row INSERT 방식은 안 될까?
+**3. 다른 API에 대한 연쇄 영향**
 
-"매번 UPDATE 대신 새로운 Row를 INSERT하면?"
+배너 집계 API의 DB 부하로 인해 같은 RDS를 사용하는 다른 API들도 느려지는 현상이 발생했습니다.
 
-**고려했지만 불채택한 이유:**
+---
+
+## 해결 방안 검토: 3가지 옵션 비교
+
+### 방안 1: 데이터 구조 변경 (Row INSERT)
+
+집계 테이블 UPDATE 대신 이벤트를 Row로 저장하는 방식입니다.
 
 ```sql
 -- 클릭 이벤트를 Row로 저장
 INSERT INTO banner_clicks (banner_id, clicked_at) VALUES (1, NOW());
 
--- 집계는 실시간 쿼리
+-- 집계는 별도 쿼리
 SELECT COUNT(*) FROM banner_clicks WHERE banner_id = 1 AND clicked_at >= '2024-05-01';
 ```
 
-**문제점:**
-- 실시간 집계 쿼리(`SUM`, `GROUP BY`)가 UPDATE보다 3배 느림
-- 파티셔닝을 적용해도 성능 개선 미미
-- 스토리지 비용 급증 (일일 50만 건 × 365일)
+**불채택 이유:**
+- 데이터 적재량 증가로 인한 스토리지 비용 부담 (일일 70만 건 × 365일)
+- 실시간 집계 쿼리(`COUNT`, `GROUP BY`)가 느림
+- 개발 리소스 및 인프라 변경 비용이 높음
 
-**벤치마크 결과 (50만 건 기준):**
-```
-Row INSERT + COUNT(*) GROUP BY: 3.2초
-UPDATE 집계 테이블: 1.1초
-→ UPDATE 방식이 3배 빠름
-```
+### 방안 2: 메시지 큐 비동기 처리
 
----
+SQS 등 메시지 큐로 이벤트를 비동기 처리하는 방식입니다.
 
-## 해결 목표: 부하 10배 감소, 속도 50배 개선
+**불채택 이유:**
+- 운영 복잡도 증가
+- 메시지 큐 인프라 추가 비용
+- 결국 DB에 쓰는 구조는 동일하여 근본적 해결이 아님
 
-### 정량적 목표
-- **DB 부하**: Write IOPS 10배 감소
-- **API 응답 속도**: 500ms → 10ms (50배 개선)
-- **데이터 유실**: 0건 (100% 보장)
-- **추가 비용**: 0원 (기존 Redis 활용)
+### 방안 3: Redis 집계 + 배치 동기화 (채택)
 
-### 정성적 목표
-- Redis 장애 시에도 데이터 유실 방지
-- 다른 API의 성능 회복
-- 실시간 집계 데이터 제공 (10분 지연 허용)
+Redis에서 실시간 집계 후 주기적으로 DB에 동기화하는 Write-back 방식입니다.
+
+**채택 이유:**
+- 기존 ElastiCache 인프라를 그대로 활용 (추가 비용 없음)
+- 성능, 비용, 안정성 모두 균형
+- DB 부하를 근본적으로 해소
 
 ---
 
-## 아키텍처 설계: Write-back 전략 선택 이유
-
-### Write-through vs Write-back
-
-| 전략 | Write-through | Write-back |
-|------|---------------|------------|
-| **쓰기 방식** | Redis + DB 동시 쓰기 | Redis만 쓰기 → 배치로 DB 동기화 |
-| **API 응답 속도** | 중간 (DB 대기) | 매우 빠름 (Redis만) |
-| **데이터 정합성** | 즉시 일치 | 약간 지연 (10분) |
-| **DB 부하** | 높음 | 낮음 |
-| **적합한 경우** | 금융 거래, 결제 | 통계, 집계, 로그 |
-
-**Write-back 선택 이유:**
-- 배너 성과 데이터는 10분 지연 허용 가능
-- DB 부하 감소가 최우선 목표
-- API 응답 속도 개선 필수
+## 아키텍처 설계: Redis Write-back 전략
 
 ### 전체 아키텍처
 
 ```mermaid
 graph TB
-    A[배너 클릭] --> B[API]
+    A[배너 이벤트] --> B[API Server]
     B --> C[Redis HINCRBY]
-    C -->|성공| D[응답 10ms]
+    C -->|성공| D[즉시 응답]
 
-    B -.실패.-> E[SQS Fallback]
+    B -.Redis 실패.-> E[SQS Fallback]
     E --> F[SQS Consumer]
-    F --> G[MySQL]
+    F --> G[MySQL RDS]
 
-    H[배치 스케줄러] -->|10분마다| I[Redis 데이터 읽기]
-    I --> J[Bulk INSERT]
-    J --> G
-    J -->|성공| K[Redis DEL]
+    H[EventBridge Scheduler] -->|10분마다| I[AWS Lambda]
+    I -->|SCAN으로 데이터 조회| C
+    I -->|Bulk INSERT| G
 ```
 
-### 배치 주기 선택: 왜 10분?
+### 배치 주기: 일일 1회에서 10분으로 변경
+
+초기에는 일일 1회(오전 6시, 트래픽 최소 시간대) 배치로 운영했습니다. 그러나 Redis 장애 발생 시 하루치 데이터가 유실될 위험이 있어, **10분 주기로 변경**했습니다.
 
 | 주기 | 장점 | 단점 | 결정 |
 |------|-----|------|------|
-| 1분 | 실시간에 가까움 | DB 부하 여전히 높음 | ❌ |
-| 10분 | DB 부하 10배 감소 | 약간의 지연 | ✅ |
-| 30분 | DB 부하 30배 감소 | 데이터 유실 리스크 | ❌ |
-| 1시간 | 최대 부하 감소 | 지연 시간 너무 김 | ❌ |
-
-**10분 선택 이유:**
-- 비즈니스 요구사항: 실시간성보다 성능 우선
-- 데이터 분석팀: 10분 지연은 허용 가능
-- Redis 메모리: 10분 데이터는 1MB 이하
+| 1분 | 데이터 유실 최소화 | DB 부하 여전히 높음 | ❌ |
+| **10분** | **유실 위험 최소화 + DB 부하 감소** | **약간의 데이터 지연** | **✅** |
+| 1시간 | DB 부하 크게 감소 | 유실 시 1시간 데이터 손실 | ❌ |
+| 일일 1회 | DB 부하 최소 | 장애 시 하루치 데이터 유실 | ❌ (기존) |
 
 ---
 
@@ -176,59 +154,54 @@ graph TB
 
 ### Redis Hash 구조
 
+단순 카운터 누적 용도에는 인메모리 데이터 스토어가 적합합니다. 개별 String Key 대신 Hash Key로 통합하여 메모리를 최적화했습니다.
+
 **데이터 모델:**
 ```
-Key: banner:stats:{bannerId}
+Key: {date}:{banner_id}
 Fields:
-  - views: 노출 수
-  - clicks: 클릭 수
-  - updated_at: 최종 업데이트 시간
+  - IMPRESSION: 노출 수
+  - CLICK: 클릭 수
+명령어: HINCRBY
 ```
 
 **예시:**
 ```
-banner:stats:1
-  views: 12345
-  clicks: 890
-  updated_at: 1714521600
+20240501:1
+  IMPRESSION: 12345
+  CLICK: 890
 
-banner:stats:2
-  views: 8765
-  clicks: 432
-  updated_at: 1714521600
+20240501:2
+  IMPRESSION: 8765
+  CLICK: 432
 ```
+
+Redis는 싱글스레드로 동작하기 때문에 HINCRBY 명령어로 Lock 경합 없이 안정적으로 값을 누적할 수 있습니다. MySQL에서 발생하던 Row-level Lock과 Deadlock 문제가 원천적으로 해소됩니다.
 
 ### API 구현
 
-**클릭 카운트 증가:**
+**이벤트 카운트 증가:**
 ```typescript
 @Post('/banners/:id/click')
 async incrementClick(@Param('id') bannerId: number) {
+  const dateKey = dayjs().format('YYYYMMDD');
+
   try {
-    // Redis HINCRBY (원자적 연산)
+    // Redis HINCRBY (원자적 연산, Lock 없음)
     await this.redis.hincrby(
-      `banner:stats:${bannerId}`,
-      'clicks',
+      `${dateKey}:${bannerId}`,
+      'CLICK',
       1
     );
-
-    // 최종 업데이트 시간 갱신
-    await this.redis.hset(
-      `banner:stats:${bannerId}`,
-      'updated_at',
-      Date.now()
-    );
-
     return { success: true };
 
   } catch (error) {
     // Redis 실패 시 SQS Fallback
     await this.sqsService.sendMessage({
       type: 'BANNER_CLICK',
-      bannerId: bannerId,
+      bannerId,
       timestamp: Date.now()
     });
-
     return { success: true, fallback: true };
   }
 }
@@ -238,135 +211,76 @@ async incrementClick(@Param('id') bannerId: number) {
 ```typescript
 @Get('/banners/:id/stats')
 async getStats(@Param('id') bannerId: number) {
-  // Redis에서 직접 조회 (10ms 이내)
-  const stats = await this.redis.hgetall(`banner:stats:${bannerId}`);
+  const dateKey = dayjs().format('YYYYMMDD');
+  const stats = await this.redis.hgetall(`${dateKey}:${bannerId}`);
 
   return {
-    views: parseInt(stats.views || '0'),
-    clicks: parseInt(stats.clicks || '0'),
-    ctr: stats.views > 0
-      ? (parseInt(stats.clicks) / parseInt(stats.views) * 100).toFixed(2)
+    impressions: parseInt(stats.IMPRESSION || '0'),
+    clicks: parseInt(stats.CLICK || '0'),
+    ctr: stats.IMPRESSION > 0
+      ? (parseInt(stats.CLICK) / parseInt(stats.IMPRESSION) * 100).toFixed(2)
       : 0
   };
 }
 ```
 
-**성능:**
-```
-Before (DB):
-- API 응답 속도: 500ms
-- TPS: 35 (DB 병목)
-
-After (Redis):
-- API 응답 속도: 10ms (50배 개선!)
-- TPS: 1,000+ (제한 없음)
-```
-
 ---
 
-## 핵심 구현 2: 10분 배치로 DB 동기화
+## 핵심 구현 2: EventBridge + Lambda 배치 동기화
 
-### 배치 스케줄러
+### 배치 아키텍처
 
-**NestJS Cron:**
+EventBridge Scheduler가 10분마다 Lambda를 트리거하여 Redis 데이터를 RDS에 동기화합니다.
+
+**Lambda 함수:**
 ```typescript
-@Injectable()
-export class BannerSyncService {
+export const handler = async () => {
+  let cursor = '0';
+  const statsData = [];
 
-  @Cron('*/10 * * * *')  // 10분마다 실행
-  async syncToDatabase() {
-    const startTime = Date.now();
-    let syncCount = 0;
+  // 1. SCAN으로 Redis 데이터 조회
+  do {
+    const [nextCursor, keys] = await redis.scan(
+      cursor, 'MATCH', '*:*', 'COUNT', 100
+    );
+    cursor = nextCursor;
 
-    try {
-      // 1. Redis에서 모든 배너 통계 조회
-      // 주의: 프로덕션에서는 SCAN 사용 (keys는 blocking 명령어)
-      const keys = await this.redis.keys('banner:stats:*');
+    for (const key of keys) {
+      const [date, bannerId] = key.split(':');
+      const stats = await redis.hgetall(key);
 
-      // 2. 배치로 데이터 수집
-      const statsData = [];
-      for (const key of keys) {
-        const bannerId = key.split(':')[2];
-        const stats = await this.redis.hgetall(key);
-
-        if (stats.clicks > 0 || stats.views > 0) {
-          statsData.push({
-            bannerId: parseInt(bannerId),
-            views: parseInt(stats.views || '0'),
-            clicks: parseInt(stats.clicks || '0'),
-            syncedAt: new Date()
-          });
-        }
+      if (stats.IMPRESSION || stats.CLICK) {
+        statsData.push({
+          date,
+          bannerId: parseInt(bannerId),
+          impressions: parseInt(stats.IMPRESSION || '0'),
+          clicks: parseInt(stats.CLICK || '0'),
+        });
       }
-
-      if (statsData.length === 0) {
-        this.logger.log('No data to sync');
-        return;
-      }
-
-      // 3. Bulk INSERT (트랜잭션 사용)
-      await this.db.transaction(async (trx) => {
-        // Bulk UPSERT
-        await trx('banner_stats')
-          .insert(statsData)
-          .onConflict('banner_id')
-          .merge({
-            views: trx.raw('banner_stats.views + VALUES(views)'),
-            clicks: trx.raw('banner_stats.clicks + VALUES(clicks)'),
-            updated_at: new Date()
-          });
-
-        syncCount = statsData.length;
-      });
-
-      // 4. Redis 데이터 삭제 (임시 백업 후)
-      const pipeline = this.redis.pipeline();
-      for (const key of keys) {
-        // 임시 백업 (1시간 TTL)
-        await this.redis.rename(key, `${key}:backup`);
-        await this.redis.expire(`${key}:backup`, 3600);
-      }
-      await pipeline.exec();
-
-      const duration = Date.now() - startTime;
-      this.logger.log(`Synced ${syncCount} banners in ${duration}ms`);
-
-    } catch (error) {
-      this.logger.error('Sync failed', error);
-
-      // 5. 실패 시 Redis 복구
-      await this.recoverRedisData();
-
-      throw error;
     }
-  }
-}
+  } while (cursor !== '0');
+
+  if (statsData.length === 0) return;
+
+  // 2. RDS에 Bulk INSERT
+  await db.transaction(async (trx) => {
+    await trx('banner_daily_stats')
+      .insert(statsData)
+      .onConflict(['date', 'banner_id'])
+      .merge({
+        impressions: trx.raw('banner_daily_stats.impressions + VALUES(impressions)'),
+        clicks: trx.raw('banner_daily_stats.clicks + VALUES(clicks)'),
+      });
+  });
+
+  // 3. 동기화 완료된 Redis 데이터 정리
+  await cleanupOldRedisData(7); // 일주일 이상 된 데이터 삭제
+};
 ```
 
-### 트랜잭션 보장
+### SCAN을 사용하는 이유
 
-**배치 실행 플로우:**
-```
-1. Redis 데이터 임시 백업
-2. DB Bulk INSERT 시작
-3-A. 성공 → Redis 백업 삭제
-3-B. 실패 → Redis 백업 복구 → 재시도
-```
-
-**데이터 유실 방지:**
-```typescript
-async recoverRedisData() {
-  // 백업된 데이터 복구
-  const backupKeys = await this.redis.keys('banner:stats:*:backup');
-
-  for (const backupKey of backupKeys) {
-    const originalKey = backupKey.replace(':backup', '');
-    await this.redis.rename(backupKey, originalKey);
-  }
-
-  this.logger.warn(`Recovered ${backupKeys.length} keys from backup`);
-}
-```
+`KEYS` 명령어는 전체 키를 한 번에 탐색하여 Redis를 블로킹합니다. 반면 `SCAN`은 반복적으로 점진 탐색을 수행하기 때문에, Redis의 싱글스레드 특성상 다른 요청을 차단하지 않고 부하를 최소화합니다.
 
 ---
 
@@ -374,12 +288,11 @@ async recoverRedisData() {
 
 ### Redis 장애 시나리오
 
-**문제:**
 - Redis 클러스터 재시작
 - 네트워크 장애
 - 메모리 부족 (OOM)
 
-이런 상황에서도 데이터를 유실하면 안 됩니다.
+이런 상황에서도 배너 성과 데이터를 유실하면 안 됩니다.
 
 ### SQS Fallback 메커니즘
 
@@ -388,7 +301,8 @@ async recoverRedisData() {
 async incrementClick(bannerId: number) {
   try {
     // 1차: Redis 시도
-    await this.redis.hincrby(`banner:stats:${bannerId}`, 'clicks', 1);
+    const dateKey = dayjs().format('YYYYMMDD');
+    await this.redis.hincrby(`${dateKey}:${bannerId}`, 'CLICK', 1);
     return { success: true };
 
   } catch (error) {
@@ -399,7 +313,7 @@ async incrementClick(bannerId: number) {
       QueueUrl: process.env.BANNER_STATS_QUEUE_URL,
       MessageBody: JSON.stringify({
         type: 'BANNER_CLICK',
-        bannerId: bannerId,
+        bannerId,
         timestamp: Date.now()
       })
     }).promise();
@@ -411,26 +325,19 @@ async incrementClick(bannerId: number) {
 
 **SQS Consumer:**
 ```typescript
-@Injectable()
-export class BannerStatsConsumer {
+@SqsMessageHandler('banner-stats-queue')
+async handleMessage(message: Message) {
+  const payload = JSON.parse(message.Body);
 
-  @SqsMessageHandler('banner-stats-queue')
-  async handleMessage(message: Message) {
-    const payload = JSON.parse(message.Body);
-
-    // SQS 메시지는 DB에 직접 저장
-    await this.db('banner_stats')
-      .where('banner_id', payload.bannerId)
-      .increment('clicks', 1);
-
-    this.logger.log(`Processed fallback click: ${payload.bannerId}`);
-  }
+  // SQS 메시지는 DB에 직접 저장
+  await this.db('banner_daily_stats')
+    .where('banner_id', payload.bannerId)
+    .increment('clicks', 1);
 }
 ```
 
 **DLQ (Dead Letter Queue) 설정:**
 ```yaml
-# SQS Queue 설정
 BannerStatsQueue:
   Type: AWS::SQS::Queue
   Properties:
@@ -438,7 +345,7 @@ BannerStatsQueue:
     VisibilityTimeout: 60
     RedrivePolicy:
       deadLetterTargetArn: !GetAtt BannerStatsDLQ.Arn
-      maxReceiveCount: 3  # 3회 재시도 후 DLQ로 이동
+      maxReceiveCount: 3
 
 BannerStatsDLQ:
   Type: AWS::SQS::Queue
@@ -447,82 +354,70 @@ BannerStatsDLQ:
     MessageRetentionPeriod: 1209600  # 14일 보관
 ```
 
-**결과:**
-- Redis 장애 시에도 데이터 유실 0건
-- SQS로 자동 Fallback
-- DLQ로 실패 메시지 보관 및 수동 재처리
-
 ---
 
-## 결과: DB 부하 10배 감소, 응답 속도 50배 개선
+## 결과: DB 부하 10배 감소
 
 ### 성능 개선
 
-| 지표 | Before | After | 개선률 |
-|------|--------|-------|--------|
-| **API 응답 속도** | 500ms | 10ms | **50배 ⬇️** |
-| **DB Write IOPS** | 5,000/s | 500/s | **10배 ⬇️** |
-| **DB CPU 사용률** | 80% | 15% | **65%p ⬇️** |
-| **최대 TPS** | 35 | 1,000+ | **28배 ⬆️** |
+| 지표 | 개선 내용 |
+|------|----------|
+| **Write IOPS** | 10배 이상 감소 |
+| **RDS CPU 사용률** | 약 20% 감소 |
+| **EC2 CPU 사용률** | 약 8% 감소 |
+| **Row-level Lock** | 완전 해소 |
+| **Deadlock** | 완전 해소 |
 
-### 비용 절감
+ElastiCache 측은 CPU나 메모리 사용률에 유의미한 영향이 없었습니다. 단순 카운터 누적은 Redis에게 매우 가벼운 연산입니다.
 
-| 항목 | Before | After | 비고 |
-|------|--------|-------|------|
-| **RDS 인스턴스** | db.r5.large | db.r5.large | 변경 없음 |
-| **Redis** | 기존 클러스터 | 기존 클러스터 | **추가 비용 0원** |
-| **SQS** | - | $0.5/월 | Fallback 전용 |
+### 비용
 
-**추가 인프라 비용: 거의 0원** ✅
+| 항목 | 변경 내용 |
+|------|----------|
+| **ElastiCache** | 기존 인프라 활용 (추가 비용 없음) |
+| **EventBridge + Lambda** | 월 $1 미만 |
+| **SQS** | Fallback 전용 (월 $0.5 미만) |
+
+기존 인프라를 그대로 활용하면서 성능, 비용, 안정성 모두 개선할 수 있었습니다.
 
 ### 다른 API 성능 회복
 
-| API | Before | After | 개선률 |
-|-----|--------|-------|--------|
-| **상품 조회** | 300ms | 100ms | 67% ⬇️ |
-| **주문 생성** | 600ms | 200ms | 67% ⬇️ |
-| **DB 커넥션 풀** | 95% 사용 | 20% 사용 | - |
-
-### 데이터 정합성
-
-```
-- 배치 동기화: 10분마다 정상 실행
-- Redis 장애: SQS Fallback 0건 유실
-- 트랜잭션 실패: 자동 복구 100% 성공
-```
+DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다.
 
 ---
 
 ## 배운 점
 
-**1. Write-back은 통계/집계에 최적**
-- 실시간성이 중요하지 않은 데이터
-- 대량의 쓰기 요청이 들어오는 경우
-- Redis만으로 10ms 이내 응답 가능
+**1. 단순 카운터에는 인메모리 스토어가 적합**
+- MySQL의 UPDATE + Lock 구조는 고빈도 카운터에 부적합
+- Redis HINCRBY는 싱글스레드 특성으로 Lock 없이 원자적 처리
 
-**2. 배치 주기는 비즈니스와 타협**
-- 1분: DB 부하 여전히 높음
-- 10분: 최적의 균형점
-- 30분: 데이터 유실 리스크
+**2. 배치 주기는 데이터 유실 리스크와 타협**
+- 일일 1회: DB 부하 최소지만 장애 시 하루치 유실 위험
+- 10분: 유실 리스크와 DB 부하의 균형점
+- EventBridge + Lambda로 서버리스 배치 구현
 
-**3. Fallback 메커니즘은 필수**
+**3. SCAN은 프로덕션의 필수**
+- KEYS 명령어는 Redis를 블로킹하여 서비스 장애 유발 가능
+- SCAN으로 점진 탐색하여 부하 최소화
+
+**4. Fallback 메커니즘은 필수**
 - Redis 장애는 언제든 발생 가능
 - SQS + DLQ로 데이터 유실 방지
-- 추가 비용은 거의 없음 (월 $0.5)
+- 추가 비용은 거의 없음
 
-**4. Bulk INSERT가 핵심**
-```sql
--- 단건 INSERT (느림)
-INSERT INTO banner_stats (...) VALUES (...);  -- 10ms × 1000건 = 10초
+**5. Bulk INSERT의 효과**
+- 개별 INSERT 대비 DB 트랜잭션 횟수를 대폭 감소
+- 10분간 누적된 데이터를 한 번의 트랜잭션으로 동기화
 
--- Bulk INSERT (빠름)
-INSERT INTO banner_stats (...) VALUES
-  (...), (...), ...;  -- 100ms × 1번 = 100ms
-```
-- 100배 빠름!
-- 트랜잭션 1번만 발생
+---
 
-**5. Redis Hash는 집계에 완벽**
-- HINCRBY는 원자적 연산 (Thread-safe)
-- TTL 설정으로 메모리 자동 관리
-- HGETALL로 빠른 조회
+## 기술 스택
+
+| 분류 | 기술 |
+|------|------|
+| **캐시** | Redis (ElastiCache) |
+| **데이터베이스** | MySQL (RDS) |
+| **배치 스케줄러** | AWS EventBridge Scheduler |
+| **배치 처리** | AWS Lambda |
+| **Fallback** | AWS SQS + DLQ |
