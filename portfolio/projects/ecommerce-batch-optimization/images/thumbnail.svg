@@ -1,150 +1,187 @@
-<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background gradient -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1c2128;stop-opacity:1" />
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
     </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#21262d" stroke-width="0.5"/>
+    </pattern>
 
-    <!-- Glow gradient -->
-    <radialGradient id="glow">
-      <stop offset="0%" style="stop-color:#7ee787;stop-opacity:0.6">
-        <animate attributeName="stop-opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
-      </stop>
-      <stop offset="100%" style="stop-color:#7ee787;stop-opacity:0" />
-    </radialGradient>
+    <!-- Flow animation paths: Source → Batch -->
+    <path id="f1" d="M182,115 L368,115" fill="none"/>
+    <path id="f2" d="M182,175 L368,175" fill="none"/>
+    <path id="f3" d="M182,235 L368,235" fill="none"/>
+    <!-- Flow animation paths: Batch → DB -->
+    <path id="f4" d="M432,115 L608,145" fill="none"/>
+    <path id="f5" d="M432,175 L608,145" fill="none"/>
+    <path id="f6" d="M432,175 L608,210" fill="none"/>
+    <path id="f7" d="M432,235 L608,210" fill="none"/>
   </defs>
 
-  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect width="800" height="450" fill="url(#grid)" opacity="0.3"/>
+
+  <!-- Floating particles -->
+  <circle cx="120" cy="60" r="1.5" fill="#6DB33F" opacity="0.4">
+    <animate attributeName="cy" values="60;45;60" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="680" cy="80" r="2" fill="#58a6ff" opacity="0.3">
+    <animate attributeName="cy" values="80;95;80" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="720" cy="310" r="1.5" fill="#6DB33F" opacity="0.3">
+    <animate attributeName="cy" values="310;295;310" dur="4.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.5;0.3" dur="4.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="320" r="2" fill="#58a6ff" opacity="0.3">
+    <animate attributeName="cy" values="320;335;320" dur="5.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="5.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- ===== ARROW LINES ===== -->
+
+  <!-- Source → Batch (horizontal, 3 lines) -->
+  <line x1="182" y1="115" x2="368" y2="115" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="182" y1="175" x2="368" y2="175" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="182" y1="235" x2="368" y2="235" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Batch → DB (converging, 4 lines) -->
+  <line x1="432" y1="115" x2="608" y2="145" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="432" y1="175" x2="608" y2="145" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="432" y1="175" x2="608" y2="210" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="432" y1="235" x2="608" y2="210" stroke="#30363d" stroke-width="1.5" stroke-dasharray="6,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- ===== FLOW DOTS ===== -->
+
+  <!-- Source → Batch (green dots) -->
+  <circle r="3.5" fill="#6DB33F" opacity="0.8">
+    <animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#f1"/></animateMotion>
+  </circle>
+  <circle r="3.5" fill="#6DB33F" opacity="0.8">
+    <animateMotion dur="1.8s" begin="0.4s" repeatCount="indefinite"><mpath href="#f2"/></animateMotion>
+  </circle>
+  <circle r="3.5" fill="#6DB33F" opacity="0.8">
+    <animateMotion dur="1.8s" begin="0.8s" repeatCount="indefinite"><mpath href="#f3"/></animateMotion>
+  </circle>
+
+  <!-- Batch → DB (blue dots) -->
+  <circle r="3" fill="#58a6ff" opacity="0.8">
+    <animateMotion dur="1.5s" begin="0.2s" repeatCount="indefinite"><mpath href="#f4"/></animateMotion>
+  </circle>
+  <circle r="3" fill="#58a6ff" opacity="0.8">
+    <animateMotion dur="1.5s" begin="0.6s" repeatCount="indefinite"><mpath href="#f5"/></animateMotion>
+  </circle>
+  <circle r="3" fill="#58a6ff" opacity="0.8">
+    <animateMotion dur="1.5s" begin="1s" repeatCount="indefinite"><mpath href="#f6"/></animateMotion>
+  </circle>
+  <circle r="3" fill="#58a6ff" opacity="0.8">
+    <animateMotion dur="1.5s" begin="1.4s" repeatCount="indefinite"><mpath href="#f7"/></animateMotion>
+  </circle>
+
+  <!-- ===== SOURCE NODES (Sellers - Shopping Bag) ===== -->
+
+  <!-- Source 1 -->
+  <g transform="translate(155, 115)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5"/>
+    <g transform="scale(0.9) translate(-12, -12)">
+      <rect x="5" y="9" width="14" height="12" rx="2" fill="none" stroke="#d2a8ff" stroke-width="1.8"/>
+      <path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="#d2a8ff" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Source 2 -->
+  <g transform="translate(155, 175)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5"/>
+    <g transform="scale(0.9) translate(-12, -12)">
+      <rect x="5" y="9" width="14" height="12" rx="2" fill="none" stroke="#d2a8ff" stroke-width="1.8"/>
+      <path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="#d2a8ff" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Source 3 -->
+  <g transform="translate(155, 235)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#d2a8ff" stroke-width="1.5"/>
+    <g transform="scale(0.9) translate(-12, -12)">
+      <rect x="5" y="9" width="14" height="12" rx="2" fill="none" stroke="#d2a8ff" stroke-width="1.8"/>
+      <path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="#d2a8ff" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- ===== BATCH NODES (Spring Boot) ===== -->
+
+  <!-- Batch 1 -->
+  <g transform="translate(400, 115)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#6DB33F" stroke-width="1.5"/>
+    <g transform="scale(0.85) translate(-12, -12)">
+      <path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z" fill="#6DB33F"/>
+    </g>
+  </g>
+
+  <!-- Batch 2 -->
+  <g transform="translate(400, 175)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#6DB33F" stroke-width="1.5"/>
+    <g transform="scale(0.85) translate(-12, -12)">
+      <path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z" fill="#6DB33F"/>
+    </g>
+  </g>
+
+  <!-- Batch 3 -->
+  <g transform="translate(400, 235)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#6DB33F" stroke-width="1.5"/>
+    <g transform="scale(0.85) translate(-12, -12)">
+      <path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z" fill="#6DB33F"/>
+    </g>
+  </g>
+
+  <!-- ===== DB NODES (Database Cylinder) ===== -->
+
+  <!-- DB 1 -->
+  <g transform="translate(640, 145)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="1.5"/>
+    <g transform="translate(-11, -11) scale(0.92)">
+      <ellipse cx="12" cy="6.5" rx="7.5" ry="3.2" fill="#58a6ff" opacity="0.9"/>
+      <rect x="4.5" y="6.5" width="15" height="11" fill="#58a6ff" opacity="0.5"/>
+      <ellipse cx="12" cy="17.5" rx="7.5" ry="3.2" fill="#58a6ff" opacity="0.9"/>
+      <ellipse cx="12" cy="12" rx="7.5" ry="2.5" fill="none" stroke="#161b22" stroke-width="1" opacity="0.4"/>
+    </g>
+  </g>
+
+  <!-- DB 2 -->
+  <g transform="translate(640, 210)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="1.5"/>
+    <g transform="translate(-11, -11) scale(0.92)">
+      <ellipse cx="12" cy="6.5" rx="7.5" ry="3.2" fill="#58a6ff" opacity="0.9"/>
+      <rect x="4.5" y="6.5" width="15" height="11" fill="#58a6ff" opacity="0.5"/>
+      <ellipse cx="12" cy="17.5" rx="7.5" ry="3.2" fill="#58a6ff" opacity="0.9"/>
+      <ellipse cx="12" cy="12" rx="7.5" ry="2.5" fill="none" stroke="#161b22" stroke-width="1" opacity="0.4"/>
+    </g>
+  </g>
+
+  <!-- ===== COLUMN LABELS ===== -->
+  <text x="155" y="290" font-family="'Inter', sans-serif" font-size="12" fill="#8b949e" text-anchor="middle">커머스</text>
+  <text x="400" y="290" font-family="'Inter', sans-serif" font-size="12" fill="#8b949e" text-anchor="middle">Spring Batch</text>
+  <text x="640" y="258" font-family="'Inter', sans-serif" font-size="12" fill="#8b949e" text-anchor="middle">Database</text>
 
   <!-- Title -->
-  <text x="400" y="60" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="40" font-weight="700" fill="#c9d1d9" text-anchor="middle">배치 최적화</text>
+  <text x="400" y="370" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="32" font-weight="700" fill="#e6edf3" text-anchor="middle">배치 최적화</text>
 
-  <!-- Java + Spring Boot Combined Icon (centered at top) -->
-  <g transform="translate(376, 85)">
-    <!-- Java icon background circle -->
-    <circle cx="12" cy="12" r="23" fill="#ED8B00" opacity="0.15"/>
-    <circle cx="12" cy="12" r="22" fill="none" stroke="#ED8B00" stroke-width="1.5"/>
-
-    <!-- Java icon (scaled from 24x24 to fit) -->
-    <g transform="scale(0.95) translate(0.6, 0.6)">
-      <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573M19.33 20.504s.679.559-.747.991c-2.712.822-11.288 1.069-13.669.033-.856-.373.75-.89 1.254-.998.527-.114.828-.093.828-.093-.953-.671-6.156 1.317-2.643 1.887 9.58 1.553 17.462-.7 14.977-1.82M9.292 13.21s-4.362 1.036-1.544 1.412c1.189.159 3.561.123 5.77-.062 1.806-.152 3.618-.477 3.618-.477s-.637.272-1.098.587c-4.429 1.165-12.986.623-10.522-.568 2.082-1.006 3.776-.892 3.776-.892M17.116 17.584c4.503-2.34 2.421-4.589.968-4.285-.355.074-.515.138-.515.138s.132-.207.385-.297c2.875-1.011 5.086 2.981-.928 4.562 0-.001.07-.062.09-.118M14.401 0s2.494 2.494-2.365 6.33c-3.896 3.077-.888 4.832-.001 6.836-2.274-2.053-3.943-3.858-2.824-5.539 1.644-2.469 6.197-3.665 5.19-7.627M9.734 23.924c4.322.277 10.959-.153 11.116-2.198 0 0-.302.775-3.572 1.391-3.688.694-8.239.613-10.937.168 0-.001.553.457 3.393.639" fill="#ED8B00"/>
-    </g>
-
-    <!-- Spring Boot overlay (smaller, top-right) -->
-    <g transform="translate(30, 0)">
-      <circle cx="6" cy="6" r="10" fill="#6DB33F"/>
-      <g transform="scale(0.45) translate(1.5, 1.5)">
-        <path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z" fill="#ffffff"/>
-      </g>
-    </g>
-  </g>
-
-  <!-- Parallel Processing Visualization -->
-  <g transform="translate(100, 160)">
-    <!-- Progress Bar 1 (Thread 1) -->
-    <g>
-      <rect x="0" y="0" width="200" height="10" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-      <rect x="0" y="0" width="0" height="10" rx="5" fill="#7ee787">
-        <animate attributeName="width" from="0" to="200" dur="1.8s" repeatCount="indefinite"/>
-      </rect>
-      <text x="-10" y="7" font-family="'JetBrains Mono', monospace" font-size="9" fill="#8b949e" text-anchor="end">S1</text>
-    </g>
-
-    <!-- Progress Bar 2 (Thread 2) -->
-    <g transform="translate(0, 22)">
-      <rect x="0" y="0" width="200" height="10" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-      <rect x="0" y="0" width="0" height="10" rx="5" fill="#56d364">
-        <animate attributeName="width" from="0" to="200" dur="2s" repeatCount="indefinite"/>
-      </rect>
-      <text x="-10" y="7" font-family="'JetBrains Mono', monospace" font-size="9" fill="#8b949e" text-anchor="end">S2</text>
-    </g>
-
-    <!-- Progress Bar 3 (Thread 3) -->
-    <g transform="translate(0, 44)">
-      <rect x="0" y="0" width="200" height="10" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-      <rect x="0" y="0" width="0" height="10" rx="5" fill="#3fb950">
-        <animate attributeName="width" from="0" to="200" dur="2.2s" repeatCount="indefinite"/>
-      </rect>
-      <text x="-10" y="7" font-family="'JetBrains Mono', monospace" font-size="9" fill="#8b949e" text-anchor="end">S3</text>
-    </g>
-
-    <!-- Progress Bar 4 (Thread 4) -->
-    <g transform="translate(0, 66)">
-      <rect x="0" y="0" width="200" height="10" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-      <rect x="0" y="0" width="0" height="10" rx="5" fill="#2ea043">
-        <animate attributeName="width" from="0" to="200" dur="2.5s" repeatCount="indefinite"/>
-      </rect>
-      <text x="-10" y="7" font-family="'JetBrains Mono', monospace" font-size="9" fill="#8b949e" text-anchor="end">S4</text>
-    </g>
-
-    <!-- Converging Lines to Merge Point -->
-    <line x1="200" y1="5" x2="260" y2="38" stroke="#30363d" stroke-width="2"/>
-    <line x1="200" y1="27" x2="260" y2="38" stroke="#30363d" stroke-width="2"/>
-    <line x1="200" y1="49" x2="260" y2="38" stroke="#30363d" stroke-width="2"/>
-    <line x1="200" y1="71" x2="260" y2="38" stroke="#30363d" stroke-width="2"/>
-
-    <!-- Merge Circle with Glow -->
-    <circle cx="260" cy="38" r="20" fill="url(#glow)"/>
-    <circle cx="260" cy="38" r="18" fill="#161b22" stroke="#7ee787" stroke-width="2"/>
-
-    <!-- Parallel Symbol (∥) -->
-    <text x="260" y="45" font-family="'JetBrains Mono', monospace" font-size="20" font-weight="700" fill="#7ee787" text-anchor="middle">∥</text>
-
-    <!-- Lightning bolt (performance indicator) -->
-    <g transform="translate(252, 15)" opacity="0.8">
-      <path d="M5 0 L0 6 L3 6 L2 12 L7 5 L4 5 Z" fill="#ffd700">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
-      </path>
-    </g>
-
-    <!-- Arrow to Output -->
-    <line x1="280" y1="38" x2="330" y2="38" stroke="#30363d" stroke-width="2" marker-end="url(#arrowhead)"/>
-    <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-        <polygon points="0 0, 10 3, 0 6" fill="#30363d"/>
-      </marker>
-    </defs>
-
-    <!-- Output Box -->
-    <rect x="330" y="18" width="60" height="40" rx="8" fill="#161b22" stroke="#7ee787" stroke-width="2"/>
-    <text x="360" y="43" font-family="monospace" font-size="24" fill="#7ee787" text-anchor="middle">✓</text>
-  </g>
-
-  <!-- Label: Input (Sellers) -->
-  <text x="150" y="150" font-family="'Inter', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">판매자 처리</text>
-
-  <!-- Label: Output (Batch Complete) -->
-  <text x="560" y="236" font-family="'Inter', sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">완료</text>
-
-  <!-- Stats Text -->
-  <text x="400" y="300" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700" fill="#7ee787" text-anchor="middle">
-    30분 → 3분 · 10x faster
-    <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite"/>
-  </text>
-
-  <!-- Tech Badges -->
-  <g transform="translate(300, 365)">
-    <!-- Java Badge -->
-    <g>
-      <rect x="0" y="0" width="88" height="28" rx="14" fill="#161b22" stroke="#ED8B00" stroke-width="1.5"/>
-      <g transform="translate(8, 6)">
-        <g transform="scale(0.667)">
-          <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573M19.33 20.504s.679.559-.747.991c-2.712.822-11.288 1.069-13.669.033-.856-.373.75-.89 1.254-.998.527-.114.828-.093.828-.093-.953-.671-6.156 1.317-2.643 1.887 9.58 1.553 17.462-.7 14.977-1.82M9.292 13.21s-4.362 1.036-1.544 1.412c1.189.159 3.561.123 5.77-.062 1.806-.152 3.618-.477 3.618-.477s-.637.272-1.098.587c-4.429 1.165-12.986.623-10.522-.568 2.082-1.006 3.776-.892 3.776-.892M17.116 17.584c4.503-2.34 2.421-4.589.968-4.285-.355.074-.515.138-.515.138s.132-.207.385-.297c2.875-1.011 5.086 2.981-.928 4.562 0-.001.07-.062.09-.118M14.401 0s2.494 2.494-2.365 6.33c-3.896 3.077-.888 4.832-.001 6.836-2.274-2.053-3.943-3.858-2.824-5.539 1.644-2.469 6.197-3.665 5.19-7.627M9.734 23.924c4.322.277 10.959-.153 11.116-2.198 0 0-.302.775-3.572 1.391-3.688.694-8.239.613-10.937.168 0-.001.553.457 3.393.639" fill="#ED8B00"/>
-        </g>
-      </g>
-      <text x="30" y="18.5" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#ED8B00">Java</text>
-    </g>
-
-    <!-- Spring Boot Badge -->
-    <g transform="translate(98, 0)">
-      <rect x="0" y="0" width="102" height="28" rx="14" fill="#161b22" stroke="#6DB33F" stroke-width="1.5"/>
-      <g transform="translate(8, 6)">
-        <g transform="scale(0.667)">
-          <path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z" fill="#6DB33F"/>
-        </g>
-      </g>
-      <text x="30" y="18.5" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#6DB33F">Spring</text>
-    </g>
-  </g>
+  <!-- Accent line -->
+  <line x1="355" y1="388" x2="445" y2="388" stroke="#6DB33F" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
 </svg>

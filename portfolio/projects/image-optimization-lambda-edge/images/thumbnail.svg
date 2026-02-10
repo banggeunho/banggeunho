@@ -1,148 +1,138 @@
-<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
   <defs>
-    <!-- Background gradient -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1c2128;stop-opacity:1" />
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
     </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#21262d" stroke-width="0.5"/>
+    </pattern>
 
-    <!-- Glow gradient for center icons -->
-    <radialGradient id="purpleGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#8C4FFF;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#8C4FFF;stop-opacity:0" />
-      <animate attributeName="r" values="50%;60%;50%" dur="3s" repeatCount="indefinite" />
-    </radialGradient>
-
-    <radialGradient id="orangeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0" />
-      <animate attributeName="r" values="50%;60%;50%" dur="3s" begin="0.5s" repeatCount="indefinite" />
-    </radialGradient>
-
-    <!-- CloudFront icon definition (24x24 viewBox, stylized globe) -->
-    <g id="cloudfrontIcon">
-      <circle cx="12" cy="12" r="10" fill="none" stroke="#8C4FFF" stroke-width="2"/>
-      <ellipse cx="12" cy="12" rx="5" ry="10" fill="none" stroke="#8C4FFF" stroke-width="1.5" opacity="0.6"/>
-      <line x1="2" y1="12" x2="22" y2="12" stroke="#8C4FFF" stroke-width="1.5" opacity="0.5"/>
-      <ellipse cx="12" cy="12" rx="10" ry="5" fill="none" stroke="#8C4FFF" stroke-width="1.5" opacity="0.5"/>
-      <!-- Distribution points -->
-      <circle cx="12" cy="4" r="1.5" fill="#8C4FFF"/>
-      <circle cx="12" cy="20" r="1.5" fill="#8C4FFF"/>
-      <circle cx="4" cy="12" r="1.5" fill="#8C4FFF"/>
-      <circle cx="20" cy="12" r="1.5" fill="#8C4FFF"/>
-    </g>
-
-    <!-- Lambda icon definition (official AWS path, 24x24) -->
-    <g id="lambdaIcon">
-      <path d="M4.9855 0c-.2941.0031-.5335.2466-.534.5482L4.446 5.456c0 .1451.06.2835.159.3891a.5322.5322 0 0 0 .3806.1562h3.4282l8.197 17.6805a.5365.5365 0 0 0 .4885.3181h5.811c.2969 0 .5426-.2448.5426-.5482V18.544c0-.3035-.2392-.5482-.5425-.5482h-2.0138L12.7394.3153C12.647.124 12.4564 0 12.2452 0h-7.254Zm.5397 1.0907h6.3678l8.16 17.6804a.5365.5365 0 0 0 .4885.3181h1.8178v3.8173H17.437L9.2402 5.226a.536.536 0 0 0-.4885-.318H5.5223Zm2.0137 8.2366c-.2098.0011-.3937.1193-.4857.3096L.6002 23.2133a.5506.5506 0 0 0 .0313.5282.5334.5334 0 0 0 .4544.25h6.169a.5468.5468 0 0 0 .497-.3096l3.38-7.166a.5405.5405 0 0 0-.0029-.4686L8.036 9.637a.5468.5468 0 0 0-.4942-.3096Zm.0057 1.8036 2.488 5.1522-3.1214 6.6206H1.9465Z" fill="#FF9900"/>
-    </g>
-
-    <!-- S3 icon for badge (official AWS path scaled to 16x16) -->
-    <g id="s3IconSmall">
-      <path d="M13.942 8.765l.08-.597c.631.384.839.615.903.714-.107.021-.375.031-.983-.117zm-1.449 5.325a.365.365 0 0 0-.003.049c0 .056-.138.27-.75.512a6.853 6.853 0 0 1-.958.288c-.937.217-2.086.336-3.236.336-3.074 0-4.941-.789-4.941-1.136a.365.365 0 0 0-.004-.049L1.207 3.735c.09.052.187.103.288.151.028.014.057.026.085.038.09.041.182.081.279.12l.119.046c.103.039.21.076.319.112.028.009.056.019.087.029.138.043.282.084.43.124l.118.03c.117.029.235.058.356.084.148.034.3.066.562.113l.08.016c.169.03.34.057.513.081.047.007.096.013.144.02.133.018.267.035.403.051l.16.018c.163.017.327.033.493.047l.054.006c.183.015.368.027.553.037l.155.008c.14.007.282.012.422.017a22.059 22.059 0 0 0 1.864-.017l.154-.008c.186-.01.371-.022.554-.037l.053-.005c.167-.014.332-.03.495-.048l.159-.017c.137-.016.272-.033.406-.051.047-.007.094-.013.141-.02.174-.025.346-.052.515-.081l.074-.014c.143-.027.284-.055.423-.083l.141-.031c.124-.027.245-.057.364-.087l.111-.028c.15-.04.296-.081.436-.126.027-.008.051-.017.077-.025.113-.033.226-.067.329-.115.039-.014.076-.03.113-.044.1-.04.196-.08.287-.123.025-.012.053-.023.077-.035.102-.049.2-.1.291-.152l-.651 4.83c-1.659-.52-3.87-1.528-4.874-2a.727.727 0 0 0-.725-.723.727.727 0 0 0-.726.725c0 .4.326.726.726.726.13 0 .252-.037.358-.099 1.146.541 3.429 1.578 5.143 2.1zm-4.946-13.365c3.785 0 6.451 1.173 6.5 1.824l-.01.075c-.006.022-.02.045-.031.067-.01.019-.017.038-.031.058-.016.022-.039.045-.06.068-.019.02-.034.04-.056.06-.025.023-.058.047-.089.07-.026.02-.049.04-.079.061-.035.024-.077.047-.118.071-.033.02-.063.04-.1.06-.045.024-.098.049-.148.073-.039.019-.076.038-.118.057-.056.025-.118.049-.179.074-.045.018-.087.036-.135.055-.065.024-.137.048-.207.071-.05.017-.099.035-.152.053-.074.023-.155.046-.233.069-.057.016-.11.033-.169.049-.083.023-.172.043-.26.065-.062.015-.121.031-.185.045-.093.021-.191.041-.289.061-.065.013-.127.027-.195.04-.103.02-.213.038-.321.056-.067.012-.132.024-.202.035-.111.017-.228.032-.343.048-.073.009-.142.02-.217.029-.121.015-.248.027-.373.04-.073.008-.145.017-.221.024-.138.008-.281.013-.423.019-.08.003-.156.008-.236.011a23.737 23.737 0 0 1-1.379 0c-.08-.003-.156-.008-.235-.011-.143-.005-.287-.01-.425-.019-.081-.005-.159-.013-.24-.018-.13-.01-.262-.019-.389-.029-.073-.007-.143-.016-.216-.023-.127-.013-.256-.025-.379-.04l-.21-.029c-.117-.016-.237-.031-.35-.049-.067-.01-.128-.022-.193-.033-.111-.019-.223-.037-.33-.057-.064-.012-.122-.025-.184-.037-.101-.021-.203-.041-.3-.063-.06-.013-.115-.029-.173-.043-.092-.022-.185-.044-.271-.068-.055-.015-.105-.031-.157-.046a7.833 7.833 0 0 1-.245-.072c-.05-.016-.094-.033-.142-.049-.073-.025-.149-.05-.217-.075-.045-.017-.083-.034-.125-.051-.064-.025-.13-.051-.188-.077-.04-.018-.073-.036-.111-.053-.053-.026-.108-.051-.155-.077-.035-.019-.063-.037-.095-.056-.042-.025-.087-.05-.123-.075-.029-.019-.05-.039-.075-.057-.032-.025-.065-.049-.093-.073-.021-.02-.036-.038-.053-.058-.022-.023-.046-.047-.062-.069-.013-.02-.021-.039-.031-.057-.012-.024-.026-.045-.033-.068l-.01-.075c.051-.651 2.716-1.824 6.499-1.824zm8.121 8.083c-.079-.419-.56-.861-1.54-1.419l.642-4.774a.354.354 0 0 0 .003-.048C14.773 1.054 10.965 0 7.547 0 4.13 0 .321 1.054.321 2.567a.387.387 0 0 0 .004.048l1.558 11.585c.047 1.335 3.49 1.833 5.666 1.833 1.203 0 2.41-.125 3.399-.354.398-.092.755-.2 1.061-.32.787-.311 1.193-.702 1.209-1.159l.63-4.679c.371.087.677.131.926.131.36 0 .601-.091.756-.275a.637.637 0 0 0 .14-.536Z" fill="#569A31" transform="scale(0.667)"/>
-    </g>
-
-    <!-- Lambda icon for badge (16x16 scaled) -->
-    <g id="lambdaIconSmall">
-      <path d="M4.9855 0c-.2941.0031-.5335.2466-.534.5482L4.446 5.456c0 .1451.06.2835.159.3891a.5322.5322 0 0 0 .3806.1562h3.4282l8.197 17.6805a.5365.5365 0 0 0 .4885.3181h5.811c.2969 0 .5426-.2448.5426-.5482V18.544c0-.3035-.2392-.5482-.5425-.5482h-2.0138L12.7394.3153C12.647.124 12.4564 0 12.2452 0h-7.254Zm.5397 1.0907h6.3678l8.16 17.6804a.5365.5365 0 0 0 .4885.3181h1.8178v3.8173H17.437L9.2402 5.226a.536.536 0 0 0-.4885-.318H5.5223Zm2.0137 8.2366c-.2098.0011-.3937.1193-.4857.3096L.6002 23.2133a.5506.5506 0 0 0 .0313.5282.5334.5334 0 0 0 .4544.25h6.169a.5468.5468 0 0 0 .497-.3096l3.38-7.166a.5405.5405 0 0 0-.0029-.4686L8.036 9.637a.5468.5468 0 0 0-.4942-.3096Zm.0057 1.8036 2.488 5.1522-3.1214 6.6206H1.9465Z" fill="#FF9900" transform="scale(0.667)"/>
-    </g>
-
-    <!-- CloudFront icon for badge (16x16) -->
-    <g id="cloudfrontIconSmall">
-      <circle cx="8" cy="8" r="6.5" fill="none" stroke="#8C4FFF" stroke-width="1.3"/>
-      <ellipse cx="8" cy="8" rx="3.2" ry="6.5" fill="none" stroke="#8C4FFF" stroke-width="1" opacity="0.6"/>
-      <line x1="1.5" y1="8" x2="14.5" y2="8" stroke="#8C4FFF" stroke-width="1" opacity="0.5"/>
-      <circle cx="8" cy="2.5" r="1" fill="#8C4FFF"/>
-      <circle cx="8" cy="13.5" r="1" fill="#8C4FFF"/>
-      <circle cx="2.5" cy="8" r="1" fill="#8C4FFF"/>
-      <circle cx="13.5" cy="8" r="1" fill="#8C4FFF"/>
-    </g>
-
-    <!-- Arrow marker -->
-    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#58a6ff"/>
-    </marker>
+    <!-- Forward flow paths (request: →) -->
+    <path id="fw1" d="M140,157 L280,157" fill="none"/>
+    <path id="fw2" d="M330,157 L470,157" fill="none"/>
+    <path id="fw3" d="M520,157 L660,157" fill="none"/>
+    <!-- Reverse flow paths (response: ←) -->
+    <path id="rv1" d="M280,163 L140,163" fill="none"/>
+    <path id="rv2" d="M470,163 L330,163" fill="none"/>
+    <path id="rv3" d="M660,163 L520,163" fill="none"/>
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="450" fill="url(#bgGradient)"/>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect width="800" height="450" fill="url(#grid)" opacity="0.3"/>
 
   <!-- Floating particles -->
-  <circle cx="150" cy="100" r="2" fill="#8C4FFF" opacity="0.4">
-    <animate attributeName="cy" values="100;120;100" dur="4s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="4s" repeatCount="indefinite"/>
+  <circle cx="120" cy="60" r="1.5" fill="#8C4FFF" opacity="0.4">
+    <animate attributeName="cy" values="60;45;60" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="700" cy="80" r="2" fill="#58a6ff" opacity="0.3">
+    <animate attributeName="cy" values="80;95;80" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="720" cy="310" r="1.5" fill="#8C4FFF" opacity="0.3">
+    <animate attributeName="cy" values="310;295;310" dur="4.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.5;0.3" dur="4.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="320" r="2" fill="#58a6ff" opacity="0.3">
+    <animate attributeName="cy" values="320;335;320" dur="5.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="5.5s" repeatCount="indefinite"/>
   </circle>
 
-  <circle cx="650" cy="150" r="2" fill="#FF9900" opacity="0.4">
-    <animate attributeName="cy" values="150;130;150" dur="5s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="5s" repeatCount="indefinite"/>
+  <!-- ===== BIDIRECTIONAL ARROW LINES (↔) ===== -->
+  <!-- Upper line (request →) -->
+  <line x1="140" y1="157" x2="280" y2="157" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="330" y1="157" x2="470" y2="157" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="520" y1="157" x2="660" y2="157" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <!-- Lower line (response ←) -->
+  <line x1="280" y1="163" x2="140" y2="163" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="470" y1="163" x2="330" y2="163" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+  <line x1="660" y1="163" x2="520" y2="163" stroke="#30363d" stroke-width="1" stroke-dasharray="5,3">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="0.8s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- ===== FORWARD FLOW DOTS (request → purple) ===== -->
+  <circle r="3" fill="#8C4FFF" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite"><mpath href="#fw1"/></animateMotion>
+  </circle>
+  <circle r="3" fill="#8C4FFF" opacity="0.8">
+    <animateMotion dur="2s" begin="0.3s" repeatCount="indefinite"><mpath href="#fw2"/></animateMotion>
+  </circle>
+  <circle r="3" fill="#8C4FFF" opacity="0.8">
+    <animateMotion dur="2s" begin="0.6s" repeatCount="indefinite"><mpath href="#fw3"/></animateMotion>
   </circle>
 
-  <circle cx="400" cy="80" r="2" fill="#7ee787" opacity="0.4">
-    <animate attributeName="cy" values="80;100;80" dur="4.5s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="4.5s" repeatCount="indefinite"/>
+  <!-- ===== REVERSE FLOW DOTS (response ← orange) ===== -->
+  <circle r="2.5" fill="#FF9900" opacity="0.7">
+    <animateMotion dur="2s" begin="1s" repeatCount="indefinite"><mpath href="#rv1"/></animateMotion>
+  </circle>
+  <circle r="2.5" fill="#FF9900" opacity="0.7">
+    <animateMotion dur="2s" begin="1.3s" repeatCount="indefinite"><mpath href="#rv2"/></animateMotion>
+  </circle>
+  <circle r="2.5" fill="#FF9900" opacity="0.7">
+    <animateMotion dur="2s" begin="1.6s" repeatCount="indefinite"><mpath href="#rv3"/></animateMotion>
   </circle>
 
-  <!-- Center section -->
-  <g id="centerContent">
-    <!-- CloudFront icon (left) with glow -->
-    <ellipse cx="280" cy="185" rx="80" ry="80" fill="url(#purpleGlow)"/>
-    <g transform="translate(230, 135)">
-      <use href="#cloudfrontIcon" width="100" height="100"/>
-      <animateTransform attributeName="transform" type="translate" values="230,135; 230,129; 230,135" dur="3s" repeatCount="indefinite"/>
-    </g>
-
-    <!-- Animated arrow between icons -->
-    <g transform="translate(400, 185)">
-      <line x1="-60" y1="0" x2="60" y2="0" stroke="#58a6ff" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#arrowhead)">
-        <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1s" repeatCount="indefinite"/>
-      </line>
-      <!-- Flow dots -->
-      <circle r="3" fill="#58a6ff">
-        <animateMotion path="M-60,0 L60,0" dur="2s" repeatCount="indefinite"/>
-      </circle>
-    </g>
-
-    <!-- Lambda icon (right) with glow -->
-    <ellipse cx="520" cy="185" rx="80" ry="80" fill="url(#orangeGlow)"/>
-    <g transform="translate(470, 135)">
-      <use href="#lambdaIcon" width="100" height="100"/>
-      <animateTransform attributeName="transform" type="translate" values="470,135; 470,141; 470,135" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+  <!-- ===== NODE 1: CloudFront Functions (code brackets) ===== -->
+  <g transform="translate(115, 160)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#8C4FFF" stroke-width="1.5"/>
+    <g transform="scale(0.8) translate(-12, -12)">
+      <path d="M9 4L3 12l6 8" fill="none" stroke="#8C4FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M15 4l6 8-6 8" fill="none" stroke="#8C4FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="13" y1="4" x2="11" y2="20" stroke="#8C4FFF" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
     </g>
   </g>
 
-  <!-- Stats text -->
-  <text x="400" y="270" font-family="'JetBrains Mono', 'SF Mono', monospace" font-size="24" font-weight="600" fill="#7ee787" text-anchor="middle">
-    -75% cost · -68% bandwidth
-    <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
-  </text>
+  <!-- ===== NODE 2: CloudFront (globe) ===== -->
+  <g transform="translate(305, 160)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#8C4FFF" stroke-width="1.5"/>
+    <g transform="scale(0.8) translate(-12, -12)">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="#8C4FFF" stroke-width="2"/>
+      <ellipse cx="12" cy="12" rx="4.5" ry="9" fill="none" stroke="#8C4FFF" stroke-width="1.5" opacity="0.6"/>
+      <line x1="3" y1="12" x2="21" y2="12" stroke="#8C4FFF" stroke-width="1.5" opacity="0.5"/>
+      <line x1="12" y1="3" x2="12" y2="21" stroke="#8C4FFF" stroke-width="1" opacity="0.3"/>
+    </g>
+  </g>
+
+  <!-- ===== NODE 3: Lambda ===== -->
+  <g transform="translate(495, 160)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#FF9900" stroke-width="1.5"/>
+    <g transform="scale(0.8) translate(-12, -12)">
+      <path d="M4.9855 0c-.2941.0031-.5335.2466-.534.5482L4.446 5.456c0 .1451.06.2835.159.3891a.5322.5322 0 0 0 .3806.1562h3.4282l8.197 17.6805a.5365.5365 0 0 0 .4885.3181h5.811c.2969 0 .5426-.2448.5426-.5482V18.544c0-.3035-.2392-.5482-.5425-.5482h-2.0138L12.7394.3153C12.647.124 12.4564 0 12.2452 0h-7.254Zm.5397 1.0907h6.3678l8.16 17.6804a.5365.5365 0 0 0 .4885.3181h1.8178v3.8173H17.437L9.2402 5.226a.536.536 0 0 0-.4885-.318H5.5223Zm2.0137 8.2366c-.2098.0011-.3937.1193-.4857.3096L.6002 23.2133a.5506.5506 0 0 0 .0313.5282.5334.5334 0 0 0 .4544.25h6.169a.5468.5468 0 0 0 .497-.3096l3.38-7.166a.5405.5405 0 0 0-.0029-.4686L8.036 9.637a.5468.5468 0 0 0-.4942-.3096Zm.0057 1.8036 2.488 5.1522-3.1214 6.6206H1.9465Z" fill="#FF9900"/>
+    </g>
+  </g>
+
+  <!-- ===== NODE 4: S3 (bucket) ===== -->
+  <g transform="translate(685, 160)">
+    <rect x="-25" y="-25" width="50" height="50" rx="12" fill="#161b22" stroke="#569A31" stroke-width="1.5"/>
+    <g transform="scale(0.8) translate(-12, -12)">
+      <ellipse cx="12" cy="5.5" rx="7" ry="2.8" fill="#569A31" opacity="0.9"/>
+      <rect x="5" y="5.5" width="14" height="13" fill="#569A31" opacity="0.5"/>
+      <ellipse cx="12" cy="18.5" rx="7" ry="2.8" fill="#569A31" opacity="0.9"/>
+      <ellipse cx="12" cy="12" rx="7" ry="2" fill="none" stroke="#161b22" stroke-width="0.8" opacity="0.4"/>
+    </g>
+  </g>
+
+  <!-- ===== NODE LABELS ===== -->
+  <text x="115" y="205" font-family="'Inter', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">CF Functions</text>
+  <text x="305" y="205" font-family="'Inter', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">CloudFront</text>
+  <text x="495" y="205" font-family="'Inter', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">Lambda</text>
+  <text x="685" y="205" font-family="'Inter', sans-serif" font-size="10" fill="#8b949e" text-anchor="middle">S3</text>
 
   <!-- Title -->
-  <text x="400" y="320" font-family="'Inter', sans-serif" font-size="40" font-weight="bold" fill="#c9d1d9" text-anchor="middle">
-    이미지 최적화
-  </text>
+  <text x="400" y="370" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="32" font-weight="700" fill="#e6edf3" text-anchor="middle">이미지 최적화</text>
 
-  <!-- Tech badges at bottom -->
-  <g id="badges" transform="translate(400, 365)">
-    <!-- CloudFront badge -->
-    <g transform="translate(-190, 0)">
-      <rect x="0" y="0" width="140" height="28" rx="14" fill="#0d1117" stroke="#8C4FFF" stroke-width="1.5"/>
-      <use href="#cloudfrontIconSmall" x="10" y="6" width="16" height="16"/>
-      <text x="32" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#8C4FFF">CloudFront</text>
-    </g>
-
-    <!-- Lambda@Edge badge -->
-    <g transform="translate(-40, 0)">
-      <rect x="0" y="0" width="150" height="28" rx="14" fill="#0d1117" stroke="#FF9900" stroke-width="1.5"/>
-      <use href="#lambdaIconSmall" x="10" y="6" width="16" height="16"/>
-      <text x="32" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#FF9900">Lambda@Edge</text>
-    </g>
-
-    <!-- S3 badge -->
-    <g transform="translate(120, 0)">
-      <rect x="0" y="0" width="70" height="28" rx="14" fill="#0d1117" stroke="#569A31" stroke-width="1.5"/>
-      <use href="#s3IconSmall" x="10" y="6" width="16" height="16"/>
-      <text x="32" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#569A31">S3</text>
-    </g>
-  </g>
+  <!-- Accent line -->
+  <line x1="355" y1="388" x2="445" y2="388" stroke="#8C4FFF" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
 </svg>
