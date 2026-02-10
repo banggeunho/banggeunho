@@ -1,86 +1,166 @@
-<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
   <defs>
-    <linearGradient id="pipeBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1c2128"/>
-      <stop offset="100%" style="stop-color:#0d1117"/>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c2128;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#FF9900"/>
-      <stop offset="50%" style="stop-color:#a371f7"/>
-      <stop offset="100%" style="stop-color:#58a6ff"/>
-    </linearGradient>
-    <radialGradient id="pipeGlow" cx="50%" cy="42%">
-      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:0.2"/>
-      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0"/>
+
+    <!-- Glow gradient for particles -->
+    <radialGradient id="particleGlow">
+      <stop offset="0%" style="stop-color:#FF9900;stop-opacity:1">
+        <animate attributeName="stop-opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:0" />
     </radialGradient>
-    <!-- Particle for animation -->
-    <circle id="particle" r="3"/>
+
+    <!-- Flow paths for animation -->
+    <path id="flowPath1" d="M280 160 L370 160" fill="none"/>
+    <path id="flowPath2" d="M430 160 L520 160" fill="none"/>
   </defs>
 
-  <rect width="800" height="450" fill="url(#pipeBg)"/>
-  <circle cx="400" cy="185" r="200" fill="url(#pipeGlow)"/>
-
-  <!-- Source: Kinesis icon -->
-  <g transform="translate(220, 170)">
-    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#FF9900" stroke-width="2.5"/>
-    <path d="M -12 -15 Q 5 0, -12 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M 0 -15 Q 17 0, 0 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M 12 -15 Q 29 0, 12 15" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
-  </g>
-
-  <!-- Flow line 1 -->
-  <line x1="260" y1="170" x2="330" y2="170" stroke="url(#flowGrad)" stroke-width="3" stroke-dasharray="8,6" opacity="0.7">
-    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1s" repeatCount="indefinite"/>
-  </line>
-
-  <!-- Firehose icon -->
-  <g transform="translate(370, 170)">
-    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#a371f7" stroke-width="2.5"/>
-    <!-- Fire/stream symbol -->
-    <path d="M -8 12 Q -8 -5, 0 -15 Q 8 -5, 8 12 Q 4 6, 0 10 Q -4 6, -8 12Z" fill="#a371f7" opacity="0.8"/>
-    <path d="M -4 12 Q -4 2, 0 -5 Q 4 2, 4 12 Q 2 8, 0 10 Q -2 8, -4 12Z" fill="#d2a8ff" opacity="0.9"/>
-  </g>
-
-  <!-- Flow line 2 -->
-  <line x1="410" y1="170" x2="480" y2="170" stroke="url(#flowGrad)" stroke-width="3" stroke-dasharray="8,6" opacity="0.7">
-    <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1s" repeatCount="indefinite"/>
-  </line>
-
-  <!-- Destination: S3/Redshift icon -->
-  <g transform="translate(520, 170)">
-    <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#1c2128" stroke="#58a6ff" stroke-width="2.5"/>
-    <!-- Database/bucket symbol -->
-    <ellipse cx="0" cy="-10" rx="16" ry="6" fill="none" stroke="#58a6ff" stroke-width="2"/>
-    <path d="M -16 -10 L -16 10" stroke="#58a6ff" stroke-width="2"/>
-    <path d="M 16 -10 L 16 10" stroke="#58a6ff" stroke-width="2"/>
-    <ellipse cx="0" cy="10" rx="16" ry="6" fill="none" stroke="#58a6ff" stroke-width="2"/>
-  </g>
-
-  <!-- Animated data particles -->
-  <circle r="3" fill="#FF9900" opacity="0.8">
-    <animateMotion dur="2.5s" repeatCount="indefinite" path="M 260,170 L 520,170"/>
-    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite"/>
-  </circle>
-  <circle r="3" fill="#a371f7" opacity="0.8">
-    <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.8s" path="M 260,170 L 520,170"/>
-    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="0.8s"/>
-  </circle>
-  <circle r="3" fill="#58a6ff" opacity="0.8">
-    <animateMotion dur="2.5s" repeatCount="indefinite" begin="1.6s" path="M 260,170 L 520,170"/>
-    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="1.6s"/>
-  </circle>
-
-  <!-- Labels under icons -->
-  <text x="220" y="225" font-family="system-ui" font-size="12" fill="#FF9900" text-anchor="middle" opacity="0.6">Kinesis</text>
-  <text x="370" y="225" font-family="system-ui" font-size="12" fill="#a371f7" text-anchor="middle" opacity="0.6">Firehose</text>
-  <text x="520" y="225" font-family="system-ui" font-size="12" fill="#58a6ff" text-anchor="middle" opacity="0.6">S3 / Redshift</text>
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGradient)"/>
 
   <!-- Title -->
-  <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="700" fill="#c9d1d9" text-anchor="middle">데이터 파이프라인</text>
+  <text x="400" y="60" font-family="'Inter', sans-serif" font-size="38" font-weight="700" fill="#c9d1d9" text-anchor="middle">
+    데이터 파이프라인
+  </text>
 
-  <!-- Tech Tags -->
-  <rect x="290" y="360" width="110" height="32" rx="16" fill="#1c2128" stroke="#FF9900" stroke-width="1.5"/>
-  <text x="345" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#FF9900" text-anchor="middle">AWS Firehose</text>
-  <rect x="410" y="360" width="100" height="32" rx="16" fill="#1c2128" stroke="#58a6ff" stroke-width="1.5"/>
-  <text x="460" y="381" font-family="system-ui" font-size="14" font-weight="600" fill="#58a6ff" text-anchor="middle">Redshift</text>
+  <!-- Stats text with pulse animation -->
+  <text x="400" y="100" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="600" fill="#7ee787" text-anchor="middle">
+    <tspan>리드타임 1~2일 → 30분</tspan>
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Firehose Icon (Left) -->
+  <g transform="translate(220, 130)">
+    <rect width="60" height="60" rx="12" fill="#0d1117" stroke="#FF9900" stroke-width="2.5"/>
+    <g transform="translate(18, 18)">
+      <path d="M8 20 Q8 10 12 4 Q16 10 16 20 Q14 16 12 18 Q10 16 8 20Z" fill="none" stroke="#FF9900" stroke-width="2"/>
+      <path d="M10 20 Q10 14 12 9 Q14 14 14 20 Q13 17 12 18 Q11 17 10 20Z" fill="#FF9900" opacity="0.5">
+        <animate attributeName="opacity" values="0.5;0.8;0.5" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <text x="30" y="78" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#c9d1d9" text-anchor="middle">Firehose</text>
+  </g>
+
+  <!-- S3 Icon (Center) -->
+  <g transform="translate(370, 130)">
+    <rect width="60" height="60" rx="12" fill="#0d1117" stroke="#569A31" stroke-width="2.5"/>
+    <g transform="translate(18, 18) scale(1)">
+      <path d="M20.913 13.147l.12-.895c.947.576 1.258.922 1.354 1.071-.16.031-.562.046-1.474-.176zm-2.174 7.988a.547.547 0 0 0-.005.073c0 .084-.207.405-1.124.768a10.28 10.28 0 0 1-1.438.432c-1.405.325-3.128.504-4.853.504-4.612 0-7.412-1.184-7.412-1.704a.547.547 0 0 0-.005-.073L1.81 5.602c.135.078.28.154.432.227.042.02.086.038.128.057.134.062.272.122.417.18l.179.069c.154.058.314.114.478.168.043.013.084.029.13.043.207.065.423.127.646.187l.176.044c.175.044.353.087.534.127a23.414 23.414 0 0 0 .843.17l.121.023c.252.045.508.085.768.122.071.011.144.02.216.03.2.027.4.053.604.077l.24.027c.245.026.49.05.74.07l.081.009c.275.022.552.04.83.056l.233.012c.21.01.422.018.633.025a33.088 33.088 0 0 0 2.795-.026l.232-.011c.278-.016.555-.034.83-.056l.08-.008c.25-.02.497-.045.742-.072l.238-.026c.205-.024.408-.05.609-.077.07-.01.141-.019.211-.03.261-.037.519-.078.772-.122l.111-.02c.215-.04.427-.082.634-.125l.212-.047c.186-.041.368-.085.546-.13l.166-.042c.225-.06.444-.122.654-.189.04-.012.077-.026.115-.038a10.6 10.6 0 0 0 .493-.173c.058-.021.114-.044.17-.066.15-.06.293-.12.43-.185.038-.017.079-.034.116-.052.153-.073.3-.15.436-.228l-.976 7.245c-2.488-.78-5.805-2.292-7.311-3a1.09 1.09 0 0 0-1.088-1.085c-.6 0-1.088.489-1.088 1.088 0 .6.488 1.089 1.088 1.089.196 0 .378-.056.537-.148 1.72.812 5.144 2.367 7.715 3.15zm-7.42-20.047c5.677 0 9.676 1.759 9.75 2.736l-.014.113c-.01.033-.031.067-.048.101-.015.028-.026.057-.047.087-.024.033-.058.068-.09.102-.028.03-.051.06-.084.09-.038.035-.087.07-.133.105-.04.03-.074.06-.119.091-.053.036-.116.071-.177.107-.05.03-.095.06-.15.09-.068.036-.147.073-.222.11-.059.028-.114.057-.177.085-.084.038-.177.074-.268.111-.068.027-.13.054-.203.082-.097.036-.205.072-.31.107-.075.026-.148.053-.228.079-.111.035-.233.069-.35.103-.085.024-.165.05-.253.073-.124.034-.258.065-.389.098-.093.022-.181.046-.278.068-.139.032-.287.061-.433.091-.098.02-.191.041-.293.06-.155.03-.32.057-.482.084-.1.018-.198.036-.302.052-.166.026-.342.048-.515.072-.11.014-.213.03-.325.044-.181.023-.372.041-.56.06-.11.012-.218.025-.332.036-.188.016-.386.029-.58.043-.122.009-.24.02-.364.028-.207.012-.422.02-.635.028-.12.005-.234.012-.354.016a35.605 35.605 0 0 1-2.069 0c-.12-.004-.234-.011-.352-.016-.214-.008-.43-.016-.637-.028-.122-.008-.238-.02-.36-.027-.195-.015-.394-.028-.584-.044-.11-.01-.215-.024-.324-.035-.19-.02-.384-.038-.568-.06l-.315-.044c-.176-.024-.355-.046-.525-.073-.1-.015-.192-.033-.29-.05-.167-.028-.335-.055-.494-.086-.096-.018-.183-.038-.276-.056-.151-.032-.305-.062-.45-.095-.09-.02-.173-.043-.26-.064-.138-.034-.277-.067-.407-.102-.082-.022-.157-.046-.235-.069a11.75 11.75 0 0 1-.368-.108c-.075-.024-.141-.049-.213-.073-.11-.037-.223-.075-.325-.113-.067-.025-.125-.051-.188-.077-.096-.038-.195-.076-.282-.115-.06-.027-.11-.054-.166-.08-.08-.039-.162-.077-.233-.116-.052-.028-.094-.055-.142-.084-.063-.038-.13-.075-.185-.113-.043-.029-.075-.058-.113-.086-.048-.037-.098-.073-.139-.11-.032-.029-.054-.057-.08-.087-.033-.035-.069-.07-.093-.104-.02-.03-.031-.058-.046-.086-.018-.035-.039-.068-.049-.102l-.015-.113c.076-.977 4.074-2.736 9.748-2.736zm12.182 12.124c-.118-.628-.84-1.291-2.31-2.128l.963-7.16a.531.531 0 0 0 .005-.073C22.16 1.581 16.447 0 11.32 0 6.194 0 .482 1.581.482 3.851a.58.58 0 0 0 .005.072L2.819 21.25c.071 2.002 5.236 2.75 8.5 2.75 1.805 0 3.615-.188 5.098-.531.598-.138 1.133-.3 1.592-.48 1.18-.467 1.789-1.053 1.813-1.739l.945-7.018c.557.131 1.016.197 1.389.197.54 0 .902-.137 1.134-.413a.956.956 0 0 0 .21-.804Z" fill="#569A31"/>
+    </g>
+    <text x="30" y="78" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#c9d1d9" text-anchor="middle">S3</text>
+  </g>
+
+  <!-- Redshift Icon (Right) -->
+  <g transform="translate(520, 130)">
+    <rect width="60" height="60" rx="12" fill="#0d1117" stroke="#2F67D3" stroke-width="2.5"/>
+    <g transform="translate(18, 18)">
+      <path d="M16.639 9.932a.822.822 0 0 1-.822-.82.823.823 0 0 1 1.645 0c0 .452-.37.82-.823.82m-2.086 4.994a.823.823 0 0 1-.822-.822.822.822 0 0 1 1.645 0 .822.822 0 0 1-.823.822m-5.004-.833a.822.822 0 1 1 .002-1.644.822.822 0 0 1-.002 1.644m-2.083 4.578a.823.823 0 0 1-.823-.82.823.823 0 0 1 1.645 0c0 .452-.37.82-.822.82m9.173-11.236a1.68 1.68 0 0 0-1.68 1.676c0 .566.285 1.066.718 1.37l-.782 1.982a1.674 1.674 0 0 0-1.923 1.104l-1.753-.398a1.675 1.675 0 0 0-3.348.103c0 .432.169.823.438 1.12l-.764 1.79c-.028-.001-.053-.008-.08-.008a1.68 1.68 0 0 0-1.68 1.676 1.68 1.68 0 0 0 3.36 0c0-.593-.312-1.112-.778-1.41l.674-1.579c.161.052.33.088.508.088.661 0 1.228-.386 1.502-.94l1.856.42a1.68 1.68 0 0 0 3.327-.325c0-.5-.224-.943-.574-1.25l.822-2.083c.053.005.104.016.157.016a1.68 1.68 0 0 0 1.68-1.676 1.68 1.68 0 0 0-1.68-1.676M12 23.145c-4.17 0-7.286-1.252-7.286-2.37V4.79C6.14 5.938 9.131 6.547 12 6.547c2.869 0 5.86-.609 7.286-1.756v15.983c0 1.12-3.116 2.37-7.286 2.37M12 .856c4.293 0 7.286 1.274 7.286 2.419 0 1.143-2.993 2.418-7.286 2.418-4.293 0-7.286-1.275-7.286-2.418C4.714 2.129 7.707.855 12 .855m8.143 2.419C20.143 1.147 15.947 0 12 0 8.052 0 3.857 1.147 3.857 3.274l.002.01h-.002v17.49C3.857 22.87 8.052 24 12 24c3.947 0 8.143-1.13 8.143-3.226V3.284h-.002l.002-.01" fill="#2F67D3"/>
+    </g>
+    <text x="30" y="78" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#c9d1d9" text-anchor="middle">Redshift</text>
+  </g>
+
+  <!-- Animated flow lines -->
+  <line x1="280" y1="160" x2="370" y2="160" stroke="#FF9900" stroke-width="3" stroke-dasharray="8 4" opacity="0.6">
+    <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="430" y1="160" x2="520" y2="160" stroke="#569A31" stroke-width="3" stroke-dasharray="8 4" opacity="0.6">
+    <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Animated particles on first flow -->
+  <circle r="5" fill="url(#particleGlow)">
+    <animateMotion dur="2s" repeatCount="indefinite">
+      <mpath href="#flowPath1"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="5" fill="url(#particleGlow)">
+    <animateMotion dur="2s" repeatCount="indefinite" begin="0.7s">
+      <mpath href="#flowPath1"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="5" fill="url(#particleGlow)">
+    <animateMotion dur="2s" repeatCount="indefinite" begin="1.4s">
+      <mpath href="#flowPath1"/>
+    </animateMotion>
+  </circle>
+
+  <!-- Animated particles on second flow -->
+  <circle r="5" fill="#569A31" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite">
+      <mpath href="#flowPath2"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="5" fill="#569A31" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite" begin="0.7s">
+      <mpath href="#flowPath2"/>
+    </animateMotion>
+  </circle>
+
+  <circle r="5" fill="#569A31" opacity="0.8">
+    <animateMotion dur="2s" repeatCount="indefinite" begin="1.4s">
+      <mpath href="#flowPath2"/>
+    </animateMotion>
+  </circle>
+
+  <!-- Tech Badges -->
+  <g transform="translate(158, 365)">
+    <!-- Firehose Badge -->
+    <rect width="130" height="28" rx="14" fill="#0d1117" stroke="#FF9900" stroke-width="1.5"/>
+    <g transform="translate(12, 6)">
+      <path d="M5 13 Q5 8 8 4 Q11 8 11 13 Q10 11 8 12 Q6 11 5 13Z" fill="none" stroke="#FF9900" stroke-width="1.5"/>
+      <path d="M6.5 13 Q6.5 9.5 8 6.5 Q9.5 9.5 9.5 13 Q8.75 11.5 8 12 Q7.25 11.5 6.5 13Z" fill="#FF9900" opacity="0.5"/>
+    </g>
+    <text x="32" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#FF9900">Firehose</text>
+  </g>
+
+  <g transform="translate(296, 365)">
+    <!-- S3 Badge -->
+    <rect width="90" height="28" rx="14" fill="#0d1117" stroke="#569A31" stroke-width="1.5"/>
+    <g transform="translate(12, 6) scale(0.67)">
+      <path d="M20.913 13.147l.12-.895c.947.576 1.258.922 1.354 1.071-.16.031-.562.046-1.474-.176zm-2.174 7.988a.547.547 0 0 0-.005.073c0 .084-.207.405-1.124.768a10.28 10.28 0 0 1-1.438.432c-1.405.325-3.128.504-4.853.504-4.612 0-7.412-1.184-7.412-1.704a.547.547 0 0 0-.005-.073L1.81 5.602c.135.078.28.154.432.227.042.02.086.038.128.057.134.062.272.122.417.18l.179.069c.154.058.314.114.478.168.043.013.084.029.13.043.207.065.423.127.646.187l.176.044c.175.044.353.087.534.127a23.414 23.414 0 0 0 .843.17l.121.023c.252.045.508.085.768.122.071.011.144.02.216.03.2.027.4.053.604.077l.24.027c.245.026.49.05.74.07l.081.009c.275.022.552.04.83.056l.233.012c.21.01.422.018.633.025a33.088 33.088 0 0 0 2.795-.026l.232-.011c.278-.016.555-.034.83-.056l.08-.008c.25-.02.497-.045.742-.072l.238-.026c.205-.024.408-.05.609-.077.07-.01.141-.019.211-.03.261-.037.519-.078.772-.122l.111-.02c.215-.04.427-.082.634-.125l.212-.047c.186-.041.368-.085.546-.13l.166-.042c.225-.06.444-.122.654-.189.04-.012.077-.026.115-.038a10.6 10.6 0 0 0 .493-.173c.058-.021.114-.044.17-.066.15-.06.293-.12.43-.185.038-.017.079-.034.116-.052.153-.073.3-.15.436-.228l-.976 7.245c-2.488-.78-5.805-2.292-7.311-3a1.09 1.09 0 0 0-1.088-1.085c-.6 0-1.088.489-1.088 1.088 0 .6.488 1.089 1.088 1.089.196 0 .378-.056.537-.148 1.72.812 5.144 2.367 7.715 3.15zm-7.42-20.047c5.677 0 9.676 1.759 9.75 2.736l-.014.113c-.01.033-.031.067-.048.101-.015.028-.026.057-.047.087-.024.033-.058.068-.09.102-.028.03-.051.06-.084.09-.038.035-.087.07-.133.105-.04.03-.074.06-.119.091-.053.036-.116.071-.177.107-.05.03-.095.06-.15.09-.068.036-.147.073-.222.11-.059.028-.114.057-.177.085-.084.038-.177.074-.268.111-.068.027-.13.054-.203.082-.097.036-.205.072-.31.107-.075.026-.148.053-.228.079-.111.035-.233.069-.35.103-.085.024-.165.05-.253.073-.124.034-.258.065-.389.098-.093.022-.181.046-.278.068-.139.032-.287.061-.433.091-.098.02-.191.041-.293.06-.155.03-.32.057-.482.084-.1.018-.198.036-.302.052-.166.026-.342.048-.515.072-.11.014-.213.03-.325.044-.181.023-.372.041-.56.06-.11.012-.218.025-.332.036-.188.016-.386.029-.58.043-.122.009-.24.02-.364.028-.207.012-.422.02-.635.028-.12.005-.234.012-.354.016a35.605 35.605 0 0 1-2.069 0c-.12-.004-.234-.011-.352-.016-.214-.008-.43-.016-.637-.028-.122-.008-.238-.02-.36-.027-.195-.015-.394-.028-.584-.044-.11-.01-.215-.024-.324-.035-.19-.02-.384-.038-.568-.06l-.315-.044c-.176-.024-.355-.046-.525-.073-.1-.015-.192-.033-.29-.05-.167-.028-.335-.055-.494-.086-.096-.018-.183-.038-.276-.056-.151-.032-.305-.062-.45-.095-.09-.02-.173-.043-.26-.064-.138-.034-.277-.067-.407-.102-.082-.022-.157-.046-.235-.069a11.75 11.75 0 0 1-.368-.108c-.075-.024-.141-.049-.213-.073-.11-.037-.223-.075-.325-.113-.067-.025-.125-.051-.188-.077-.096-.038-.195-.076-.282-.115-.06-.027-.11-.054-.166-.08-.08-.039-.162-.077-.233-.116-.052-.028-.094-.055-.142-.084-.063-.038-.13-.075-.185-.113-.043-.029-.075-.058-.113-.086-.048-.037-.098-.073-.139-.11-.032-.029-.054-.057-.08-.087-.033-.035-.069-.07-.093-.104-.02-.03-.031-.058-.046-.086-.018-.035-.039-.068-.049-.102l-.015-.113c.076-.977 4.074-2.736 9.748-2.736zm12.182 12.124c-.118-.628-.84-1.291-2.31-2.128l.963-7.16a.531.531 0 0 0 .005-.073C22.16 1.581 16.447 0 11.32 0 6.194 0 .482 1.581.482 3.851a.58.58 0 0 0 .005.072L2.819 21.25c.071 2.002 5.236 2.75 8.5 2.75 1.805 0 3.615-.188 5.098-.531.598-.138 1.133-.3 1.592-.48 1.18-.467 1.789-1.053 1.813-1.739l.945-7.018c.557.131 1.016.197 1.389.197.54 0 .902-.137 1.134-.413a.956.956 0 0 0 .21-.804Z" fill="#569A31"/>
+    </g>
+    <text x="28" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#569A31">S3</text>
+  </g>
+
+  <g transform="translate(394, 365)">
+    <!-- Athena Badge -->
+    <rect width="110" height="28" rx="14" fill="#0d1117" stroke="#8C4FFF" stroke-width="1.5"/>
+    <g transform="translate(12, 6)">
+      <circle cx="8" cy="8" r="5.5" fill="none" stroke="#8C4FFF" stroke-width="1.5"/>
+      <line x1="12.5" y1="11.5" x2="15" y2="14" stroke="#8C4FFF" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M5 6 L6.5 9 L8 7 L9.5 8.5 L11 5.5" fill="none" stroke="#8C4FFF" stroke-width="1.2" stroke-linecap="round"/>
+    </g>
+    <text x="30" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#8C4FFF">Athena</text>
+  </g>
+
+  <g transform="translate(512, 365)">
+    <!-- Redshift Badge -->
+    <rect width="130" height="28" rx="14" fill="#0d1117" stroke="#2F67D3" stroke-width="1.5"/>
+    <g transform="translate(12, 6) scale(0.67)">
+      <path d="M16.639 9.932a.822.822 0 0 1-.822-.82.823.823 0 0 1 1.645 0c0 .452-.37.82-.823.82m-2.086 4.994a.823.823 0 0 1-.822-.822.822.822 0 0 1 1.645 0 .822.822 0 0 1-.823.822m-5.004-.833a.822.822 0 1 1 .002-1.644.822.822 0 0 1-.002 1.644m-2.083 4.578a.823.823 0 0 1-.823-.82.823.823 0 0 1 1.645 0c0 .452-.37.82-.822.82m9.173-11.236a1.68 1.68 0 0 0-1.68 1.676c0 .566.285 1.066.718 1.37l-.782 1.982a1.674 1.674 0 0 0-1.923 1.104l-1.753-.398a1.675 1.675 0 0 0-3.348.103c0 .432.169.823.438 1.12l-.764 1.79c-.028-.001-.053-.008-.08-.008a1.68 1.68 0 0 0-1.68 1.676 1.68 1.68 0 0 0 3.36 0c0-.593-.312-1.112-.778-1.41l.674-1.579c.161.052.33.088.508.088.661 0 1.228-.386 1.502-.94l1.856.42a1.68 1.68 0 0 0 3.327-.325c0-.5-.224-.943-.574-1.25l.822-2.083c.053.005.104.016.157.016a1.68 1.68 0 0 0 1.68-1.676 1.68 1.68 0 0 0-1.68-1.676M12 23.145c-4.17 0-7.286-1.252-7.286-2.37V4.79C6.14 5.938 9.131 6.547 12 6.547c2.869 0 5.86-.609 7.286-1.756v15.983c0 1.12-3.116 2.37-7.286 2.37M12 .856c4.293 0 7.286 1.274 7.286 2.419 0 1.143-2.993 2.418-7.286 2.418-4.293 0-7.286-1.275-7.286-2.418C4.714 2.129 7.707.855 12 .855m8.143 2.419C20.143 1.147 15.947 0 12 0 8.052 0 3.857 1.147 3.857 3.274l.002.01h-.002v17.49C3.857 22.87 8.052 24 12 24c3.947 0 8.143-1.13 8.143-3.226V3.284h-.002l.002-.01" fill="#2F67D3"/>
+    </g>
+    <text x="28" y="18" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="#2F67D3">Redshift</text>
+  </g>
+
+  <!-- Decorative pulsing circles at connection points -->
+  <circle cx="280" cy="160" r="4" fill="#FF9900">
+    <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="370" cy="160" r="4" fill="#569A31">
+    <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+  </circle>
+  <circle cx="430" cy="160" r="4" fill="#569A31">
+    <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" begin="1s"/>
+  </circle>
+  <circle cx="520" cy="160" r="4" fill="#2F67D3">
+    <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" begin="1.5s"/>
+  </circle>
 </svg>
