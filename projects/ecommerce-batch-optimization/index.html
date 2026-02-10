@@ -54,7 +54,7 @@
           
             <span>Template Method</span>
           
-            <span>Batch</span>
+            <span>CompletableFuture</span>
           
         </div>
         
@@ -69,8 +69,8 @@
 <li><a href="#%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-%EC%88%9C%EC%B0%A8-%EC%B2%98%EB%A6%AC%EC%9D%98-%ED%95%9C%EA%B3%84">문제 분석: 순차 처리의 한계</a></li>
 <li><a href="#%ED%95%B4%EA%B2%B0-%EB%AA%A9%ED%91%9C-%EC%B2%98%EB%A6%AC-%EC%8B%9C%EA%B0%84-10%EB%B0%B0-%EB%8B%A8%EC%B6%95">해결 목표: 처리 시간 10배 단축</a></li>
 <li><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%84%A4%EA%B3%84-%ED%85%9C%ED%94%8C%EB%A6%BF-%EB%A9%94%EC%86%8C%EB%93%9C-%ED%8C%A8%ED%84%B4-%EC%84%A0%ED%83%9D-%EC%9D%B4%EC%9C%A0">아키텍처 설계: 템플릿 메소드 패턴 선택 이유</a></li>
-<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-completablefuture%EB%A1%9C-%EB%B3%91%EB%A0%AC-%EC%B2%98%EB%A6%AC">핵심 구현 1: CompletableFuture로 병렬 처리</a></li>
-<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-%ED%85%9C%ED%94%8C%EB%A6%BF-%EB%A9%94%EC%86%8C%EB%93%9C-%ED%8C%A8%ED%84%B4%EC%9C%BC%EB%A1%9C-%EC%BD%94%EB%93%9C-%EC%A4%91%EB%B3%B5-%EC%A0%9C%EA%B1%B0">핵심 구현 2: 템플릿 메소드 패턴으로 코드 중복 제거</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-%ED%85%9C%ED%94%8C%EB%A6%BF-%EB%A9%94%EC%86%8C%EB%93%9C-%ED%8C%A8%ED%84%B4%EC%9C%BC%EB%A1%9C-%EC%BD%94%EB%93%9C-%EC%A4%91%EB%B3%B5-%EC%A0%9C%EA%B1%B0">핵심 구현 1: 템플릿 메소드 패턴으로 코드 중복 제거</a></li>
+<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-completablefuture%EB%A1%9C-%ED%8C%90%EB%A7%A4%EC%9E%90%EB%B3%84-%EB%B3%91%EB%A0%AC-%EC%B2%98%EB%A6%AC">핵심 구현 2: CompletableFuture로 판매자별 병렬 처리</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-3-%EB%B2%8C%ED%81%AC-%EC%B2%98%EB%A6%AC%EB%A1%9C-db-io-%EC%B5%9C%EC%A0%81%ED%99%94">핵심 구현 3: 벌크 처리로 DB I/O 최적화</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-4-jenkins-%EA%B8%B0%EB%B0%98-%EC%9E%AC%EC%88%98%EC%A7%91-%EC%8B%9C%EC%8A%A4%ED%85%9C">핵심 구현 4: Jenkins 기반 재수집 시스템</a></li>
 <li><a href="#%EA%B2%B0%EA%B3%BC-%EC%B2%98%EB%A6%AC-%EC%8B%9C%EA%B0%84-30%EB%B6%84-3%EB%B6%84-%EC%8B%A0%EA%B7%9C-%EC%BB%A4%EB%A8%B8%EC%8A%A4-%EC%B6%94%EA%B0%80-2%EC%A3%BC-2%EC%9D%BC">결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일</a></li>
@@ -80,50 +80,52 @@
 <section class="content-section">
 <h2 id="배경-여러-커머스의-주문을-한-곳에">배경: 여러 커머스의 주문을 한 곳에</h2>
 <p>우리 플랫폼은 여러 외부 커머스의 주문을 통합 관리합니다. 위메프, 롯데ON, TMON 등 5개 커머스에서 발생한 주문을 매시간 수집하여 우리 DB에 저장하고, 통합 대시보드로 제공합니다.</p>
+<p>각 커머스 배치는 <strong>여러 판매자의 API Key</strong>를 통해 주문 데이터를 수집합니다. 하나의 커머스에 수십 개의 판매자가 등록되어 있으며, 판매자마다 개별 API Key로 인증하여 주문을 조회합니다.</p>
 <p><strong>비즈니스 요구사항:</strong></p>
 <ul>
 <li>각 커머스의 주문 데이터를 1시간마다 수집</li>
 <li>통합 대시보드에서 실시간 현황 파악</li>
 <li>정산 데이터 집계 (커머스별 수수료 계산)</li>
 </ul>
-<p>하지만 5개 커머스를 순차적으로 처리하다 보니 30분이 걸렸고, 신규 커머스를 추가하려면 2주 이상 소요되었습니다.</p>
+<p>하지만 판매자별로 순차 처리하다 보니 배치 하나에 30분이 걸렸고, 신규 커머스를 추가하려면 2주 이상 소요되었습니다.</p>
 <hr>
 </section>
 <section class="content-section">
 <h2 id="문제-분석-순차-처리의-한계">문제 분석: 순차 처리의 한계</h2>
 <h3 id="기존-시스템의-문제">기존 시스템의 문제</h3>
-<p><strong>1. 순차 처리로 인한 지연</strong></p>
-<pre><code class="language-">위메프 수집 (6분)
-  → 롯데ON 수집 (7분)
-    → TMON 수집 (5분)
-      → 쿠팡 수집 (8분)
-        → 11번가 수집 (4분)
-          
-합계: 30분</code></pre><p>각 커머스의 API 응답 속도가 느려서, 하나씩 처리하면 시간이 누적되었습니다.</p>
+<p><strong>1. 판매자별 순차 처리로 인한 지연</strong></p>
+<p>하나의 커머스 배치 내에서 판매자(API Key)별로 순차 처리하는 구조였습니다.</p>
+<pre><code class="language-">[위메프 배치]
+판매자 A 수집 (3분) → 판매자 B 수집 (2분) → 판매자 C 수집 (4분) → ...
+→ 전체 판매자 순차 처리 합계: 30분</code></pre><p>외부 API 응답 속도가 느린 데다 판매자 수가 많아, 순차 처리 시 시간이 크게 누적되었습니다.</p>
 <p><strong>2. 코드 중복 (70% 수준)</strong></p>
-<p>각 커머스별로 거의 동일한 로직을 중복 구현. <strong>각 커머스 수집 클래스가 1,000줄 이상</strong>의 코드를 포함하고 있었습니다:</p>
-<pre><code class="language-java">// 위메프
+<p>각 커머스별로 거의 동일한 로직을 중복 구현했습니다. <strong>각 커머스 수집 클래스가 1,000줄 이상</strong>의 코드를 포함하고 있었습니다.</p>
+<pre><code class="language-java">// 위메프 배치
 public void collectWemepOrders() {
-  // 1. 인증
-  String token = authenticateWemep();
-  // 2. API 호출
-  String response = callWemepAPI(token);
-  // 3. 파싱
-  List<Order> orders = parseWemepResponse(response);
-  // 4. 저장
-  saveOrders(orders);
+  for (String apiKey : wemepApiKeys) {
+    // 1. 인증
+    String token = authenticateWemep(apiKey);
+    // 2. API 호출
+    String response = callWemepAPI(token);
+    // 3. 파싱
+    List<Order> orders = parseWemepResponse(response);
+    // 4. 저장
+    saveOrders(orders);
+  }
 }
 
-// 롯데ON (거의 동일한 구조)
+// 롯데ON 배치 (거의 동일한 구조)
 public void collectLotteOrders() {
-  String token = authenticateLotte();
-  String response = callLotteAPI(token);
-  List<Order> orders = parseLotteResponse(response);
-  saveOrders(orders);
+  for (String apiKey : lotteApiKeys) {
+    String token = authenticateLotte(apiKey);
+    String response = callLotteAPI(token);
+    List<Order> orders = parseLotteResponse(response);
+    saveOrders(orders);
+  }
 }
 
 // TMON, 쿠팡, 11번가... 계속 반복</code></pre><p><strong>3. 신규 커머스 추가 시간 (2주)</strong></p>
-<p>새로운 커머스를 추가하려면:</p>
+<p>기존 배치 구조가 통일되어 있지 않아, 새로운 커머스를 추가하려면 처음부터 전체 로직을 구현해야 했습니다.</p>
 <ol>
 <li>API 문서 분석 (2일)</li>
 <li>인증 로직 구현 (1일)</li>
@@ -133,15 +135,15 @@ public void collectLotteOrders() {
 </ol>
 <p><strong>합계: 2주</strong></p>
 <p><strong>4. 비효율적인 DB I/O</strong></p>
-<p>주문 하나마다 2번의 DB I/O 발생:</p>
+<p>주문 데이터는 <strong>분산 DB 구조</strong>로 저장됩니다. 개인정보 DB에 배송지 데이터를, 주문 DB에 주문 정보를 각각 저장하며, 두 테이블 간 FK 매핑이 필요합니다.</p>
 <pre><code class="language-">주문 10,000건 처리 시:
-1. 배송지 저장: 10,000번
-2. 주문 정보 저장: 10,000번
+1. 개인정보 DB - 배송지 저장: 10,000번
+2. 주문 DB - 주문 정보 저장: 10,000번
 → 총 20,000번의 DB I/O</code></pre><p>이로 인해 DB 커넥션 풀이 고갈되고 전체 배치 처리 시간이 크게 증가했습니다.</p>
 <p><strong>5. 에러 전파</strong></p>
-<p>한 커머스에서 에러가 발생하면 전체 배치가 중단:</p>
-<pre><code class="language-">위메프 성공 → 롯데ON 실패 ❌
-→ TMON, 쿠팡, 11번가 수집 안 됨</code></pre><hr>
+<p>한 판매자에서 에러가 발생하면 해당 커머스 배치 전체가 중단되었습니다.</p>
+<pre><code class="language-">판매자 A 성공 → 판매자 B 실패
+→ 판매자 C, D, E 수집 안 됨</code></pre><hr>
 </section>
 <section class="content-section">
 <h2 id="해결-목표-처리-시간-10배-단축">해결 목표: 처리 시간 10배 단축</h2>
@@ -150,13 +152,13 @@ public void collectLotteOrders() {
 <li><strong>처리 시간</strong>: 30분 → 3분 (10배 단축)</li>
 <li><strong>코드 중복</strong>: 70% → 10% 이하</li>
 <li><strong>신규 커머스 추가</strong>: 2주 → 2일 (7배 단축)</li>
-<li><strong>장애 격리</strong>: 가용성 99.5% 달성</li>
+<li><strong>DB I/O</strong>: 20,000번 → 3번</li>
 </ul>
 <h3 id="정성적-목표">정성적 목표</h3>
 <ul>
-<li>병렬 처리로 처리 시간 최소화</li>
+<li>판매자별 병렬 처리로 처리 시간 최소화</li>
 <li>템플릿 메소드 패턴으로 코드 재사용성 극대화</li>
-<li>커머스별 독립적 에러 처리 (장애 격리)</li>
+<li>판매자별 독립적 에러 처리 (장애 격리)</li>
 <li>Jenkins 기반 재수집 시스템 (특정 기간 재처리)</li>
 </ul>
 <hr>
@@ -189,161 +191,70 @@ public void collectLotteOrders() {
 <td><strong>Template Method</strong></td>
 <td>플로우 재사용</td>
 <td>상속 필요</td>
-<td><strong>높음</strong> ✅</td>
+<td><strong>높음</strong></td>
 </tr>
 </tbody></table>
 <p><strong>템플릿 메소드 선택 이유:</strong></p>
 <ul>
 <li>모든 커머스가 동일한 플로우 (인증 → 조회 → 파싱 → 저장)</li>
 <li>각 단계별 구현만 다름 (인증 방식, 파싱 로직)</li>
-<li>상위 클래스에서 플로우 정의 → 하위 클래스는 구현만</li>
+<li>상위 클래스에서 플로우 정의 → 하위 클래스는 구현만 담당</li>
 </ul>
 <h3 id="전체-아키텍처">전체 아키텍처</h3>
 <pre class="mermaid">graph TB
-    A[배치 스케줄러] --> B{병렬 실행}
-    B -->|Thread 1| C[위메프]
-    B -->|Thread 2| D[롯데ON]
-    B -->|Thread 3| E[TMON]
-    B -->|Thread 4| F[쿠팡]
-    B -->|Thread 5| G[11번가]
+    subgraph 커머스_배치["커머스 배치 (예: 위메프)"]
+        A[배치 스케줄러] --> B[판매자 API Key 목록 로드]
+        B --> C{CompletableFuture<br/>병렬 실행}
+        C -->|Thread 1| D[판매자 A]
+        C -->|Thread 2| E[판매자 B]
+        C -->|Thread 3| F[판매자 C]
+        C -->|...| G[판매자 N]
+    end
 
-    C --> H[CommerceCollector<br/>추상 클래스]
+    subgraph 템플릿_메소드["CommerceCollector (템플릿 메소드)"]
+        H[1. authenticate] --> I[2. fetchOrders]
+        I --> J[3. parseResponse]
+    end
+
     D --> H
     E --> H
     F --> H
     G --> H
 
-    H --> I[1. authenticate]
-    H --> J[2. fetchOrders]
-    H --> K[3. parseResponse]
-    H --> L[4. saveOrders]</pre><hr>
+    subgraph 벌크_저장["벌크 저장 (분산 DB)"]
+        J --> K[개인정보 DB<br/>배송지 벌크 INSERT]
+        K -->|FK 매핑<br/>UUID + Sequence| L[주문 DB<br/>주문 벌크 INSERT]
+    end</pre><hr>
 </section>
 <section class="content-section">
-<h2 id="핵심-구현-1-completablefuture로-병렬-처리">핵심 구현 1: CompletableFuture로 병렬 처리</h2>
-<h3 id="순차-처리-vs-병렬-처리">순차 처리 vs 병렬 처리</h3>
-<p><strong>Before (순차):</strong></p>
-<pre><code class="language-java">@Scheduled(cron = "0 0 * * * *")  // 매시간 실행
-public void collectOrders() {
-  wemepCollector.collect();    // 6분
-  lotteCollector.collect();    // 7분
-  tmonCollector.collect();     // 5분
-  coupangCollector.collect();  // 8분
-  st11Collector.collect();     // 4분
-  // 합계: 30분
-}</code></pre><p><strong>After (병렬):</strong></p>
-<pre><code class="language-java">@Scheduled(cron = "0 0 * * * *")
-public void collectOrders() {
-  ExecutorService executor = Executors.newFixedThreadPool(10);
-
-  List<CommerceCollector> collectors = Arrays.asList(
-    wemepCollector,
-    lotteCollector,
-    tmonCollector,
-    coupangCollector,
-    st11Collector
-  );
-
-  // 병렬 실행
-  List<CompletableFuture<Void>> futures = collectors.stream()
-    .map(collector -> CompletableFuture.runAsync(
-      () -> {
-        try {
-          collector.collect();
-        } catch (Exception e) {
-          log.error("Failed: {}", collector.getName(), e);
-          // 실패한 커머스는 다음 배치 사이클(1시간 후)에 재시도
-          // 즉시 재시도하지 않는 이유:
-          // 1. 외부 API 장애는 보통 몇 분 이상 지속
-          // 2. 즉시 재시도 시 다른 커머스 수집 지연
-          // 3. 1시간 후 재시도로 99% 복구 (모니터링 결과)
-        }
-      },
-      executor
-    ))
-    .collect(Collectors.toList());
-
-  // 모든 작업 완료 대기 (타임아웃 30분)
-  CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-    .get(30, TimeUnit.MINUTES);
-
-  executor.shutdown();
-  // 합계: 8분 (가장 느린 커머스 기준)
-}</code></pre><h3 id="threadpool-크기-선택">ThreadPool 크기 선택</h3>
-<table>
-<thead>
-<tr>
-<th>스레드 수</th>
-<th>장점</th>
-<th>단점</th>
-<th>선택</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>5개</td>
-<td>CPU 효율</td>
-<td>확장성 낮음</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>10개</td>
-<td>확장 가능</td>
-<td>적당한 오버헤드</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>20개</td>
-<td>최대 병렬성</td>
-<td>메모리/컨텍스트 스위칭</td>
-<td>❌</td>
-</tr>
-</tbody></table>
-<p><strong>10개 선택 이유:</strong></p>
-<ul>
-<li>현재 5개 커머스 × 2 = 여유 공간</li>
-<li>향후 10개까지 확장 가능</li>
-<li>CPU 오버헤드 최소화</li>
-</ul>
-<hr>
-</section>
-<section class="content-section">
-<h2 id="핵심-구현-2-템플릿-메소드-패턴으로-코드-중복-제거">핵심 구현 2: 템플릿 메소드 패턴으로 코드 중복 제거</h2>
+<h2 id="핵심-구현-1-템플릿-메소드-패턴으로-코드-중복-제거">핵심 구현 1: 템플릿 메소드 패턴으로 코드 중복 제거</h2>
 <h3 id="추상-클래스-정의">추상 클래스 정의</h3>
+<p>배치의 단계를 명확히 나누고, 커머스별로 상이한 부분만 추상화하여 개별 구현하도록 했습니다.</p>
 <p><strong>CommerceCollector (추상 클래스):</strong></p>
 <pre><code class="language-java">public abstract class CommerceCollector {
 
   // 템플릿 메소드 (플로우 정의)
   public final void collect() {
-    try {
-      // 1. 인증
-      String token = authenticate();
-      
-      // 2. 주문 조회
-      String response = fetchOrders(token);
-      
-      // 3. 파싱
-      List<Order> orders = parseResponse(response);
-      
-      // 4. 저장
-      saveOrders(orders);
-      
-      log.info("{} collected {} orders", getName(), orders.size());
-      
-    } catch (Exception e) {
-      log.error("{} collection failed", getName(), e);
-      throw e;
-    }
+    // 1. 판매자 목록 로드
+    List<String> apiKeys = getApiKeys();
+
+    // 2. 판매자별 병렬 수집
+    List<Order> allOrders = collectFromSellers(apiKeys);
+
+    // 3. 벌크 저장 (공통 로직)
+    saveOrdersBulk(allOrders);
+
+    log.info("{} collected {} orders from {} sellers",
+      getName(), allOrders.size(), apiKeys.size());
   }
 
   // 하위 클래스에서 구현해야 하는 추상 메서드
-  protected abstract String authenticate();
+  protected abstract String authenticate(String apiKey);
   protected abstract String fetchOrders(String token);
   protected abstract List<Order> parseResponse(String response);
-  
+
   // 공통 로직 (하위 클래스에서 재사용)
-  protected void saveOrders(List<Order> orders) {
-    orderRepository.saveAll(orders);
-  }
-  
+  protected abstract List<String> getApiKeys();
   public abstract String getName();
 }</code></pre><h3 id="구체적-구현-위메프">구체적 구현 (위메프)</h3>
 <p><strong>WemepCollector:</strong></p>
@@ -351,21 +262,20 @@ public void collectOrders() {
 public class WemepCollector extends CommerceCollector {
 
   @Override
-  protected String authenticate() {
+  protected String authenticate(String apiKey) {
     // OAuth 인증
     return restTemplate.postForObject(
       "https://api.wemep.com/oauth/token",
-      new OAuth2Request(clientId, clientSecret),
+      new OAuth2Request(apiKey, clientSecret),
       TokenResponse.class
     ).getAccessToken();
   }
 
   @Override
   protected String fetchOrders(String token) {
-    // API 호출
     HttpHeaders headers = new HttpHeaders();
     headers.setBearerAuth(token);
-    
+
     return restTemplate.exchange(
       "https://api.wemep.com/orders",
       HttpMethod.GET,
@@ -377,22 +287,17 @@ public class WemepCollector extends CommerceCollector {
   @Override
   protected List<Order> parseResponse(String response) {
     // JSON 파싱
-    ObjectMapper mapper = new ObjectMapper();
-    WemepOrderResponse res = mapper.readValue(response, WemepOrderResponse.class);
-    
+    WemepOrderResponse res = objectMapper.readValue(
+      response, WemepOrderResponse.class);
+
     return res.getOrders().stream()
       .map(this::transformToEntity)
       .collect(Collectors.toList());
   }
-  
-  private Order transformToEntity(WemepOrder wemepOrder) {
-    return Order.builder()
-      .orderId(wemepOrder.getOrderNo())
-      .commerce("WEMEP")
-      .amount(wemepOrder.getTotalPrice())
-      .status(mapStatus(wemepOrder.getStatus()))
-      .createdAt(wemepOrder.getOrderDate())
-      .build();
+
+  @Override
+  protected List<String> getApiKeys() {
+    return sellerRepository.findApiKeysByCommerce("WEMEP");
   }
 
   @Override
@@ -405,17 +310,17 @@ public class WemepCollector extends CommerceCollector {
 public class LotteCollector extends CommerceCollector {
 
   @Override
-  protected String authenticate() {
-    // API Key 인증 (OAuth와 다름!)
-    return lotteApiKey;
+  protected String authenticate(String apiKey) {
+    // API Key 인증 (OAuth와 다름)
+    return apiKey;
   }
 
   @Override
   protected String fetchOrders(String apiKey) {
-    // XML 응답 (JSON과 다름!)
+    // XML 응답 (JSON과 다름)
     HttpHeaders headers = new HttpHeaders();
     headers.set("X-API-KEY", apiKey);
-    
+
     return restTemplate.exchange(
       "https://api.lotteon.com/orders.xml",
       HttpMethod.GET,
@@ -426,20 +331,25 @@ public class LotteCollector extends CommerceCollector {
 
   @Override
   protected List<Order> parseResponse(String response) {
-    // XML 파싱 (JSON과 다름!)
-    DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-      .newDocumentBuilder();
-    Document doc = builder.parse(new InputSource(new StringReader(response)));
-    
+    // XML 파싱 (JSON과 다름)
+    Document doc = DocumentBuilderFactory.newInstance()
+      .newDocumentBuilder()
+      .parse(new InputSource(new StringReader(response)));
+
     NodeList orderNodes = doc.getElementsByTagName("order");
     List<Order> orders = new ArrayList<>();
-    
+
     for (int i = 0; i < orderNodes.getLength(); i++) {
       Element orderEl = (Element) orderNodes.item(i);
       orders.add(transformToEntity(orderEl));
     }
-    
+
     return orders;
+  }
+
+  @Override
+  protected List<String> getApiKeys() {
+    return sellerRepository.findApiKeysByCommerce("LOTTE");
   }
 
   @Override
@@ -458,115 +368,184 @@ After:
 - WemepCollector: 60줄
 - LotteCollector: 50줄
 - TmonCollector: 55줄
-- 합계: 215줄 (62% 감소!)</code></pre><hr>
+- 합계: 215줄 (62% 감소)</code></pre><hr>
 </section>
 <section class="content-section">
-<h2 id="핵심-구현-3-벌크-처리로-db-io-최적화">핵심 구현 3: 벌크 처리로 DB I/O 최적화</h2>
-<h3 id="문제-주문-10000건-db-io-20000번">문제: 주문 10,000건 = DB I/O 20,000번</h3>
-<p>기존 방식은 주문 하나를 처리할 때마다 2번의 DB I/O가 발생했습니다:</p>
-<pre><code class="language-java">// 기존 방식 (주문 하나씩 처리)
-for (Order order : orders) {
-  // 1. 배송지 저장
-  Address address = addressRepository.save(order.getAddress());
+<h2 id="핵심-구현-2-completablefuture로-판매자별-병렬-처리">핵심 구현 2: CompletableFuture로 판매자별 병렬 처리</h2>
+<h3 id="순차-처리-vs-병렬-처리">순차 처리 vs 병렬 처리</h3>
+<p>기존에는 각 판매자(API Key)별로 순차적으로 데이터를 가져와서 적재하는 방식이었습니다.</p>
+<p><strong>Before (판매자별 순차):</strong></p>
+<pre><code class="language-java">public List<Order> collectFromSellers(List<String> apiKeys) {
+  List<Order> allOrders = new ArrayList<>();
 
-  // 2. 주문 정보 저장 (배송지 ID 매핑)
-  order.setAddressId(address.getId());
-  orderRepository.save(order);
-}
-
-// 주문 10,000건 → DB I/O 20,000번</code></pre><p><strong>문제점:</strong></p>
-<ul>
-<li>DB 커넥션 풀 고갈</li>
-<li>네트워크 왕복 시간 누적</li>
-<li>트랜잭션 오버헤드</li>
-</ul>
-<h3 id="해결-벌크-처리로-3번의-db-io">해결: 벌크 처리로 3번의 DB I/O</h3>
-<pre><code class="language-java">// 개선된 방식 (벌크 처리)
-public void saveOrdersBulk(List<Order> orders) {
-  // 1. 배송지 벌크 저장 (1번의 DB I/O)
-  List<Address> addresses = orders.stream()
-    .map(Order::getAddress)
-    .collect(Collectors.toList());
-  addressRepository.saveAll(addresses);
-
-  // 2. 저장된 배송지 조회 (1번의 DB I/O)
-  List<Address> savedAddresses = addressRepository.findByBatchUuid(batchUuid);
-
-  // 3. 배송지 ID 매핑 후 주문 벌크 저장 (1번의 DB I/O)
-  for (int i = 0; i < orders.size(); i++) {
-    orders.get(i).setAddressId(savedAddresses.get(i).getId());
+  for (String apiKey : apiKeys) {
+    String token = authenticate(apiKey);      // 인증
+    String response = fetchOrders(token);     // API 호출 (느림)
+    List<Order> orders = parseResponse(response);
+    allOrders.addAll(orders);
   }
-  orderRepository.saveAll(orders);
-}
+  // 판매자 20개 × 평균 1.5분 = 30분
 
-// 주문 10,000건 → DB I/O 3번!</code></pre><p><strong>개선 효과:</strong></p>
+  return allOrders;
+}</code></pre><p><strong>After (판매자별 병렬):</strong></p>
+<pre><code class="language-java">public List<Order> collectFromSellers(List<String> apiKeys) {
+  ExecutorService executor = Executors.newFixedThreadPool(10);
+
+  List<CompletableFuture<List<Order>>> futures = apiKeys.stream()
+    .map(apiKey -> CompletableFuture.supplyAsync(
+      () -> {
+        try {
+          String token = authenticate(apiKey);
+          String response = fetchOrders(token);
+          return parseResponse(response);
+        } catch (Exception e) {
+          log.error("Failed: {} - {}", getName(), apiKey, e);
+          return Collections.<Order>emptyList();
+        }
+      },
+      executor
+    ))
+    .collect(Collectors.toList());
+
+  // 모든 판매자 수집 완료 대기
+  List<Order> allOrders = futures.stream()
+    .map(CompletableFuture::join)
+    .flatMap(Collection::stream)
+    .collect(Collectors.toList());
+
+  executor.shutdown();
+  // 판매자 20개 병렬 → 가장 느린 판매자 기준 약 2분
+
+  return allOrders;
+}</code></pre><h3 id="threadpool-크기-선택">ThreadPool 크기 선택</h3>
+<table>
+<thead>
+<tr>
+<th>스레드 수</th>
+<th>장점</th>
+<th>단점</th>
+<th>선택</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5개</td>
+<td>CPU 효율</td>
+<td>판매자 수 대비 적음</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>10개</strong></td>
+<td><strong>판매자 수 대비 적절</strong></td>
+<td><strong>적당한 오버헤드</strong></td>
+<td><strong>선택</strong></td>
+</tr>
+<tr>
+<td>20개</td>
+<td>최대 병렬성</td>
+<td>메모리/컨텍스트 스위칭</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p><strong>10개 선택 이유:</strong></p>
 <ul>
-<li>DB I/O: 20,000번 → 3번 (<strong>6,666배 감소</strong>)</li>
-<li>배치 처리 시간: 30분 → 8분 (CompletableFuture 적용 전 기준)</li>
-</ul>
-<h3 id="동시성-문제와-해결">동시성 문제와 해결</h3>
-<p><strong>문제 발생:</strong></p>
-<p>벌크 처리 후 배송지 ID를 조회하는 방식에서 동시성 이슈가 발생했습니다:</p>
-<pre><code class="language-java">// 문제가 있는 코드
-// 1. 배송지 20개 벌크 저장
-addressRepository.saveAll(addresses);
-
-// 2. 마지막 ID 조회
-Long lastId = addressRepository.findMaxId(); // 520
-
-// 3. ID 범위 계산
-// 500번부터 520번까지가 방금 저장된 배송지라고 가정
-List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
-  .boxed()
-  .collect(Collectors.toList());</code></pre><p><strong>문제 상황:</strong></p>
-<pre><code class="language-">Thread 1 (위메프): 배송지 20개 저장 → 마지막 ID: 520
-Thread 2 (롯데ON): 동시에 배송지 15개 저장 → 마지막 ID: 535
-Thread 1: 마지막 ID 조회 → 535를 가져옴
-Thread 1: 515~535를 자신의 배송지로 착각 ❌</code></pre><p><strong>해결책 1: UUID로 배치 식별</strong></p>
-<pre><code class="language-java">// UUID로 배치 식별
-String batchUuid = UUID.randomUUID().toString();
-
-// 1. UUID와 함께 배송지 저장
-for (int i = 0; i < addresses.size(); i++) {
-  addresses.get(i).setBatchUuid(batchUuid);
-  addresses.get(i).setSequence(i); // 순서 보장
-}
-addressRepository.saveAll(addresses);
-
-// 2. UUID로 조회 (동시성 안전)
-List<Address> savedAddresses = addressRepository
-  .findByBatchUuidOrderBySequence(batchUuid);</code></pre><p><strong>해결책 2: Sequence로 순서 보장</strong></p>
-<pre><code class="language-sql">-- addresses 테이블
-CREATE TABLE addresses (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
-  batch_uuid VARCHAR(36),     -- 배치 식별
-  sequence INT,                -- 순서 보장
-  address_line VARCHAR(255),
-  ...
-  INDEX idx_batch_uuid (batch_uuid)
-);</code></pre><p><strong>왜 Sequence가 필요한가?</strong></p>
-<p>INSERT 문의 순서대로 데이터가 저장된다는 보장이 없기 때문입니다:</p>
-<pre><code class="language-">INSERT INTO addresses VALUES (...), (...), (...);
-
-저장 순서: 1, 2, 3 (예상)
-실제 순서: 2, 1, 3 (가능) ❌</code></pre><p>Sequence를 함께 저장하면 정확한 순서로 조회 가능:</p>
-<pre><code class="language-sql">SELECT * FROM addresses
-WHERE batch_uuid = '...'
-ORDER BY sequence ASC;</code></pre><p><strong>최종 결과:</strong></p>
-<ul>
-<li>동시성 문제 완전 해결</li>
-<li>배송지-주문 매핑 정확도 100%</li>
-<li>데이터 정합성 보장</li>
+<li>커머스당 판매자 수가 10~20개 수준</li>
+<li>외부 API I/O 대기가 대부분이므로 CPU 바운드 아님</li>
+<li>향후 판매자 증가에도 충분한 여유</li>
 </ul>
 <hr>
 </section>
 <section class="content-section">
+<h2 id="핵심-구현-3-벌크-처리로-db-io-최적화">핵심 구현 3: 벌크 처리로 DB I/O 최적화</h2>
+<h3 id="분산-db-구조">분산 DB 구조</h3>
+<p>주문 데이터는 개인정보 보호를 위해 분산 DB 구조로 저장됩니다.</p>
+<pre><code class="language-">개인정보 DB: 배송지 데이터 (주소, 수령인 등)
+주문 DB: 주문 정보 (상품, 금액, 상태 등)</code></pre><p>주문을 저장하려면 먼저 개인정보 DB에 배송지를 저장하고, 채번된 배송지 ID(FK)를 주문 DB의 주문 데이터에 매핑해야 합니다.</p>
+<h3 id="문제-주문-10000건-db-io-20000번">문제: 주문 10,000건 = DB I/O 20,000번</h3>
+<p>기존 방식은 주문 하나를 처리할 때마다 2번의 DB I/O가 발생했습니다.</p>
+<pre><code class="language-java">// 기존 방식 (주문 하나씩 처리)
+for (Order order : orders) {
+  // 1. 개인정보 DB - 배송지 저장
+  Address address = personalInfoDb.save(order.getAddress());
+
+  // 2. 주문 DB - 주문 정보 저장 (배송지 FK 매핑)
+  order.setAddressId(address.getId());
+  orderDb.save(order);
+}
+
+// 주문 10,000건 → DB I/O 20,000번</code></pre><h3 id="해결-벌크-처리로-3번의-db-io">해결: 벌크 처리로 3번의 DB I/O</h3>
+<pre><code class="language-java">public void saveOrdersBulk(List<Order> orders) {
+  String batchUuid = UUID.randomUUID().toString();
+
+  // 1. 개인정보 DB - 배송지 벌크 저장 (1번의 DB I/O)
+  List<Address> addresses = orders.stream()
+    .map(Order::getAddress)
+    .collect(Collectors.toList());
+
+  for (int i = 0; i < addresses.size(); i++) {
+    addresses.get(i).setBatchUuid(batchUuid);
+    addresses.get(i).setSequence(i);
+  }
+  personalInfoDb.saveAll(addresses);
+
+  // 2. 개인정보 DB - 저장된 배송지 조회 (1번의 DB I/O)
+  List<Address> savedAddresses = personalInfoDb
+    .findByBatchUuidOrderBySequence(batchUuid);
+
+  // 3. 주문 DB - FK 매핑 후 벌크 저장 (1번의 DB I/O)
+  for (int i = 0; i < orders.size(); i++) {
+    orders.get(i).setAddressId(savedAddresses.get(i).getId());
+  }
+  orderDb.saveAll(orders);
+}
+
+// 주문 10,000건 → DB I/O 3번</code></pre><h3 id="동시성-문제와-해결">동시성 문제와 해결</h3>
+<p><strong>문제 발생:</strong></p>
+<p>여러 커머스 배치가 동시에 실행되므로, 개인정보 DB에 동시에 배송지를 삽입합니다. 기존에는 마지막으로 삽입된 ID 기준으로 데이터를 1씩 증가시켜 매핑했지만, 동시성 이슈가 발생했습니다.</p>
+<pre><code class="language-java">// 문제가 있는 코드
+// 1. 배송지 20개 벌크 저장
+personalInfoDb.saveAll(addresses);
+
+// 2. 마지막 ID 조회
+Long lastId = personalInfoDb.findMaxId(); // 520
+
+// 3. ID 범위 계산 (동시성 문제!)
+// 500번부터 520번까지가 이번 배치라고 가정
+List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
+  .boxed()
+  .collect(Collectors.toList());</code></pre><p><strong>문제 상황:</strong></p>
+<pre><code class="language-">위메프 배치: 배송지 20개 저장 → 마지막 ID: 520
+롯데ON 배치: 동시에 배송지 15개 저장 → 마지막 ID: 535
+위메프 배치: 마지막 ID 조회 → 535를 가져옴
+위메프 배치: 515~535를 자신의 배송지로 착각 (잘못된 매핑)</code></pre><p><strong>해결: UUID + Sequence</strong></p>
+<pre><code class="language-java">// 배치 작업별 UUID 생성
+String batchUuid = UUID.randomUUID().toString();
+
+// 1. UUID와 Sequence를 함께 저장
+for (int i = 0; i < addresses.size(); i++) {
+  addresses.get(i).setBatchUuid(batchUuid);
+  addresses.get(i).setSequence(i); // 순서 보장
+}
+personalInfoDb.saveAll(addresses);
+
+// 2. UUID로 조회 (동시성 안전)
+List<Address> savedAddresses = personalInfoDb
+  .findByBatchUuidOrderBySequence(batchUuid);</code></pre><p><strong>Sequence가 필요한 이유:</strong></p>
+<p>벌크 INSERT 시 삽입 순서와 조회 순서가 일치한다는 보장이 없습니다.</p>
+<pre><code class="language-sql">INSERT INTO addresses VALUES (...), (...), (...);
+-- 저장 순서: 1, 2, 3 (예상)
+-- 실제 순서: 2, 1, 3 (가능)</code></pre><p>Sequence를 함께 저장하면 정확한 순서로 조회할 수 있습니다.</p>
+<pre><code class="language-sql">SELECT * FROM addresses
+WHERE batch_uuid = '...'
+ORDER BY sequence ASC;</code></pre><hr>
+</section>
+<section class="content-section">
 <h2 id="핵심-구현-4-jenkins-기반-재수집-시스템">핵심 구현 4: Jenkins 기반 재수집 시스템</h2>
 <h3 id="jenkins-파라미터화-배치">Jenkins 파라미터화 배치</h3>
+<p>특정 기간, 특정 커머스의 주문을 재수집할 수 있는 시스템을 구축했습니다.</p>
 <p><strong>Jenkinsfile:</strong></p>
 <pre><code class="language-groovy">pipeline {
   agent any
-  
+
   parameters {
     string(
       name: 'START_DATE',
@@ -584,7 +563,7 @@ ORDER BY sequence ASC;</code></pre><p><strong>최종 결과:</strong></p>
       description: '재수집할 커머스 선택'
     )
   }
-  
+
   stages {
     stage('Re-collect Orders') {
       steps {
@@ -598,7 +577,7 @@ ORDER BY sequence ASC;</code></pre><p><strong>최종 결과:</strong></p>
       }
     }
   }
-  
+
   post {
     failure {
       slackSend(
@@ -611,22 +590,16 @@ ORDER BY sequence ASC;</code></pre><p><strong>최종 결과:</strong></p>
 }</code></pre><h3 id="재수집-로직-중복-방지">재수집 로직 (중복 방지)</h3>
 <p><strong>UPSERT 쿼리:</strong></p>
 <pre><code class="language-sql">INSERT INTO orders (
-  order_id,
-  commerce,
-  amount,
-  status,
-  created_at,
-  updated_at
+  order_id, commerce, amount, status, created_at, updated_at
 )
 VALUES (?, ?, ?, ?, ?, NOW())
 ON DUPLICATE KEY UPDATE
   amount = VALUES(amount),
   status = VALUES(status),
-  updated_at = NOW();</code></pre><p><strong>중복 체크:</strong></p>
-<ul>
+  updated_at = NOW();</code></pre><ul>
 <li>Primary Key: <code>(order_id, commerce)</code></li>
-<li>같은 주문이 들어오면 UPDATE</li>
-<li>새로운 주문이면 INSERT</li>
+<li>같은 주문이 들어오면 UPDATE, 새로운 주문이면 INSERT</li>
+<li>재수집 시에도 데이터 중복이 발생하지 않습니다.</li>
 </ul>
 <h3 id="slack-알림-연동">Slack 알림 연동</h3>
 <pre><code class="language-java">@Component
@@ -643,7 +616,7 @@ public class SlackNotifier {
       e.getMessage(),
       LocalDateTime.now()
     );
-    
+
     slackClient.postMessage("#batch-alerts", message);
   }
 }</code></pre><hr>
@@ -664,28 +637,37 @@ public class SlackNotifier {
 <td><strong>처리 시간</strong></td>
 <td>30분</td>
 <td>3분</td>
-<td><strong>10배 ⬇️</strong></td>
+<td><strong>10배 단축</strong></td>
 </tr>
 <tr>
 <td><strong>코드 중복</strong></td>
 <td>70%</td>
 <td>10%</td>
-<td><strong>7배 ⬇️</strong></td>
+<td><strong>7배 감소</strong></td>
 </tr>
 <tr>
 <td><strong>신규 커머스 추가</strong></td>
 <td>2주</td>
 <td>2일</td>
-<td><strong>7배 ⬇️</strong></td>
+<td><strong>7배 단축</strong></td>
 </tr>
 <tr>
-<td><strong>가용성</strong></td>
-<td>80%</td>
-<td>99.5%</td>
-<td><strong>19.5%p ⬆️</strong></td>
+<td><strong>DB I/O</strong></td>
+<td>20,000번</td>
+<td>3번</td>
+<td><strong>6,666배 감소</strong></td>
 </tr>
 </tbody></table>
-<h3 id="확장성">확장성</h3>
+<h3 id="개선-경로">개선 경로</h3>
+<p>처리 시간 단축은 두 단계에 걸쳐 이루어졌습니다.</p>
+<pre><code class="language-">1단계 - 판매자별 병렬 처리 (CompletableFuture):
+  30분 → 가장 느린 판매자 기준으로 단축
+
+2단계 - 벌크 DB 처리:
+  개별 DB I/O 20,000번 → 3번으로 감소
+  DB 커넥션 대기 시간 대폭 단축
+
+최종: 30분 → 3분 (10배)</code></pre><h3 id="확장성">확장성</h3>
 <p><strong>신규 커머스 추가 시간:</strong></p>
 <pre><code class="language-">Before: 2주
 1. API 문서 분석 (2일)
@@ -699,51 +681,81 @@ After: 2일
    - authenticate()
    - parseResponse()
    - transformToEntity()
-3. 테스트 (4시간)</code></pre><p><strong>10개 커머스로 확장:</strong></p>
-<ul>
-<li>처리 시간: 여전히 3~4분 (가장 느린 커머스 기준)</li>
-<li>ThreadPool 10개로 충분</li>
-<li>추가 비용: 0원</li>
-</ul>
-<h3 id="장애-격리">장애 격리</h3>
+3. 테스트 (4시간)</code></pre><h3 id="장애-격리">장애 격리</h3>
 <p><strong>Before:</strong></p>
-<pre><code class="language-">위메프 실패 → 전체 배치 중단 ❌
-가용성: 80%</code></pre><p><strong>After:</strong></p>
-<pre><code class="language-">위메프 실패 → 다른 4개 커머스는 정상 수집 ✅
-가용성: 99.5%</code></pre><hr>
+<pre><code class="language-">판매자 B 실패 → 해당 커머스 배치 전체 중단
+나머지 판매자 수집 안 됨</code></pre><p><strong>After:</strong></p>
+<pre><code class="language-">판매자 B 실패 → 해당 판매자만 건너뜀
+나머지 판매자는 정상 수집</code></pre><hr>
 </section>
 <section class="content-section">
 <h2 id="배운-점">배운 점</h2>
 <p><strong>1. 디자인 패턴은 실용적으로</strong></p>
 <ul>
-<li>템플릿 메소드 패턴이 완벽히 맞는 상황</li>
-<li>코드 재사용 + 확장성 동시 달성</li>
-<li>신규 개발자도 쉽게 이해 가능</li>
+<li>템플릿 메소드 패턴이 완벽히 맞는 상황이었습니다.</li>
+<li>배치 플로우의 통일감과 유지보수성을 동시에 달성했습니다.</li>
+<li>신규 개발자도 추상 메서드만 구현하면 되어 학습 비용이 낮습니다.</li>
 </ul>
-<p><strong>2. CompletableFuture는 간단한 병렬 처리에 최적</strong></p>
-<pre><code class="language-java">// 이것만으로 10배 빠름!
-CompletableFuture.allOf(
-  CompletableFuture.runAsync(task1),
-  CompletableFuture.runAsync(task2),
-  ...
-).get();</code></pre><p><strong>3. 장애 격리가 핵심</strong></p>
+<p><strong>2. CompletableFuture는 I/O 바운드 병렬 처리에 최적</strong></p>
 <ul>
-<li>try-catch로 각 커머스 독립 실행</li>
-<li>한 곳 실패해도 다른 곳은 정상 수집</li>
-<li>가용성 99.5% 달성</li>
+<li>외부 API 호출이 대부분인 작업은 병렬화 효과가 큽니다.</li>
+<li>판매자별 독립 실행으로 장애 격리도 자연스럽게 달성됩니다.</li>
+</ul>
+<p><strong>3. 분산 DB 간 FK 매핑은 UUID로</strong></p>
+<ul>
+<li>Auto Increment ID 기반 매핑은 동시성 환경에서 위험합니다.</li>
+<li>UUID + Sequence 조합으로 정확한 매핑과 순서 보장을 달성했습니다.</li>
 </ul>
 <p><strong>4. Jenkins + Slack 조합</strong></p>
 <ul>
-<li>실패 시 즉시 알림</li>
-<li>Jenkins에서 클릭 한 번으로 재실행</li>
-<li>장애 대응 시간 10분 → 2분</li>
+<li>실패 시 즉시 알림이 오고, Jenkins에서 클릭 한 번으로 재실행할 수 있습니다.</li>
+<li>UPSERT로 멱등성을 보장하여 재수집 시에도 데이터 정합성이 유지됩니다.</li>
 </ul>
-<p><strong>5. UPSERT로 멱등성 보장</strong></p>
+<p><strong>5. 벌크 처리는 배치의 핵심</strong></p>
 <ul>
-<li>재수집 시 중복 걱정 없음</li>
-<li>Primary Key 설계가 중요</li>
-<li>데이터 정합성 100%</li>
+<li>개별 INSERT 대비 DB 트랜잭션 횟수를 대폭 감소시킵니다.</li>
+<li>분산 DB 환경에서는 FK 매핑 전략이 특히 중요합니다.</li>
 </ul>
+<hr>
+</section>
+<section class="content-section">
+<h2 id="기술-스택">기술 스택</h2>
+<table>
+<thead>
+<tr>
+<th>분류</th>
+<th>기술</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>언어</strong></td>
+<td>Java</td>
+</tr>
+<tr>
+<td><strong>프레임워크</strong></td>
+<td>Spring Boot</td>
+</tr>
+<tr>
+<td><strong>비동기 처리</strong></td>
+<td>CompletableFuture</td>
+</tr>
+<tr>
+<td><strong>디자인 패턴</strong></td>
+<td>Template Method Pattern</td>
+</tr>
+<tr>
+<td><strong>데이터베이스</strong></td>
+<td>MySQL (분산 DB: 개인정보 DB + 주문 DB)</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>Jenkins (파라미터화 배치)</td>
+</tr>
+<tr>
+<td><strong>알림</strong></td>
+<td>Slack Webhook</td>
+</tr>
+</tbody></table>
 </section>
 
       </div>
