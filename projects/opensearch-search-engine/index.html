@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../../style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Navigation -->
@@ -227,8 +227,6 @@ WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
 GROUP BY product_id
 HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><strong>2단계: CTR을 포함하여 상품 데이터 색인</strong></p>
 <p>집계된 CTR 데이터를 상품 정보와 함께 OpenSearch에 색인합니다. 이렇게 하면 검색 시 별도의 CTR 조회 없이, Function Score Query로 CTR을 랭킹에 바로 반영할 수 있습니다.</p>
-<p><strong>3단계: 브랜드 가중치 적용</strong></p>
-<p>브랜드 테이블의 <code>brand_score</code> 필드(1~5 등급)를 활용하여, 브랜드 신뢰도를 보조적으로 랭킹에 반영합니다.</p>
 <h3 id="검증-ab-테스트">검증: A/B 테스트</h3>
 <p>1주일간 세션 기반 A/B 테스트를 진행했습니다.</p>
 <ul>
@@ -237,9 +235,8 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><s
 </ul>
 <p><strong>결과:</strong></p>
 <ul>
-<li>CTR: 17% → 22.5% (<strong>32% 향상</strong>, p &lt; 0.01)</li>
-<li>상품 상세 페이지 진입율: 11.75% 증가</li>
-<li>구매 전환율: 8.3% 증가</li>
+<li>CTR: 17% → 22.5% (<strong>5.5% 향상</strong>)</li>
+<li>상품 상세 페이지 진입율: (<strong>11.75% 증가</strong>) (A/B Test, p &lt; 0.01)</li>
 </ul>
 <hr>
 </section>
@@ -300,13 +297,12 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상</code></pre><p><s
 <li><strong>Redis 캐싱 적용</strong>: 300ms → 50ms</li>
 <li><strong>캐시 히트율</strong>: 75%</li>
 </ul>
-<p>메타데이터 조회를 캐시로 대체함으로써 OpenSearch 호출 횟수도 줄어, 인스턴스 비용을 $450에서 $315로 절감할 수 있었습니다.</p>
 <hr>
 </section>
 <section class="content-section">
 <h2 id="핵심-구현-3-배포-없이-검색-품질-개선">핵심 구현 3: 배포 없이 검색 품질 개선</h2>
 <h3 id="문제-동의어-추가에-30분-걸린다">문제: 동의어 추가에 30분 걸린다</h3>
-<p>사용자는 &quot;운동화&quot;를 검색하지만, 상품명에는 &quot;스니커즈&quot;라고 적혀있는 경우가 많습니다. 동의어와 사용자 사전을 관리해야 하는데, 기존에는 코드에 하드코딩되어 있어 수정할 때마다 배포가 필요했습니다.</p>
+<p>사용자는 &quot;운동화&quot;를 검색하지만, 상품명에는 &quot;스니커즈&quot;라고 적혀있는 경우가 많습니다. 동의어와 사용자 사전을 관리해야 하는데, 기존 검색 시스템에는 코드에 하드코딩되어 있어 수정할 때마다 배포가 필요했습니다.</p>
 <pre><code class="language-typescript">const synonyms = {
   '운동화': ['스니커즈', '러닝화', '트레이닝화'],
   '가방': ['백팩', '배낭', '핸드백'],
@@ -408,12 +404,6 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 <td><strong>11.75% 증가</strong></td>
 </tr>
 <tr>
-<td><strong>월 비용</strong></td>
-<td>$450</td>
-<td>$315</td>
-<td><strong>30% 절감</strong></td>
-</tr>
-<tr>
 <td><strong>동의어 업데이트</strong></td>
 <td>30분</td>
 <td>5분</td>
@@ -423,9 +413,7 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 <h3 id="비즈니스-임팩트">비즈니스 임팩트</h3>
 <ul>
 <li><strong>서버 안정성 확보</strong>: 서버 메모리에 상품 데이터를 적재하지 않아 서버 지표가 안정적으로 개선</li>
-<li><strong>매출 증가</strong>: 검색 기반 구매가 전체 매출의 45% 차지 (기존 32%)</li>
-<li><strong>사용자 이탈률 감소</strong>: 검색 후 이탈률 28% → 15% (13%p 감소)</li>
-<li><strong>운영 효율</strong>: 검색 관련 개발 요청 80% 감소 (마케팅팀 셀프 서비스)</li>
+<li><strong>운영 효율</strong>: 검색 관련 개발 요청 80% 감소 (마케팅/운영팀 셀프 서비스)</li>
 </ul>
 <h3 id="기술적-성과">기술적 성과</h3>
 <ul>
@@ -440,11 +428,11 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 <h3 id="1-검색은-단순히-quot찾기quot가-아니다">1. 검색은 단순히 &quot;찾기&quot;가 아니다</h3>
 <p>검색 엔진을 개선하면서 깨달은 점은, 검색이 단순히 데이터를 찾는 것이 아니라 <strong>사용자가 원하는 것을 예측하는 것</strong>이라는 점입니다. CTR 기반 랭킹은 사용자의 선택을 존중하는 방식이었고, 결과적으로 더 나은 사용자 경험으로 이어졌습니다.</p>
 <h3 id="2-데이터-주도-의사결정의-중요성">2. 데이터 주도 의사결정의 중요성</h3>
-<p>A/B 테스트 없이 &quot;이게 더 나을 것 같다&quot;는 직감만으로 개발했다면, CTR 32% 향상이라는 성과를 증명할 수 없었을 것입니다. 모든 주요 변경사항은 A/B 테스트로 검증했고, 이는 팀 내부 설득에도 큰 도움이 되었습니다.</p>
+<p>A/B 테스트 없이 &quot;이게 더 나을 것 같다&quot;는 직감만으로 개발했다면, CTR 5.5% 향상이라는 성과를 증명할 수 없었을 것입니다. 모든 주요 변경사항은 A/B 테스트로 검증했고, 이는 팀 내부 설득에도 큰 도움이 되었습니다.</p>
 <h3 id="3-비용과-성능의-트레이드오프">3. 비용과 성능의 트레이드오프</h3>
 <p>OpenSearch는 강력하지만 비용이 높습니다. Redis 캐싱으로 75%의 요청을 흡수함으로써 비용을 절감했습니다. 하지만 캐시 일관성, TTL 설정 등 고려할 점이 많았습니다. &quot;모든 문제를 캐싱으로 해결&quot;하는 것이 아니라, <strong>어디에 캐싱을 적용할지</strong> 선택하는 것이 중요했습니다.</p>
 <h3 id="4-운영-자동화의-가치">4. 운영 자동화의 가치</h3>
-<p>동의어 업데이트를 자동화함으로써, 개발팀은 더 중요한 문제에 집중할 수 있었습니다. &quot;30분 x 주 5회 = 월 10시간&quot;의 개발 시간을 절약했고, 이는 연간 120시간에 달합니다. 자동화는 단순히 시간 절약이 아니라, <strong>팀의 생산성과 만족도 향상</strong>으로 이어집니다.</p>
+<p>사용자 사전/동의어 사전 업데이트를 자동화함으로써, 개발팀은 더 중요한 문제에 집중할 수 있었습니다. &quot;30분 x 주 5회 = 월 10시간&quot;의 개발 시간을 절약했고, 이는 연간 120시간에 달합니다. 자동화는 단순히 시간 절약이 아니라, <strong>팀의 생산성과 만족도 향상</strong>으로 이어집니다.</p>
 <hr>
 </section>
 <section class="content-section">
@@ -453,9 +441,9 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 <li><strong>검색 엔진</strong>: AWS OpenSearch Service</li>
 <li><strong>백엔드</strong>: NestJS (TypeScript)</li>
 <li><strong>캐시</strong>: Redis 6.x</li>
-<li><strong>데이터 웨어하우스</strong>: Amazon Redshift, Athena</li>
+<li><strong>데이터 웨어하우스</strong>: Amazon Redshift</li>
 <li><strong>자동화</strong>: AWS Lambda, S3</li>
-<li><strong>모니터링</strong>: CloudWatch, Grafana</li>
+<li><strong>모니터링</strong>: CloudWatch</li>
 </ul>
 </section>
 
@@ -466,7 +454,7 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 
   <footer class="footer">
   <div class="container">
-    <p>&copy; 2025 Geunho Bang. Built with passion.</p>
+    <p>&copy; 2025 Geunho Bang</p>
   </div>
 </footer>
 
@@ -480,29 +468,29 @@ async updateSynonyms(@Body() dto: SynonymDto) {
       startOnLoad: true,
       theme: 'base',
       themeVariables: {
-        primaryColor: '#0366d6',
-        primaryTextColor: '#24292e',
-        primaryBorderColor: '#e1e4e8',
-        lineColor: '#586069',
-        secondaryColor: '#f6f8fa',
-        tertiaryColor: '#fafbfc',
-        background: '#ffffff',
-        mainBkg: '#ffffff',
-        secondBkg: '#f6f8fa',
-        border1: '#e1e4e8',
-        border2: '#e1e4e8',
-        note: '#fff5b1',
-        noteBkg: '#fff5b1',
-        noteBorder: '#e1e4e8',
-        noteText: '#24292e',
+        primaryColor: '#22C55E',
+        primaryTextColor: '#F8FAFC',
+        primaryBorderColor: '#334155',
+        lineColor: '#64748B',
+        secondaryColor: '#1E293B',
+        tertiaryColor: '#0F172A',
+        background: '#0F172A',
+        mainBkg: '#1E293B',
+        secondBkg: '#334155',
+        border1: '#334155',
+        border2: '#475569',
+        note: '#1E293B',
+        noteBkg: '#1E293B',
+        noteBorder: '#334155',
+        noteText: '#F8FAFC',
         fontSize: '14px',
-        fontFamily: 'Inter, -apple-system, sans-serif'
+        fontFamily: 'IBM Plex Sans, -apple-system, sans-serif'
       }
     });
   </script>
 
   <!-- Prism for syntax highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
