@@ -44,6 +44,24 @@
       "tags": ["Java", "Spring Boot", "Batch"],
       "github": "https://github.com/banggeunho",
       "link": "projects/ecommerce-batch-optimization/"
+    },
+    {
+      "id": "sqs-lambda-messaging",
+      "title": "SQS + Lambda 대량 문자 발송 시스템",
+      "description": "SQS + Lambda 기반 비동기 처리로 월 100만 건 이상 안정 발송. API 서버 부하 분리, DLQ 기반 실패 재처리로 발송 신뢰성 확보",
+      "image": "projects/sqs-lambda-messaging/images/thumbnail.svg",
+      "tags": ["AWS SQS", "Lambda", "NestJS"],
+      "github": "https://github.com/banggeunho",
+      "link": "projects/sqs-lambda-messaging/"
+    },
+    {
+      "id": "nestjs-platform-migration",
+      "title": "NestJS 마이그레이션",
+      "description": "Express + SST 모놀리식에서 NestJS로 마이그레이션. 도메인별 모듈 분리, ECS 컨테이너 배포 환경 구축, QA 병렬 배포 도입으로 배포 병목 해소",
+      "image": "projects/nestjs-platform-migration/images/thumbnail.svg",
+      "tags": ["NestJS", "AWS ECS", "MySQL 8.0"],
+      "github": "https://github.com/banggeunho",
+      "link": "projects/nestjs-platform-migration/"
     }
   ]
 }
