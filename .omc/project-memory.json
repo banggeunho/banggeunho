@@ -141,8 +141,56 @@
     },
     {
       "path": "portfolio/data/projects.json",
+      "accessCount": 3,
+      "lastAccessed": 1770827535866,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/data/skills.json",
+      "accessCount": 3,
+      "lastAccessed": 1770828973523,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/opensearch-search-engine/images/thumbnail.svg",
       "accessCount": 1,
-      "lastAccessed": 1770825650383,
+      "lastAccessed": 1770827403352,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/data-pipeline-firehose/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770827403909,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/image-optimization-lambda-edge/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770827404952,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/sqs-lambda-messaging/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770827461394,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/nestjs-platform-migration/images/thumbnail.svg",
+      "accessCount": 1,
+      "lastAccessed": 1770827495871,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/sqs-lambda-messaging/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770827505101,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/nestjs-platform-migration/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770827516462,
       "type": "file"
     }
   ],
