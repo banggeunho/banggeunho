@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a static portfolio website for Geunho Bang (방근호), a Backend Engineer working on commerce platforms serving 3M+ users. The site consists of:
+This is a static portfolio website for Geunho Bang (방근호), a Software Engineer working on commerce platforms serving 3M+ users. The site consists of:
 - Main portfolio site: Vanilla HTML, CSS, and JavaScript
 - Project detail pages: Markdown-based with automated build system
 

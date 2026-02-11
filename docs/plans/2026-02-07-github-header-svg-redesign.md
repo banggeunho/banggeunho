@@ -58,7 +58,7 @@
 
 **5. Summit - CAREER**
 - 최상층 플랫폼
-- Text: "Backend Engineer" in 3D
+- Text: "Software Engineer" in 3D
 - Visual: 은은한 글로우 효과
 - Animation: 8-10s, appear with glow pulse
 
@@ -79,7 +79,7 @@
   - Color: #ffffff
   - Letter-spacing: slight
 
-- **Subtitle:** "Backend Engineer · Commerce Platform · 3M+ Users"
+- **Subtitle:** "Software Engineer · Commerce Platform · 3M+ Users"
   - Size: 18px
   - Color: #8b949e
   - Spacing below: divider line (#30363d)

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geunho Bang | Backend Engineer</title>
+  <title>Geunho Bang | Software Engineer</title>
   <meta name="description" content="300만 유저 커머스 플랫폼에서 검색 속도 6배 개선, 이미지 비용 75% 절감, 배치 처리 10배 가속. 문제를 데이터로 정의하고, 측정 가능한 임팩트를 만드는 백엔드 엔지니어입니다.">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,53 +68,38 @@
       <div class="bg-dots"></div>
     </div>
 
-    <div class="hero-grid">
-      <!-- Left Column -->
-      <div class="hero-left">
-        <p class="hero-greeting">Hello, I'm</p>
-        <h1 class="hero-name">Geunho Bang</h1>
-        <p class="hero-title">Backend Engineer</p>
-        <p class="hero-description" id="hero-intro">
-          300만 유저 커머스 플랫폼에서 검색 속도 30배 개선, 이미지 비용 75% 절감, 배치 처리 10배 가속. 문제를 데이터로 정의하고, 측정 가능한 임팩트를 만드는 엔지니어입니다.
-        </p>
+    <div class="hero-content">
+      <p class="hero-greeting">Hello, I'm</p>
+      <h1 class="hero-name">Geunho Bang</h1>
+      <p class="hero-title">Software Engineer</p>
+      <p class="hero-description" id="hero-intro">
+        운영 중인 서비스에서 문제를 정의하고, 제약 조건을 고려해 대안을 비교·검증하고 최적안을 선택하는 엔지니어입니다. 300만 회원 커머스 플랫폼의 3명으로 이루어진 소규모 백엔드 팀에서 검색·결제·보안·인프라 등 백엔드 전반의 핵심 과제를 주도했습니다.
+      </p>
 
-        <div class="hero-contact">
-          <a href="https://github.com/banggeunho" target="_blank" rel="noopener" class="hero-contact-link">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>GitHub</span>
-          </a>
-          <a href="mailto:panggeunho@gmail.com" class="hero-contact-link">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>
-            <span>panggeunho@gmail.com</span>
-          </a>
-        </div>
+      <ul class="hero-impacts" id="hero-impacts">
+        <li>
+          <span class="impact-label">OpenSearch 기반 검색 엔진 재구축</span>
+          <span class="impact-result">CTR 17% → 22.5% (+5.5%p)</span>
+        </li>
+        <li>
+          <span class="impact-label">Lambda@Edge 이미지 최적화</span>
+          <span class="impact-result">CloudFront 전송량 68% 절감</span>
+        </li>
+        <li>
+          <span class="impact-label">Redis Write-back 패턴 도입</span>
+          <span class="impact-result">DB IOPS 10배 감소, 무증설 안정 운영</span>
+        </li>
+      </ul>
 
-      </div>
-
-      <!-- Right Column -->
-      <div class="hero-right">
-        <!-- Metrics Cards -->
-        <div class="hero-metrics" id="hero-metrics">
-          <div class="metric-card">
-            <div class="metric-number">75%</div>
-            <div class="metric-label">비용 절감</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-number">30배</div>
-            <div class="metric-label">응답속도 개선</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-number">10배</div>
-            <div class="metric-label">배치 성능 향상</div>
-          </div>
-        </div>
-
-        <!-- Expertise Tags -->
-        <div class="hero-expertise" id="hero-expertise">
-          <span class="expertise-tag">성능 최적화</span>
-          <span class="expertise-tag">비용 효율 설계</span>
-          <span class="expertise-tag">데이터 파이프라인</span>
-        </div>
+      <div class="hero-contact">
+        <a href="https://github.com/banggeunho" target="_blank" rel="noopener" class="hero-contact-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="mailto:panggeunho@gmail.com" class="hero-contact-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>
+          <span>panggeunho@gmail.com</span>
+        </a>
       </div>
     </div>
 

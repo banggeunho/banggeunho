@@ -117,26 +117,32 @@
   "hotPaths": [
     {
       "path": "portfolio/style.css",
-      "accessCount": 1,
-      "lastAccessed": 1770825649166,
+      "accessCount": 8,
+      "lastAccessed": 1770826597210,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/index.html",
+      "accessCount": 7,
+      "lastAccessed": 1770827040611,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/data/about.json",
+      "accessCount": 5,
+      "lastAccessed": 1770827045708,
       "type": "file"
     },
     {
       "path": "portfolio/script.js",
-      "accessCount": 1,
-      "lastAccessed": 1770825649446,
+      "accessCount": 4,
+      "lastAccessed": 1770826597907,
       "type": "file"
     },
     {
       "path": "portfolio/data/projects.json",
       "accessCount": 1,
       "lastAccessed": 1770825650383,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/about.json",
-      "accessCount": 1,
-      "lastAccessed": 1770825657404,
       "type": "file"
     }
   ],
