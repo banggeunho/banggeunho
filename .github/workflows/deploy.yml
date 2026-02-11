@@ -3,11 +3,6 @@ name: Build and Deploy Portfolio
 on:
   push:
     branches: [ main, master ]
-    paths:
-      - 'portfolio/projects/**'
-      - 'portfolio/templates/**'
-      - 'scripts/**'
-      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 jobs:
