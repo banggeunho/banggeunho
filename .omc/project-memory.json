@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1770687386782,
-  "projectRoot": "/Users/geunho/WebstormProjects/banggeunho",
+  "lastScanned": 1770825584276,
+  "projectRoot": "/Users/bang-geunho/WebstormProjects/banggeunho",
   "techStack": {
     "languages": [],
     "frameworks": [],
@@ -39,31 +39,33 @@
     "assets": {
       "path": "assets",
       "purpose": "Static assets",
-      "fileCount": 1,
-      "lastAccessed": 1770687386772,
+      "fileCount": 3,
+      "lastAccessed": 1770825584268,
       "keyFiles": [
-        "header.svg"
+        "header.svg",
+        "header.svg.backup",
+        "preview.html"
       ]
     },
     "design-system": {
       "path": "design-system",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1770687386773,
+      "lastAccessed": 1770825584269,
       "keyFiles": []
     },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 0,
-      "lastAccessed": 1770687386773,
+      "lastAccessed": 1770825584270,
       "keyFiles": []
     },
     "portfolio": {
       "path": "portfolio",
       "purpose": null,
       "fileCount": 4,
-      "lastAccessed": 1770687386773,
+      "lastAccessed": 1770825584270,
       "keyFiles": [
         "IMPLEMENTATION.md",
         "index.html",
@@ -74,120 +76,67 @@
     "scripts": {
       "path": "scripts",
       "purpose": "Build/utility scripts",
-      "fileCount": 2,
-      "lastAccessed": 1770687386774,
+      "fileCount": 3,
+      "lastAccessed": 1770825584271,
       "keyFiles": [
         "build.js",
+        "package-lock.json",
         "package.json"
+      ]
+    },
+    "portfolio/build": {
+      "path": "portfolio/build",
+      "purpose": "Build output",
+      "fileCount": 4,
+      "lastAccessed": 1770825584271,
+      "keyFiles": [
+        "IMPLEMENTATION.md",
+        "index.html",
+        "script.js"
       ]
     },
     "portfolio/data": {
       "path": "portfolio/data",
       "purpose": "Data files",
       "fileCount": 4,
-      "lastAccessed": 1770687386774,
+      "lastAccessed": 1770825584272,
       "keyFiles": [
         "README.md",
         "about.json",
         "projects.json"
       ]
+    },
+    "scripts/node_modules": {
+      "path": "scripts/node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 1,
+      "lastAccessed": 1770825584272,
+      "keyFiles": []
     }
   },
   "hotPaths": [
     {
-      "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
-      "accessCount": 13,
-      "lastAccessed": 1770741135240,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/projects.json",
-      "accessCount": 7,
-      "lastAccessed": 1770741121034,
-      "type": "file"
-    },
-    {
       "path": "portfolio/style.css",
-      "accessCount": 7,
-      "lastAccessed": 1770741423956,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/index.html",
-      "accessCount": 6,
-      "lastAccessed": 1770741416779,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/opensearch-search-engine/index.md",
-      "accessCount": 5,
-      "lastAccessed": 1770741134673,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/templates/project.ejs",
-      "accessCount": 5,
-      "lastAccessed": 1770741450030,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/about.json",
-      "accessCount": 4,
-      "lastAccessed": 1770741416268,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/redis-writeback-optimization/index.md",
-      "accessCount": 2,
-      "lastAccessed": 1770741135656,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/data-pipeline-firehose/index.md",
-      "accessCount": 2,
-      "lastAccessed": 1770741136268,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
-      "accessCount": 2,
-      "lastAccessed": 1770741136810,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/templates/partials/footer.ejs",
-      "accessCount": 2,
-      "lastAccessed": 1770741455139,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/tosspay-payment-integration/index.md",
       "accessCount": 1,
-      "lastAccessed": 1770687456756,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/opensearch-search-engine/search-flow.excalidraw",
-      "accessCount": 1,
-      "lastAccessed": 1770689799258,
+      "lastAccessed": 1770825649166,
       "type": "file"
     },
     {
       "path": "portfolio/script.js",
       "accessCount": 1,
-      "lastAccessed": 1770741120614,
+      "lastAccessed": 1770825649446,
       "type": "file"
     },
     {
-      "path": "portfolio/data/skills.json",
+      "path": "portfolio/data/projects.json",
       "accessCount": 1,
-      "lastAccessed": 1770741129762,
+      "lastAccessed": 1770825650383,
       "type": "file"
     },
     {
-      "path": "portfolio/templates/partials/nav.ejs",
+      "path": "portfolio/data/about.json",
       "accessCount": 1,
-      "lastAccessed": 1770741429213,
+      "lastAccessed": 1770825657404,
       "type": "file"
     }
   ],
