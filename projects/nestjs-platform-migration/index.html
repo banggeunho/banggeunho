@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>웹 플랫폼 백엔드 아키텍처 개편 | Geunho Bang</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo"><span class="logo-name">bang</span><span class="logo-dot">.geunho</span></a>
+    <ul class="nav-links">
+      <li><a href="../../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../../index.html#skills">Skills</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+  <main class="project-detail">
+    <div class="container">
+
+      <!-- Back -->
+      <a href="../../index.html#projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+        Projects
+      </a>
+
+      <!-- Hero image -->
+      
+      <div class="project-detail-hero">
+        <img src="images/thumbnail.svg" alt="웹 플랫폼 백엔드 아키텍처 개편">
+      </div>
+      
+
+      <!-- Header -->
+      <div class="project-detail-header">
+        <h1>웹 플랫폼 백엔드 아키텍처 개편</h1>
+        
+        <div class="project-detail-tags">
+          
+            <span>NestJS</span>
+          
+            <span>AWS ECS</span>
+          
+            <span>MySQL 8.0</span>
+          
+            <span>Express</span>
+          
+        </div>
+        
+      </div>
+
+      <!-- Content -->
+      <div class="project-detail-content">
+        <section class="content-section">
+<h2 id="개요">개요</h2>
+<p>Express + SST 기반 모놀리식 서버를 NestJS로 마이그레이션하고, ECS 기반 컨테이너 배포 환경을 구축했습니다. 코드 컨벤션과 모듈 구조를 표준화하고, 개발 착수 전 아키텍처 공유 및 리뷰 프로세스를 도입했습니다.</p>
+</section>
+<section class="content-section">
+<h2 id="배경">배경</h2>
+<p>기존 시스템은 Express + SST 기반의 모놀리식 구조였습니다. 코드 컨벤션 없이 개발자마다 다른 패턴으로 작성되어 유지보수가 어려웠고, 도메인 간 경계가 모호하여 변경 사항이 예상치 못한 곳에 영향을 주는 일이 빈번했습니다.</p>
+</section>
+<section class="content-section">
+<h2 id="설계-및-구현">설계 및 구현</h2>
+<h3 id="nestjs-마이그레이션-아키텍처">NestJS 마이그레이션 아키텍처</h3>
+<ul>
+<li>도메인별 모듈 분리: 회원, 주문, 상품, 결제 등 핵심 도메인 독립 모듈화</li>
+<li>코드 컨벤션 및 모듈 구조 표준화</li>
+<li>개발 착수 전 아키텍처 공유 및 리뷰 프로세스 도입</li>
+</ul>
+<h3 id="ecs-기반-배포-환경">ECS 기반 배포 환경</h3>
+<ul>
+<li>AWS ECS 컨테이너 배포 환경 구축</li>
+<li>유휴 리소스 활용으로 QA 서버를 ECS로 분리/증설</li>
+<li>병렬 배포 구조 도입으로 배포 병목 해소</li>
+</ul>
+</section>
+<section class="content-section">
+<h2 id="주요-성과">주요 성과</h2>
+<ul>
+<li>핵심 도메인 API 개발 (회원/주문/상품/결제)</li>
+<li>코드 중복 감소 및 일관된 개발 패턴 확립</li>
+<li>QA 환경 병렬 배포로 배포 대기시간 제거</li>
+<li>ISMS-P 인증 심사 대응 및 보안 조치 수행</li>
+</ul>
+</section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+  <div class="container">
+    <p>&copy; 2025 Geunho Bang</p>
+  </div>
+</footer>
+
+
+  <script src="../../script.js"></script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#22C55E',
+        primaryTextColor: '#F8FAFC',
+        primaryBorderColor: '#334155',
+        lineColor: '#64748B',
+        secondaryColor: '#1E293B',
+        tertiaryColor: '#0F172A',
+        background: '#0F172A',
+        mainBkg: '#1E293B',
+        secondBkg: '#334155',
+        border1: '#334155',
+        border2: '#475569',
+        note: '#1E293B',
+        noteBkg: '#1E293B',
+        noteBorder: '#334155',
+        noteText: '#F8FAFC',
+        fontSize: '14px',
+        fontFamily: 'IBM Plex Sans, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>

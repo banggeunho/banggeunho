@@ -262,24 +262,18 @@ img {
   to { transform: rotate(405deg); }
 }
 
-/* Hero Grid Layout */
-.hero-grid {
+/* Hero Content Layout */
+.hero-content {
   position: relative;
   z-index: 1;
-  max-width: var(--container-max);
+  max-width: 700px;
   width: 100%;
   padding: 2rem;
-  display: grid;
-  grid-template-columns: 55fr 45fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-/* Left Column */
-.hero-left {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  text-align: left;
+  margin: 0 auto;
 }
 
 .hero-greeting {
@@ -316,11 +310,47 @@ img {
 .hero-description {
   font-size: 1rem;
   color: var(--text-secondary);
-  max-width: 540px;
   line-height: 1.75;
   margin-bottom: 1rem;
   opacity: 0;
   animation: fadeInUp 0.6s ease 0.3s forwards;
+}
+
+.hero-impacts {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 0.35s forwards;
+}
+
+.hero-impacts li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent-border);
+  transition: border-color 0.2s ease;
+}
+
+.hero-impacts li:hover {
+  border-color: var(--accent);
+}
+
+.impact-label {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.impact-result {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-family: var(--font-mono);
 }
 
 .hero-contact {
@@ -329,8 +359,9 @@ img {
   align-items: center;
   margin-top: 0.5rem;
   flex-wrap: wrap;
+  justify-content: flex-start;
   opacity: 0;
-  animation: fadeInUp 0.6s ease 0.4s forwards;
+  animation: fadeInUp 0.6s ease 0.45s forwards;
 }
 
 .hero-contact-link {
@@ -1235,12 +1266,7 @@ img {
   }
 
   /* Hero Responsive */
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .hero-left {
+  .hero-content {
     text-align: center;
   }
 
@@ -1248,17 +1274,13 @@ img {
     justify-content: center;
   }
 
-  .hero-description {
-    margin-left: auto;
-    margin-right: auto;
+  .hero-impacts {
+    align-items: center;
   }
 
-  .hero-metrics {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-expertise {
-    justify-content: center;
+  .hero-impacts li {
+    max-width: 400px;
+    text-align: left;
   }
 
   .bg-circle-1,
@@ -1299,7 +1321,7 @@ img {
     padding: 0 1.25rem;
   }
 
-  .hero-grid {
+  .hero-content {
     padding: 1rem;
   }
 
@@ -1318,12 +1340,16 @@ img {
     gap: 1rem;
   }
 
-  .metric-card {
-    padding: 1.25rem 1.5rem;
+  .hero-impacts li {
+    font-size: 0.875rem;
   }
 
-  .metric-number {
-    font-size: 2rem;
+  .impact-label {
+    font-size: 0.85rem;
+  }
+
+  .impact-result {
+    font-size: 0.825rem;
   }
 
   .skill-tag {

@@ -148,36 +148,20 @@ function renderAbout() {
   // Render intro text in hero description
   const heroIntro = document.getElementById('hero-intro');
   if (heroIntro && portfolioData.about.intro.length > 0) {
-    // Use first intro paragraph in hero
     heroIntro.textContent = portfolioData.about.intro[0];
   }
 
-  // Render highlights as metric cards
-  const metricsContainer = document.getElementById('hero-metrics');
-  if (metricsContainer && portfolioData.about.highlights.length > 0) {
-    metricsContainer.innerHTML = '';
-    portfolioData.about.highlights.forEach((highlight, index) => {
-      const card = document.createElement('div');
-      card.className = 'metric-card';
-      card.style.animationDelay = `${0.3 + index * 0.1}s`;
-      card.innerHTML = `
-        <div class="metric-number">${highlight.number}</div>
-        <div class="metric-label">${highlight.label}</div>
+  // Render impacts as list items
+  const impactsContainer = document.getElementById('hero-impacts');
+  if (impactsContainer && portfolioData.about.impacts && portfolioData.about.impacts.length > 0) {
+    impactsContainer.innerHTML = '';
+    portfolioData.about.impacts.forEach(impact => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="impact-label">${impact.label}</span>
+        <span class="impact-result">${impact.result}</span>
       `;
-      metricsContainer.appendChild(card);
-    });
-  }
-
-  // Render expertise as tags
-  const expertiseContainer = document.getElementById('hero-expertise');
-  if (expertiseContainer && portfolioData.about.expertise.length > 0) {
-    expertiseContainer.innerHTML = '';
-    portfolioData.about.expertise.forEach(item => {
-      const tag = document.createElement('span');
-      tag.className = 'expertise-tag';
-      tag.textContent = item.title;
-      tag.title = item.description; // Tooltip on hover
-      expertiseContainer.appendChild(tag);
+      impactsContainer.appendChild(li);
     });
   }
 }

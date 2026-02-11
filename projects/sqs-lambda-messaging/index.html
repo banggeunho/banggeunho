@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQS + Lambda 대량 문자 발송 시스템 | Geunho Bang</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="../../index.html" class="nav-logo"><span class="logo-name">bang</span><span class="logo-dot">.geunho</span></a>
+    <ul class="nav-links">
+      <li><a href="../../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../../index.html#skills">Skills</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+  <main class="project-detail">
+    <div class="container">
+
+      <!-- Back -->
+      <a href="../../index.html#projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+        Projects
+      </a>
+
+      <!-- Hero image -->
+      
+      <div class="project-detail-hero">
+        <img src="images/thumbnail.svg" alt="SQS + Lambda 대량 문자 발송 시스템">
+      </div>
+      
+
+      <!-- Header -->
+      <div class="project-detail-header">
+        <h1>SQS + Lambda 대량 문자 발송 시스템</h1>
+        
+        <div class="project-detail-tags">
+          
+            <span>AWS SQS</span>
+          
+            <span>Lambda</span>
+          
+            <span>NestJS</span>
+          
+            <span>MySQL</span>
+          
+        </div>
+        
+      </div>
+
+      <!-- Content -->
+      <div class="project-detail-content">
+        <section class="content-section">
+<h2 id="개요">개요</h2>
+<p>월 100만 건 이상의 문자 메시지를 안정적으로 발송하는 비동기 시스템을 설계하고 구축했습니다.</p>
+</section>
+<section class="content-section">
+<h2 id="배경">배경</h2>
+<p>기존에는 API 서버에서 문자 발송을 동기적으로 처리하고 있었습니다. 마케팅 캠페인이나 대량 알림 발송 시 서버에 부하가 집중되어 다른 API 응답 속도까지 영향을 받았고, 발송 실패 시 재처리 로직도 없었습니다.</p>
+</section>
+<section class="content-section">
+<h2 id="아키텍처">아키텍처</h2>
+<p>SQS + Lambda 기반의 비동기 처리 구조를 도입했습니다.</p>
+<ol>
+<li><strong>NestJS API 서버</strong>: 발송 요청을 받아 SQS 큐에 메시지를 전달</li>
+<li><strong>SQS</strong>: 메시지를 큐에 저장하고 Lambda로 전달 (배치 처리)</li>
+<li><strong>Lambda</strong>: 큐에서 메시지를 꺼내 외부 문자 발송 API 호출</li>
+</ol>
+</section>
+<section class="content-section">
+<h2 id="주요-성과">주요 성과</h2>
+<ul>
+<li>월 100만 건 이상 안정 처리</li>
+<li>API 서버 부하 분리로 응답 속도 영향 제거</li>
+<li>실패 메시지 DLQ(Dead Letter Queue) 기반 재처리</li>
+<li>서버리스 구조로 트래픽에 따른 자동 스케일링</li>
+</ul>
+</section>
+<section class="content-section">
+<h2 id="기술적-포인트">기술적 포인트</h2>
+<ul>
+<li>SQS 배치 사이즈 및 동시 실행 수 튜닝</li>
+<li>Lambda 콜드 스타트 최소화를 위한 설정 최적화</li>
+<li>DLQ + CloudWatch 알람을 통한 실패 모니터링</li>
+</ul>
+</section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+  <div class="container">
+    <p>&copy; 2025 Geunho Bang</p>
+  </div>
+</footer>
+
+
+  <script src="../../script.js"></script>
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#22C55E',
+        primaryTextColor: '#F8FAFC',
+        primaryBorderColor: '#334155',
+        lineColor: '#64748B',
+        secondaryColor: '#1E293B',
+        tertiaryColor: '#0F172A',
+        background: '#0F172A',
+        mainBkg: '#1E293B',
+        secondBkg: '#334155',
+        border1: '#334155',
+        border2: '#475569',
+        note: '#1E293B',
+        noteBkg: '#1E293B',
+        noteBorder: '#334155',
+        noteText: '#F8FAFC',
+        fontSize: '14px',
+        fontFamily: 'IBM Plex Sans, -apple-system, sans-serif'
+      }
+    });
+  </script>
+
+  <!-- Prism for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
