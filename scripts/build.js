@@ -214,6 +214,12 @@ function build() {
     fs.copySync(dataDir, path.join(BUILD_DIR, 'data'));
   }
 
+  // Copy root assets folder (og-image, etc.)
+  const assetsDir = path.join(ROOT_DIR, 'assets');
+  if (fs.existsSync(assetsDir)) {
+    fs.copySync(assetsDir, path.join(BUILD_DIR, 'assets'));
+  }
+
   // Copy existing project HTML files
   fs.ensureDirSync(path.join(BUILD_DIR, 'projects'));
   const projectsDir = path.join(PORTFOLIO_DIR, 'projects');

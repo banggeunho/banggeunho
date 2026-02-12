@@ -116,15 +116,21 @@
   },
   "hotPaths": [
     {
-      "path": "portfolio/style.css",
-      "accessCount": 8,
-      "lastAccessed": 1770826597210,
+      "path": "portfolio/index.html",
+      "accessCount": 12,
+      "lastAccessed": 1770871530243,
       "type": "file"
     },
     {
-      "path": "portfolio/index.html",
+      "path": "portfolio/style.css",
+      "accessCount": 9,
+      "lastAccessed": 1770871591230,
+      "type": "file"
+    },
+    {
+      "path": "assets/og-image.svg",
       "accessCount": 7,
-      "lastAccessed": 1770827040611,
+      "lastAccessed": 1770872226043,
       "type": "file"
     },
     {
@@ -137,6 +143,12 @@
       "path": "portfolio/script.js",
       "accessCount": 4,
       "lastAccessed": 1770826597907,
+      "type": "file"
+    },
+    {
+      "path": "assets/og-image.png",
+      "accessCount": 4,
+      "lastAccessed": 1770872261524,
       "type": "file"
     },
     {
