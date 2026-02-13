@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1770825584276,
-  "projectRoot": "/Users/bang-geunho/WebstormProjects/banggeunho",
+  "lastScanned": 1770958450896,
+  "projectRoot": "/Users/geunho/WebstormProjects/banggeunho",
   "techStack": {
     "languages": [],
     "frameworks": [],
@@ -40,32 +40,32 @@
       "path": "assets",
       "purpose": "Static assets",
       "fileCount": 3,
-      "lastAccessed": 1770825584268,
+      "lastAccessed": 1770958450882,
       "keyFiles": [
         "header.svg",
-        "header.svg.backup",
-        "preview.html"
+        "og-image.png",
+        "og-image.svg"
       ]
     },
     "design-system": {
       "path": "design-system",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1770825584269,
+      "lastAccessed": 1770958450883,
       "keyFiles": []
     },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 0,
-      "lastAccessed": 1770825584270,
+      "lastAccessed": 1770958450883,
       "keyFiles": []
     },
     "portfolio": {
       "path": "portfolio",
       "purpose": null,
       "fileCount": 4,
-      "lastAccessed": 1770825584270,
+      "lastAccessed": 1770958450886,
       "keyFiles": [
         "IMPLEMENTATION.md",
         "index.html",
@@ -77,7 +77,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 3,
-      "lastAccessed": 1770825584271,
+      "lastAccessed": 1770958450888,
       "keyFiles": [
         "build.js",
         "package-lock.json",
@@ -88,7 +88,7 @@
       "path": "portfolio/build",
       "purpose": "Build output",
       "fileCount": 4,
-      "lastAccessed": 1770825584271,
+      "lastAccessed": 1770958450889,
       "keyFiles": [
         "IMPLEMENTATION.md",
         "index.html",
@@ -99,7 +99,7 @@
       "path": "portfolio/data",
       "purpose": "Data files",
       "fileCount": 4,
-      "lastAccessed": 1770825584272,
+      "lastAccessed": 1770958450890,
       "keyFiles": [
         "README.md",
         "about.json",
@@ -110,99 +110,57 @@
       "path": "scripts/node_modules",
       "purpose": "Dependencies",
       "fileCount": 1,
-      "lastAccessed": 1770825584272,
+      "lastAccessed": 1770958450892,
       "keyFiles": []
     }
   },
   "hotPaths": [
     {
-      "path": "portfolio/index.html",
-      "accessCount": 12,
-      "lastAccessed": 1770871530243,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/style.css",
-      "accessCount": 9,
-      "lastAccessed": 1770871591230,
-      "type": "file"
-    },
-    {
-      "path": "assets/og-image.svg",
-      "accessCount": 7,
-      "lastAccessed": 1770872226043,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/about.json",
-      "accessCount": 5,
-      "lastAccessed": 1770827045708,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/script.js",
-      "accessCount": 4,
-      "lastAccessed": 1770826597907,
-      "type": "file"
-    },
-    {
-      "path": "assets/og-image.png",
-      "accessCount": 4,
-      "lastAccessed": 1770872261524,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/projects.json",
-      "accessCount": 3,
-      "lastAccessed": 1770827535866,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/data/skills.json",
-      "accessCount": 3,
-      "lastAccessed": 1770828973523,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/opensearch-search-engine/images/thumbnail.svg",
-      "accessCount": 1,
-      "lastAccessed": 1770827403352,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/data-pipeline-firehose/images/thumbnail.svg",
-      "accessCount": 1,
-      "lastAccessed": 1770827403909,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/image-optimization-lambda-edge/images/thumbnail.svg",
-      "accessCount": 1,
-      "lastAccessed": 1770827404952,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/sqs-lambda-messaging/images/thumbnail.svg",
-      "accessCount": 1,
-      "lastAccessed": 1770827461394,
-      "type": "file"
-    },
-    {
-      "path": "portfolio/projects/nestjs-platform-migration/images/thumbnail.svg",
-      "accessCount": 1,
-      "lastAccessed": 1770827495871,
+      "path": "portfolio/projects/nestjs-platform-migration/index.md",
+      "accessCount": 14,
+      "lastAccessed": 1770981556094,
       "type": "file"
     },
     {
       "path": "portfolio/projects/sqs-lambda-messaging/index.md",
-      "accessCount": 1,
-      "lastAccessed": 1770827505101,
+      "accessCount": 3,
+      "lastAccessed": 1770981643447,
       "type": "file"
     },
     {
-      "path": "portfolio/projects/nestjs-platform-migration/index.md",
+      "path": "portfolio/data/projects.json",
       "accessCount": 1,
-      "lastAccessed": 1770827516462,
+      "lastAccessed": 1770964062674,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/opensearch-search-engine/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770964071432,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/image-optimization-lambda-edge/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770964072235,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/redis-writeback-optimization/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770964073158,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/data-pipeline-firehose/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770964073420,
+      "type": "file"
+    },
+    {
+      "path": "portfolio/projects/ecommerce-batch-optimization/index.md",
+      "accessCount": 1,
+      "lastAccessed": 1770964073677,
       "type": "file"
     }
   ],
