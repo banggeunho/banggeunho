@@ -21,7 +21,7 @@
     {
       "id": "nestjs-platform-migration",
       "title": "NestJS 마이그레이션",
-      "description": "Express + SST 모놀리식에서 NestJS로 마이그레이션. 도메인별 모듈 분리, ECS 컨테이너 배포 환경 구축, QA 병렬 배포 도입으로 배포 병목 해소",
+      "description": "Express + SST 모놀리식에서 NestJS로 진행형 마이그레이션. Domain 레이어 테스트 커버리지 100% 룰 운영, 신규 입사자 2명 온보딩 수시간 수준(관찰 기반)으로 구조 표준화 효과 확인",
       "image": "projects/nestjs-platform-migration/images/thumbnail.svg",
       "tags": ["NestJS", "AWS ECS", "MySQL 8.0"],
       "github": "https://github.com/banggeunho",
@@ -39,7 +39,7 @@
     {
       "id": "ecommerce-batch-optimization",
       "title": "e커머스 주문 수집 배치 성능 개선",
-      "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 1,000+ 라인 코드 중복 70% 감소, DB 저장을 개별 처리에서 3단계 벌크 처리로 전환",
+      "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 코드 570줄→215줄(62% 감소), DB 저장을 개별 처리에서 3단계 벌크 처리로 전환",
       "image": "projects/ecommerce-batch-optimization/images/thumbnail.svg",
       "tags": ["Java", "Spring Boot", "Batch"],
       "github": "https://github.com/banggeunho",
@@ -48,7 +48,7 @@
     {
       "id": "data-pipeline-firehose",
       "title": "사용자 이벤트 로그 데이터 파이프라인",
-      "description": "AWS Firehose 기반 실시간 파이프라인 구축. 데이터 리드타임 1~2일 → 30분, 월 평균 3,000만 건 처리. Parquet 변환으로 Athena 쿼리 5배 향상",
+      "description": "AWS Firehose 기반 실시간 파이프라인 구축. 데이터 리드타임 1~2일 → 30분, 월 평균 3,000만 건 처리. Parquet 변환으로 Athena 쿼리 5배 향상(측정: 50초→10초)",
       "image": "projects/data-pipeline-firehose/images/thumbnail.svg",
       "tags": ["AWS Firehose", "Athena", "Redshift"],
       "github": "https://github.com/banggeunho",

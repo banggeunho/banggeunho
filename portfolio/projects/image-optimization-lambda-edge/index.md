@@ -288,7 +288,7 @@ const s3 = new AWS.S3();
 
 exports.handler = async (event) => {
   const request = event.Records[0].cf.request;
-  const querystring = request.querystring;
+  const params = new URLSearchParams(request.querystring);
 
   // 1. 원본 이미지 가져오기
   const key = request.uri.substring(1); // /products/123.jpg -> products/123.jpg
@@ -298,10 +298,10 @@ exports.handler = async (event) => {
   }).promise();
 
   // 2. 파라미터 파싱
-  const width = parseInt(querystring.w?.value) || null;
-  const height = parseInt(querystring.h?.value) || null;
-  const format = querystring.f?.value || 'jpg';
-  const quality = parseInt(querystring.q?.value) || 80;
+  const width = parseInt(params.get('w')) || null;
+  const height = parseInt(params.get('h')) || null;
+  const format = params.get('f') || 'jpg';
+  const quality = parseInt(params.get('q')) || 80;
 
   // 3. 이미지 처리
   let image = sharp(s3Object.Body);
@@ -559,6 +559,15 @@ done < "$POPULAR_KEYS_FILE"
 
 ### 실제 측정 데이터
 
+### 지표 정의와 측정 기준
+
+| 지표 | 값 | 측정 기간/기준 | 출처 |
+|------|----|----------------|------|
+| **CloudFront 전송량/전송비 감소율** | **68%** | 2024-04-03(적용 전) vs 2024-05-26(적용 후) | CloudFront Usage 리포트 |
+| **전송량 감소율 (보조 샘플)** | **70%** | 2024-04-27 vs 2024-05-24 | CloudFront Usage 리포트 |
+| **이미지 서빙 총비용 절감율** | **약 75%** | 전송비 + Lambda@Edge 처리비 합산, 적용 전/후 월 비교 | CloudFront + Lambda 비용 집계 |
+| **어뷰징 방어 비용 절감 추정치** | **약 90% (내부 추정)** | CloudFront Functions 미적용 가정 시뮬레이션 | 운영 로그 기반 내부 추정 |
+
 **배포 단계별 적용:**
 1. 5월 15일: 혜택탭 전체 적용
 2. 5월 20일: 상품 이미지, 배너 이미지 적용
@@ -590,11 +599,11 @@ done < "$POPULAR_KEYS_FILE"
 | **4월 3일** | 419.71GB | 기준 |
 | **5월 26일** | 132.49GB | **68% ⬇️** |
 
-CloudFront 데이터 전송 비용이 68% 감소했으며, 이는 이미지 서빙 관련 비용의 대부분을 차지하므로 **CloudFront 전송 비용 약 75% 절감** 효과를 달성했습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.
+CloudFront 데이터 전송 비용이 68% 감소했고, 이미지 서빙 비용에서 전송비 비중이 가장 크기 때문에 **총비용 기준 약 75% 절감**으로 집계되었습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.
 
 **지표 기준 정리:**
 - **68% 감소**: CloudFront 전송량/전송비 감소율
-- **약 75% 절감**: 이미지 서빙 총비용 기준(전송비 + 처리비 포함, 전송비 비중이 대부분)
+- **약 75% 절감**: 이미지 서빙 총비용 기준(전송비 + 처리비, 월 단위 비교)
 - **90% 절감**: 비정상 파라미터 요청 방어 관점의 비용 추정치(Functions 미적용 대비)
 
 ### 성능 개선
@@ -657,8 +666,7 @@ resize({
 **4. Lambda 메모리는 비용이 아닌 투자**
 - 512MB → 1024MB: 비용 10% 증가
 - 타임아웃 95% 감소
-- 사용자 이탈률 50% 감소
-- ROI가 10배 이상!
+- 응답 안정성이 개선되어 대체 원본 반환 케이스가 크게 줄었습니다.
 
 **5. 사전 워밍의 중요성**
 - CloudWatch로 인기 크기 분석
