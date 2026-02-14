@@ -72,7 +72,7 @@
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-completablefuture%EB%A1%9C-%ED%8C%90%EB%A7%A4%EC%9E%90%EB%B3%84-%EB%B3%91%EB%A0%AC-%EC%B2%98%EB%A6%AC">핵심 구현 2: CompletableFuture로 판매자별 병렬 처리</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-3-%EB%B2%8C%ED%81%AC-%EC%B2%98%EB%A6%AC%EB%A1%9C-db-%EB%9D%BC%EC%9A%B4%EB%93%9C%ED%8A%B8%EB%A6%BD-%EC%B5%9C%EC%A0%81%ED%99%94">핵심 구현 3: 벌크 처리로 DB 라운드트립 최적화</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-4-jenkins-%EA%B8%B0%EB%B0%98-%EC%9E%AC%EC%88%98%EC%A7%91-%EC%8B%9C%EC%8A%A4%ED%85%9C">핵심 구현 4: Jenkins 기반 재수집 시스템</a></li>
-<li><a href="#%EA%B2%B0%EA%B3%BC-%EC%B2%98%EB%A6%AC-%EC%8B%9C%EA%B0%84-30%EB%B6%84-3%EB%B6%84-%EC%8B%A0%EA%B7%9C-%EC%BB%A4%EB%A8%B8%EC%8A%A4-%EC%B6%94%EA%B0%80-2%EC%A3%BC-2%EC%9D%BC">결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일</a></li>
+<li><a href="#%EA%B2%B0%EA%B3%BC-%EC%B2%98%EB%A6%AC-%EC%8B%9C%EA%B0%84-30%EB%B6%843%EB%B6%84-%EC%8B%A0%EA%B7%9C-%EC%BB%A4%EB%A8%B8%EC%8A%A4-%EC%B6%94%EA%B0%80-2%EC%A3%BC2%EC%9D%BC">결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일</a></li>
 </ol>
 <hr>
 </section>
@@ -570,7 +570,19 @@ List&lt;Long&gt; ids = IntStream.rangeClosed(lastId - 20, lastId)
 롯데ON 배치: 동시에 배송지 15개 저장 → 마지막 ID: 535
 위메프 배치: 마지막 ID 조회 → 535를 가져옴
 위메프 배치: 515~535를 자신의 배송지로 착각 (잘못된 매핑)</code></pre><p><strong>해결: UUID + Sequence</strong></p>
-<pre><code class="language-java">// 배치 작업별 UUID 생성
+<pre class="mermaid">sequenceDiagram
+    participant W as 위메프 배치
+    participant DB as 개인정보 DB
+    participant L as 롯데ON 배치
+
+    W->>DB: saveAll(20건, batchUuid=A, seq=0~19)
+    L->>DB: saveAll(15건, batchUuid=B, seq=0~14)
+    Note over W,L: 동시 INSERT — ID 범위가 섞여도 무관
+    W->>DB: findByBatchUuid('A') ORDER BY seq
+    DB-->>W: 정확히 20건 (순서 보장)
+    L->>DB: findByBatchUuid('B') ORDER BY seq
+    DB-->>L: 정확히 15건 (순서 보장)
+    Note over W,L: UUID 격리로 동시성 안전 + Sequence로 순서 보장</pre><pre><code class="language-java">// 배치 작업별 UUID 생성
 String batchUuid = UUID.randomUUID().toString();
 
 // 1. UUID와 Sequence를 함께 저장
@@ -847,6 +859,19 @@ After: 2일
         noteBkg: '#1E293B',
         noteBorder: '#334155',
         noteText: '#F8FAFC',
+        actorBkg: '#1E293B',
+        actorBorder: '#334155',
+        actorTextColor: '#F8FAFC',
+        actorLineColor: '#475569',
+        signalColor: '#64748B',
+        signalTextColor: '#F8FAFC',
+        labelBoxBkgColor: '#0F172A',
+        labelBoxBorderColor: '#334155',
+        labelTextColor: '#94A3B8',
+        loopTextColor: '#94A3B8',
+        activationBorderColor: '#334155',
+        activationBkgColor: '#0F172A',
+        sequenceNumberColor: '#F8FAFC',
         fontSize: '14px',
         fontFamily: 'IBM Plex Sans, -apple-system, sans-serif'
       }

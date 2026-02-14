@@ -72,7 +72,6 @@
 <li><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EC%84%A4%EA%B3%84-lambdaedge-%EC%84%A0%ED%83%9D-%EC%9D%B4%EC%9C%A0">아키텍처 설계: Lambda@Edge 선택 이유</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-1-cloudfront-functions%EB%A1%9C-%EC%96%B4%EB%B7%B0%EC%A7%95-%EB%B0%A9%EC%A7%80">핵심 구현 1: CloudFront Functions로 어뷰징 방지</a></li>
 <li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-2-lambdaedge%EB%A1%9C-on-demand-%EC%B2%98%EB%A6%AC">핵심 구현 2: Lambda@Edge로 On-demand 처리</a></li>
-<li><a href="#%ED%95%B5%EC%8B%AC-%EA%B5%AC%ED%98%84-3-%EC%BA%90%EC%8B%9C-%EC%A0%84%EB%9E%B5%EC%9C%BC%EB%A1%9C-%ED%9E%88%ED%8A%B8%EC%9C%A8-%EA%B7%B9%EB%8C%80%ED%99%94">핵심 구현 3: 캐시 전략으로 히트율 극대화</a></li>
 <li><a href="#%EA%B2%B0%EA%B3%BC-%EB%B9%84%EC%9A%A9-75-%EC%A0%88%EA%B0%90-%EC%86%8D%EB%8F%84-50-%EA%B0%9C%EC%84%A0">결과: 비용 75% 절감, 속도 50% 개선</a></li>
 </ol>
 <hr>
@@ -518,39 +517,6 @@ if (!contentType || !contentType.startsWith('image/')) {
 <hr>
 </section>
 <section class="content-section">
-<h2 id="핵심-구현-3-캐시-전략으로-히트율-극대화">핵심 구현 3: 캐시 전략으로 히트율 극대화</h2>
-<h3 id="단계별-캐시-히트율-개선">단계별 캐시 히트율 개선</h3>
-<p><strong>1단계: 기본 캐시 (히트율 50%)</strong></p>
-<pre><code class="language-">- URL 그대로 캐시
-- ?w=387 과 ?w=388 은 다른 캐시</code></pre><p><strong>2단계: 크기 정규화 (히트율 70%)</strong></p>
-<pre><code class="language-">- ?w=387 → ?w=400
-- ?w=388 → ?w=400
-- 같은 캐시 사용!</code></pre><p><strong>3단계: 인기 크기 사전 워밍 (히트율 85%)</strong></p>
-<pre><code class="language-">- CloudWatch 분석: 상위 10개 크기가 전체의 80% 차지
-- 인기 크기 (200, 400, 800, 1200px)를 배포 시 사전 생성
-- 전체 객체가 아닌 상위 트래픽 자산만 제한적으로 워밍</code></pre><p><strong>사전 워밍 스크립트:</strong></p>
-<pre><code class="language-bash">#!/bin/bash
-
-POPULAR_SIZES=(200 400 800 1200)
-POPULAR_KEYS_FILE=&quot;top-images.txt&quot;   # CloudWatch 로그 기준 상위 자산 목록
-MAX_WARM_REQUESTS=500                # 배포당 워밍 상한
-count=0
-
-while read -r file; do
-  for size in &quot;${POPULAR_SIZES[@]}&quot;; do
-    if [ &quot;$count&quot; -ge &quot;$MAX_WARM_REQUESTS&quot; ]; then
-      break 2
-    fi
-
-    # CloudFront URL 호출 (Lambda 실행 -&gt; 캐시 생성)
-    curl -s &quot;https://cdn.example.com/products/$file?w=$size&amp;h=$size&amp;f=webp&quot; &gt; /dev/null
-    count=$((count + 1))
-    echo &quot;Warmed: $file @ ${size}px&quot;
-  done
-done &lt; &quot;$POPULAR_KEYS_FILE&quot;</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
-<hr>
-</section>
-<section class="content-section">
 <h2 id="결과-비용-75-절감-속도-50-개선">결과: 비용 75% 절감, 속도 50% 개선</h2>
 <h3 id="실제-측정-데이터">실제 측정 데이터</h3>
 <h3 id="지표-정의와-측정-기준">지표 정의와 측정 기준</h3>
@@ -674,12 +640,6 @@ done &lt; &quot;$POPULAR_KEYS_FILE&quot;</code></pre><p><strong>최종 히트율
 <td>50% ⬇️</td>
 </tr>
 <tr>
-<td><strong>캐시 히트율</strong></td>
-<td>정규화 없음</td>
-<td>85%</td>
-<td>-</td>
-</tr>
-<tr>
 <td><strong>Lambda 타임아웃</strong></td>
 <td>-</td>
 <td>&lt;5%</td>
@@ -712,30 +672,18 @@ After:
 <li>Functions로 비정상 요청 방어 비용을 크게 절감 (내부 추정 약 90%)</li>
 <li>검증 로직은 가볍게, Lambda는 무겁게</li>
 </ul>
-<p><strong>2. 크기 정규화의 위력</strong></p>
-<ul>
-<li>387px → 400px 반올림</li>
-<li>육안으로 거의 구분 못함</li>
-<li>캐시 히트율 70% → 85% 향상</li>
-</ul>
-<p><strong>3. Sharp 최적화 설정</strong></p>
+<p><strong>2. Sharp 최적화 설정</strong></p>
 <pre><code class="language-javascript">resize({
   fit: 'inside',           // 비율 유지
   withoutEnlargement: true // 원본보다 크게 안 함
 })</code></pre><ul>
 <li>이 두 옵션으로 품질 유지 + 파일 크기 최소화</li>
 </ul>
-<p><strong>4. Lambda 메모리는 비용이 아닌 투자</strong></p>
+<p><strong>3. Lambda 메모리는 비용이 아닌 투자</strong></p>
 <ul>
 <li>512MB → 1024MB: 비용 10% 증가</li>
 <li>타임아웃 95% 감소</li>
 <li>응답 안정성이 개선되어 대체 원본 반환 케이스가 크게 줄었습니다.</li>
-</ul>
-<p><strong>5. 사전 워밍의 중요성</strong></p>
-<ul>
-<li>CloudWatch로 인기 크기 분석</li>
-<li>상위 10개가 전체의 80% 차지</li>
-<li>배포 시 미리 캐시 생성 → 첫 요청도 빠르게</li>
 </ul>
 <hr>
 </section>
@@ -803,6 +751,19 @@ After:
         noteBkg: '#1E293B',
         noteBorder: '#334155',
         noteText: '#F8FAFC',
+        actorBkg: '#1E293B',
+        actorBorder: '#334155',
+        actorTextColor: '#F8FAFC',
+        actorLineColor: '#475569',
+        signalColor: '#64748B',
+        signalTextColor: '#F8FAFC',
+        labelBoxBkgColor: '#0F172A',
+        labelBoxBorderColor: '#334155',
+        labelTextColor: '#94A3B8',
+        loopTextColor: '#94A3B8',
+        activationBorderColor: '#334155',
+        activationBkgColor: '#0F172A',
+        sequenceNumberColor: '#F8FAFC',
         fontSize: '14px',
         fontFamily: 'IBM Plex Sans, -apple-system, sans-serif'
       }
