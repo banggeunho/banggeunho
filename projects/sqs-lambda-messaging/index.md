@@ -13,7 +13,7 @@ date: 2024-03-01
 4. [아키텍처 설계: SQS + Lambda 선택 이유](#아키텍처-설계-sqs--lambda-선택-이유)
 5. [핵심 구현 1: 어드민에서 발송 요청](#핵심-구현-1-어드민에서-발송-요청)
 6. [핵심 구현 2: SQS + Lambda 비동기 처리](#핵심-구현-2-sqs--lambda-비동기-처리)
-7. [핵심 구현 3: DLQ 기반 실패 재처리](#핵심-구현-3-dlq-기반-실패-재처리)
+7. [핵심 구현 3: DLQ 기반 자동 재처리](#핵심-구현-3-dlq-기반-자동-재처리)
 8. [결과: 월 100만 건 안정 발송](#결과-월-100만-건-안정-발송)
 
 ---
@@ -132,14 +132,21 @@ export class MessagingService {
       status: 'QUEUED',
     });
 
-    // 2. SQS에 배치 단위로 전송
+    // 2. SQS에 배치 단위로 전송 (최종 개선: sendMessageBatch)
     const chunks = this.chunkArray(userIds, 10);
-    for (const chunk of chunks) {
-      await this.sqsService.sendMessage({
-        logId: log.id,
-        userIds: chunk,
-        content,
-        templateId,
+    const batches = this.chunkArray(chunks, 10);
+
+    for (const batch of batches) {
+      await this.sqsService.sendMessageBatch({
+        Entries: batch.map((chunk, i) => ({
+          Id: `msg-${i}`,
+          MessageBody: JSON.stringify({
+            logId: log.id,
+            userIds: chunk,
+            content,
+            templateId,
+          }),
+        })),
       });
     }
 
@@ -161,35 +168,7 @@ export class MessagingService {
 
 ### Lambda 핸들러
 
-SQS에서 메시지를 배치로 수신하여 문자 중개사의 벌크 API를 호출합니다.
-
-```typescript
-export const handler = async (event: SQSEvent) => {
-  for (const record of event.Records) {
-    const payload = JSON.parse(record.body);
-    const { logId, userIds, content, templateId } = payload;
-
-    try {
-      // 1. 유저 연락처 조회
-      const users = await getUserPhoneNumbers(userIds);
-
-      // 2. 문자 중개사 벌크 API 호출
-      const result = await smsProvider.sendBulk({
-        recipients: users.map(u => u.phoneNumber),
-        content,
-        templateId,
-      });
-
-      // 3. 발송 결과 저장
-      await saveResults(logId, result);
-
-    } catch (error) {
-      console.error(`발송 실패: logId=${logId}`, error);
-      throw error; // SQS 재시도 트리거
-    }
-  }
-};
-```
+SQS에서 메시지를 배치로 수신하여 문자 중개사의 벌크 API를 호출합니다. 멱등성 보장과 Rate Limit 대응이 핵심이며, 상세 구현은 아래 멱등성 섹션에서 설명합니다.
 
 ### Rate Limit 대응
 
@@ -218,9 +197,92 @@ LambdaEventSourceMapping:
 - **MaximumConcurrency: 5** — Lambda 동시 실행 수를 제한하여 중개사 rate limit 초과 방지
 - **VisibilityTimeout: 120** — 처리 중인 메시지가 다른 Lambda에 중복 전달되지 않도록 충분한 시간 확보
 
+### 멱등성(Idempotency) 보장
+
+SQS는 at-least-once delivery를 보장하므로, 동일한 메시지가 2번 이상 처리될 수 있습니다. 같은 유저에게 문자가 중복 발송되면 사용자 경험에 직접적인 악영향을 미치므로, **발송 로그 기반 멱등성 체크**를 적용했습니다.
+
+```typescript
+export const handler = async (event: SQSEvent) => {
+  for (const record of event.Records) {
+    const payload = JSON.parse(record.body);
+    const { logId, userIds, content, templateId } = payload;
+
+    // 1. 유저 연락처 조회
+    const users = await getUserPhoneNumbers(userIds);
+
+    // 2. 이미 발송된 유저 필터링 (멱등성 체크)
+    const alreadySent = await db('messaging_results')
+      .whereIn('user_id', userIds)
+      .where('log_id', logId)
+      .where('status', 'SUCCESS')
+      .pluck('user_id');
+
+    const pendingUsers = users.filter(u => !alreadySent.includes(u.userId));
+
+    if (pendingUsers.length === 0) {
+      console.log(`All users already sent: logId=${logId}`);
+      continue;
+    }
+
+    // 3. 미발송 유저에게만 발송
+    const result = await smsProvider.sendBulk({
+      recipients: pendingUsers.map(u => u.phoneNumber),
+      content,
+      templateId,
+    });
+
+    // 4. 발송 결과 저장
+    await saveResults(logId, result);
+  }
+};
+```
+
+`(log_id, user_id)` 조합으로 이미 성공한 발송 건을 확인하고, 미발송 유저에게만 문자를 전송합니다. SQS 재시도로 같은 메시지가 다시 처리되어도 중복 발송이 발생하지 않습니다.
+
 ---
 
-## 핵심 구현 3: DLQ 기반 실패 재처리
+## 실무 이슈와 해결
+
+### 이슈 1: 중개사 API 부분 성공
+
+**문제:** 벌크 API로 10명에게 발송 요청 시, 7명 성공 + 3명 실패가 발생하는 경우가 있었습니다. Lambda가 예외를 던지면 SQS가 전체 메시지를 재시도하게 되어, 이미 성공한 7명에게 중복 발송될 위험이 있었습니다.
+
+**해결:** 부분 성공 시 개별 결과를 DB에 기록하고, 실패한 유저만 별도 SQS 메시지로 재큐잉합니다. 위의 멱등성 체크와 결합하여, 재처리 시에도 성공한 유저는 건너뛰게 됩니다.
+
+### 이슈 2: VisibilityTimeout과 처리 시간 불일치
+
+**문제:** 초기 VisibilityTimeout을 60초로 설정했으나, 대량 발송 시 중개사 API 응답이 느려 Lambda 처리 시간이 60초를 초과하는 경우가 발생했습니다. SQS가 메시지를 다시 visible 상태로 전환하여 다른 Lambda가 같은 메시지를 중복 처리했습니다.
+
+**해결:** VisibilityTimeout을 120초로 상향 조정했습니다. Lambda 최대 실행 시간(중개사 API 타임아웃 포함)의 2배 이상으로 설정하여 충분한 여유를 확보했습니다.
+
+### 이슈 3: 대량 발송 시 SQS 큐잉 병목
+
+**문제:** 10만 건 발송 캠페인 시 API 서버에서 SQS로 메시지를 넣는 것 자체가 병목이 되었습니다. 10명씩 묶어 1만 개의 SQS 메시지를 개별 `sendMessage`로 전송하면 수 분이 소요되었습니다.
+
+**해결:** `sendMessageBatch`를 활용하여 최대 10개 메시지를 한 번의 API 호출로 전송합니다.
+
+```typescript
+// 개별 전송 (느림): 10,000건 × 10ms = 100초
+for (const chunk of chunks) {
+  await this.sqs.sendMessage({ ... });
+}
+
+// 배치 전송 (빠름): 1,000번 × 10ms = 10초
+const batches = this.chunkArray(chunks, 10);  // 10개씩 묶음
+for (const batch of batches) {
+  await this.sqs.sendMessageBatch({
+    QueueUrl: process.env.MESSAGING_QUEUE_URL,
+    Entries: batch.map((chunk, i) => ({
+      Id: `msg-${i}`,
+      MessageBody: JSON.stringify(chunk),
+    })),
+  });
+}
+```
+
+---
+
+## 핵심 구현 3: DLQ 기반 자동 재처리
 
 ### 실패 처리 흐름
 
@@ -236,7 +298,19 @@ graph LR
     F -->|Slack| G[운영팀 확인]
 ```
 
-3회 재시도 후에도 실패한 메시지는 DLQ에 보관됩니다. CloudWatch Alarm이 DLQ에 메시지가 쌓이면 Slack으로 알림을 전송하여 운영팀이 확인할 수 있도록 했습니다.
+3회 재시도 후에도 실패한 메시지는 DLQ에 격리됩니다. DLQ 적재 메시지는 DLQ Consumer가 자동으로 재처리하고, 재처리에서도 실패하면 발송 이력을 `FAILED` 상태로 업데이트한 뒤 CloudWatch Alarm + Slack 알림을 전송합니다.
+
+```typescript
+// DLQ Consumer (개념 예시)
+async handleDlqMessage(message: Message) {
+  try {
+    await retrySend(message);
+  } catch (error) {
+    await this.messagingLogRepository.markFailed(message.logId, message.userIds);
+    await this.alarmService.notifyDlqFailure(message, error);
+  }
+}
+```
 
 ```yaml
 MessagingDLQ:
@@ -281,7 +355,7 @@ DLQAlarm:
 
 - **월 100만 건 이상** 안정적으로 처리
 - API 서버 부하 완전 분리 — 발송 처리가 서비스 응답 속도에 영향을 주지 않음
-- DLQ 기반 재처리로 발송 누락 방지
+- DLQ 자동 재처리 + 최종 실패 상태 관리로 발송 누락 추적 가능
 - 서버리스 구조로 캠페인 시 자동 확장, 평시에는 비용 거의 0원
 
 ---

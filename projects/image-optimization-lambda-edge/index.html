@@ -200,8 +200,7 @@ AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압�
 <pre class="mermaid">graph TB
     A[브라우저] -->|?w=400&h=300&f=webp&q=80| B[CloudFront]
     B --> C[CloudFront Functions]
-    C -->|검증 OK| D{캐시 확인}
-    C -.검증 실패.-> E[403 Forbidden]
+    C -->|검증/정규화| D{캐시 확인}
 
     D -->|캐시 HIT| A
     D -->|캐시 MISS| F[Lambda@Edge]
@@ -226,9 +225,9 @@ AVIF: 3.3KB (90.6% 감소)</code></pre><p><strong>결론:</strong> AVIF가 압�
 ?w=3&amp;h=3    // 3x3 픽셀
 ...
 ?w=5000&amp;h=5000  // 5000x5000 픽셀</code></pre><p>각각 Lambda 실행 → 캐시되지 않음 → 비용 폭증 💸</p>
-<h3 id="해결-cloudfront-functions로-검증">해결: CloudFront Functions로 검증</h3>
+<h3 id="해결-cloudfront-functions로-검증정규화">해결: CloudFront Functions로 검증/정규화</h3>
 <p>CloudFront Functions는 Lambda@Edge보다 <strong>1/6 저렴</strong>하고 <strong>10배 빠릅니다</strong>.</p>
-<p><strong>검증 로직 (실제 프로덕션 코드):</strong></p>
+<p><strong>핵심 정규화 로직 (요약):</strong></p>
 <pre><code class="language-javascript">// 상수 정의
 const MIN_WIDTH = 50;
 const MAX_WIDTH = 2000;
@@ -487,6 +486,35 @@ if (!contentType || !contentType.startsWith('image/')) {
 <li>캐시 키 개수는 100px 단위 대비 많지만, 충분히 높은 캐시 히트율(85%) 달성</li>
 <li>품질 저하 없이 캐시 효율을 확보하는 현실적인 균형점</li>
 </ul>
+<h3 id="캐시-무효화-전략">캐시 무효화 전략</h3>
+<p>상품 이미지가 교체되면 CloudFront에 캐시된 리사이즈 이미지도 무효화해야 합니다. 두 가지 방식을 비교했습니다.</p>
+<p><strong>URL 버저닝 vs S3 이벤트 트리거:</strong></p>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>URL 버저닝 (<code>?v=2</code>)</td>
+<td>구현 단순</td>
+<td>어드민/API 등 이미지 URL 참조하는 모든 곳 수정 필요</td>
+</tr>
+<tr>
+<td><strong>S3 이벤트 트리거</strong></td>
+<td>이미지 업로드 경로와 무관하게 중앙 처리</td>
+<td>Lambda 추가 구현 필요</td>
+</tr>
+</tbody></table>
+<p><strong>S3 이벤트 트리거 방식을 채택한 이유:</strong></p>
+<p>어드민에서 이미지를 업로드하는 경로가 상품 등록, 배너 관리, 프로모션 관리 등 다양했습니다. 각 경로마다 URL 버저닝 로직을 추가하는 것보다, S3에 이미지가 업로드되는 이벤트를 감지하여 중앙에서 처리하는 것이 개발 공수 면에서 효율적이었습니다.</p>
+<pre class="mermaid">graph LR
+    A[어드민 이미지 업로드] -->|PutObject| B[S3]
+    B -->|S3 Event| C[Lambda]
+    C -->|CreateInvalidation| D[CloudFront]
+    D -->|캐시 삭제| E[다음 요청 시 재생성]</pre><p>월 이미지 변경 건수가 100회 미만이므로 CloudFront Invalidation 무료 범위(월 1,000건) 내에서 운영 가능하며, 추가 비용이 발생하지 않습니다.</p>
 <hr>
 </section>
 <section class="content-section">
@@ -499,22 +527,27 @@ if (!contentType || !contentType.startsWith('image/')) {
 - ?w=388 → ?w=400
 - 같은 캐시 사용!</code></pre><p><strong>3단계: 인기 크기 사전 워밍 (히트율 85%)</strong></p>
 <pre><code class="language-">- CloudWatch 분석: 상위 10개 크기가 전체의 80% 차지
-- 인기 크기 (200, 400, 800, 1200px)를 배포 시 사전 생성</code></pre><p><strong>사전 워밍 스크립트:</strong></p>
+- 인기 크기 (200, 400, 800, 1200px)를 배포 시 사전 생성
+- 전체 객체가 아닌 상위 트래픽 자산만 제한적으로 워밍</code></pre><p><strong>사전 워밍 스크립트:</strong></p>
 <pre><code class="language-bash">#!/bin/bash
 
 POPULAR_SIZES=(200 400 800 1200)
-BUCKET=&quot;my-images-bucket&quot;
+POPULAR_KEYS_FILE=&quot;top-images.txt&quot;   # CloudWatch 로그 기준 상위 자산 목록
+MAX_WARM_REQUESTS=500                # 배포당 워밍 상한
+count=0
 
-for size in &quot;${POPULAR_SIZES[@]}&quot;; do
-  aws s3 ls s3://$BUCKET/products/ | while read -r line; do
-    file=$(echo $line | awk '{print $4}')
+while read -r file; do
+  for size in &quot;${POPULAR_SIZES[@]}&quot;; do
+    if [ &quot;$count&quot; -ge &quot;$MAX_WARM_REQUESTS&quot; ]; then
+      break 2
+    fi
 
-    # CloudFront URL 호출 (Lambda 실행 → 캐시 생성)
+    # CloudFront URL 호출 (Lambda 실행 -&gt; 캐시 생성)
     curl -s &quot;https://cdn.example.com/products/$file?w=$size&amp;h=$size&amp;f=webp&quot; &gt; /dev/null
-
+    count=$((count + 1))
     echo &quot;Warmed: $file @ ${size}px&quot;
   done
-done</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
+done &lt; &quot;$POPULAR_KEYS_FILE&quot;</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
 <hr>
 </section>
 <section class="content-section">
@@ -577,6 +610,12 @@ done</code></pre><p><strong>최종 히트율: 85%</strong> 🎉</p>
 </tr>
 </tbody></table>
 <p>CloudFront 데이터 전송 비용이 68% 감소했으며, 이는 이미지 서빙 관련 비용의 대부분을 차지하므로 <strong>CloudFront 전송 비용 약 75% 절감</strong> 효과를 달성했습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.</p>
+<p><strong>지표 기준 정리:</strong></p>
+<ul>
+<li><strong>68% 감소</strong>: CloudFront 전송량/전송비 감소율</li>
+<li><strong>약 75% 절감</strong>: 이미지 서빙 총비용 기준(전송비 + 처리비 포함, 전송비 비중이 대부분)</li>
+<li><strong>90% 절감</strong>: 비정상 파라미터 요청 방어 관점의 비용 추정치(Functions 미적용 대비)</li>
+</ul>
 <h3 id="성능-개선">성능 개선</h3>
 <table>
 <thead>
@@ -635,7 +674,7 @@ After:
 <p><strong>1. CloudFront Functions는 필수</strong></p>
 <ul>
 <li>Lambda@Edge만 쓰면 어뷰징에 취약</li>
-<li>Functions로 검증하면 비용 90% 절감</li>
+<li>Functions로 비정상 요청 방어 비용을 크게 절감 (내부 추정 약 90%)</li>
 <li>검증 로직은 가볍게, Lambda는 무겁게</li>
 </ul>
 <p><strong>2. 크기 정규화의 위력</strong></p>
@@ -701,7 +740,7 @@ After:
 
   <footer class="footer">
   <div class="container">
-    <p>&copy; 2025 Geunho Bang</p>
+    <p>&copy; 2026 Geunho Bang</p>
   </div>
 </footer>
 

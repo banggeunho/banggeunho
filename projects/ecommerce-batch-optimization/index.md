@@ -13,7 +13,7 @@ date: 2023-09-01
 4. [아키텍처 설계: 템플릿 메소드 패턴 선택 이유](#아키텍처-설계-템플릿-메소드-패턴-선택-이유)
 5. [핵심 구현 1: 템플릿 메소드 패턴으로 코드 중복 제거](#핵심-구현-1-템플릿-메소드-패턴으로-코드-중복-제거)
 6. [핵심 구현 2: CompletableFuture로 판매자별 병렬 처리](#핵심-구현-2-completablefuture로-판매자별-병렬-처리)
-7. [핵심 구현 3: 벌크 처리로 DB I/O 최적화](#핵심-구현-3-벌크-처리로-db-io-최적화)
+7. [핵심 구현 3: 벌크 처리로 DB 라운드트립 최적화](#핵심-구현-3-벌크-처리로-db-라운드트립-최적화)
 8. [핵심 구현 4: Jenkins 기반 재수집 시스템](#핵심-구현-4-jenkins-기반-재수집-시스템)
 9. [결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일](#결과-처리-시간-30분-3분-신규-커머스-추가-2주-2일)
 
@@ -123,7 +123,7 @@ public void collectLotteOrders() {
 - **처리 시간**: 30분 → 3분 (10배 단축)
 - **코드 중복**: 70% → 10% 이하
 - **신규 커머스 추가**: 2주 → 2일 (7배 단축)
-- **DB I/O**: 20,000번 → 3번
+- **DB 저장 단계**: 주문당 2회 개별 저장 → 3단계 벌크 처리
 
 ### 정성적 목표
 - 판매자별 병렬 처리로 처리 시간 최소화
@@ -368,10 +368,30 @@ public List<Order> collectFromSellers(List<String> apiKeys) {
 ```
 
 **After (판매자별 병렬):**
-```java
-public List<Order> collectFromSellers(List<String> apiKeys) {
-  ExecutorService executor = Executors.newFixedThreadPool(10);
 
+스레드 풀은 Spring의 `TaskExecutor` 빈으로 관리합니다. 매 실행마다 스레드 풀을 생성/소멸하는 대신 Spring 컨테이너가 라이프사이클을 관리하도록 했습니다.
+
+```java
+@Configuration
+public class BatchConfig {
+  @Bean("commerceTaskExecutor")
+  public TaskExecutor commerceTaskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(10);
+    executor.setMaxPoolSize(10);
+    executor.setThreadNamePrefix("commerce-");
+    executor.initialize();
+    return executor;
+  }
+}
+```
+
+```java
+@Autowired
+@Qualifier("commerceTaskExecutor")
+private TaskExecutor taskExecutor;
+
+public List<Order> collectFromSellers(List<String> apiKeys) {
   List<CompletableFuture<List<Order>>> futures = apiKeys.stream()
     .map(apiKey -> CompletableFuture.supplyAsync(
       () -> {
@@ -384,7 +404,7 @@ public List<Order> collectFromSellers(List<String> apiKeys) {
           return Collections.<Order>emptyList();
         }
       },
-      executor
+      taskExecutor
     ))
     .collect(Collectors.toList());
 
@@ -394,9 +414,7 @@ public List<Order> collectFromSellers(List<String> apiKeys) {
     .flatMap(Collection::stream)
     .collect(Collectors.toList());
 
-  executor.shutdown();
   // 판매자 20개 병렬 → 가장 느린 판매자 기준 약 2분
-
   return allOrders;
 }
 ```
@@ -414,9 +432,55 @@ public List<Order> collectFromSellers(List<String> apiKeys) {
 - 외부 API I/O 대기가 대부분이므로 CPU 바운드 아님
 - 향후 판매자 증가에도 충분한 여유
 
+### 에러 복구 전략
+
+판매자별 병렬 처리에서 실패 시 `emptyList()`를 반환하여 다른 판매자에 영향을 주지 않지만, 실패한 판매자의 주문이 유실될 수 있습니다. 이를 방지하기 위해 **실패 기록 → 재시도 → 최종 알림** 전략을 적용했습니다.
+
+```java
+public List<Order> collectFromSellers(List<String> apiKeys) {
+  List<CompletableFuture<CollectResult>> futures = apiKeys.stream()
+    .map(apiKey -> CompletableFuture.supplyAsync(
+      () -> {
+        try {
+          String token = authenticate(apiKey);
+          String response = fetchOrders(token);
+          return CollectResult.success(apiKey, parseResponse(response));
+        } catch (Exception e) {
+          log.error("Failed: {} - {}", getName(), apiKey, e);
+          return CollectResult.failure(apiKey, e);
+        }
+      },
+      taskExecutor
+    ))
+    .collect(Collectors.toList());
+
+  List<CollectResult> results = futures.stream()
+    .map(CompletableFuture::join)
+    .collect(Collectors.toList());
+
+  // 실패한 판매자를 재시도 테이블에 기록
+  List<CollectResult> failures = results.stream()
+    .filter(CollectResult::isFailed)
+    .collect(Collectors.toList());
+
+  if (!failures.isEmpty()) {
+    retryRepository.saveAll(failures.stream()
+      .map(f -> new RetryRecord(getName(), f.getApiKey(), LocalDateTime.now()))
+      .collect(Collectors.toList()));
+  }
+
+  return results.stream()
+    .filter(CollectResult::isSuccess)
+    .flatMap(r -> r.getOrders().stream())
+    .collect(Collectors.toList());
+}
+```
+
+배치는 5분 주기로 실행되며, 다음 배치에서 재시도 테이블을 확인하여 실패한 판매자의 주문을 우선 수집합니다. UPSERT 멱등성 덕분에 재시도 시에도 데이터 중복이 발생하지 않습니다. 3회 연속 실패 시 Slack 알림을 발송하여 운영팀이 개입할 수 있도록 했습니다.
+
 ---
 
-## 핵심 구현 3: 벌크 처리로 DB I/O 최적화
+## 핵심 구현 3: 벌크 처리로 DB 라운드트립 최적화
 
 ### 분산 DB 구조
 
@@ -429,7 +493,7 @@ public List<Order> collectFromSellers(List<String> apiKeys) {
 
 주문을 저장하려면 먼저 개인정보 DB에 배송지를 저장하고, 채번된 배송지 ID(FK)를 주문 DB의 주문 데이터에 매핑해야 합니다.
 
-### 문제: 주문 10,000건 = DB I/O 20,000번
+### 문제: 주문 10,000건 = DB 라운드트립 20,000번
 
 기존 방식은 주문 하나를 처리할 때마다 2번의 DB I/O가 발생했습니다.
 
@@ -444,10 +508,10 @@ for (Order order : orders) {
   orderDb.save(order);
 }
 
-// 주문 10,000건 → DB I/O 20,000번
+// 주문 10,000건 → DB 라운드트립 20,000번
 ```
 
-### 해결: 벌크 처리로 3번의 DB I/O
+### 해결: 3단계 벌크 저장으로 DB 호출 구간 최소화
 
 ```java
 public void saveOrdersBulk(List<Order> orders) {
@@ -475,8 +539,10 @@ public void saveOrdersBulk(List<Order> orders) {
   orderDb.saveAll(orders);
 }
 
-// 주문 10,000건 → DB I/O 3번
+// 주문 10,000건 처리도 "저장 로직 기준 3단계"로 단순화
 ```
+
+> 참고: ORM/JDBC 배치 설정(batch size)에 따라 실제 SQL 실행 횟수는 달라질 수 있으므로, 본 문서의 "3"은 물리 패킷 수가 아니라 **저장 로직 단계 수**를 의미합니다.
 
 ### 동시성 문제와 해결
 
@@ -652,7 +718,7 @@ public class SlackNotifier {
 | **처리 시간** | 30분 | 3분 | **10배 단축** |
 | **코드 중복** | 70% | 10% | **7배 감소** |
 | **신규 커머스 추가** | 2주 | 2일 | **7배 단축** |
-| **DB I/O** | 20,000번 | 3번 | **6,666배 감소** |
+| **DB 저장 방식** | 주문당 개별 저장(2회) | 3단계 벌크 처리 | **호출 구간 대폭 단순화** |
 
 ### 개선 경로
 
@@ -663,7 +729,7 @@ public class SlackNotifier {
   30분 → 가장 느린 판매자 기준으로 단축
 
 2단계 - 벌크 DB 처리:
-  개별 DB I/O 20,000번 → 3번으로 감소
+  개별 DB I/O 중심 저장 → 3단계 벌크 저장으로 전환
   DB 커넥션 대기 시간 대폭 단축
 
 최종: 30분 → 3분 (10배)

@@ -25,10 +25,10 @@ date: 2024-05-01
 **트래픽 규모:**
 ```
 - 일일 배너 이벤트(노출+클릭): 약 70만 건
-- 초당 수~수십 건의 SQL UPDATE 발생
+- 평균 초당 약 8건이지만, 인기 배너에 동시 요청이 집중되는 핫스팟 패턴
 ```
 
-매번 API 호출마다 MySQL DB에 직접 UPDATE 쿼리를 실행하는 구조였습니다.
+평균 수치만 보면 MySQL이 충분히 처리할 수 있는 수준이지만, 문제는 트래픽이 균등하게 분산되지 않는다는 점입니다. 특정 프로모션 배너에 노출/클릭이 집중되면 **같은 row에 동시 UPDATE가 몰려** Lock 경합이 발생합니다. 이는 단순 트래픽 과부하가 아닌, `INSERT ON DUPLICATE KEY UPDATE`의 구조적 Lock 메커니즘에 기인한 문제였습니다.
 
 ---
 
@@ -116,6 +116,9 @@ Redis에서 실시간 집계 후 주기적으로 DB에 동기화하는 Write-bac
 - 성능, 비용, 안정성 모두 균형
 - DB 부하를 근본적으로 해소
 
+> 당시에는 "고빈도 카운터 성능 문제를 가장 빠르게 해소"하는 것이 1순위였기 때문에 Redis Write-back이 최적의 선택이었습니다.
+> 다만 이후 정산/과금 데이터로 활용 범위가 확대되면서, 운영 과정에서 예외 처리 비용과 정합성 관리 비용이 예상보다 크게 증가했고 아키텍처를 재검토하게 되었습니다.
+
 ---
 
 ## 아키텍처 설계: Redis Write-back 전략
@@ -131,10 +134,11 @@ graph TB
     B -.Redis 실패.-> E[SQS Fallback]
     E --> F[SQS Consumer]
     F --> G[MySQL RDS]
+    J[배너 성과 조회 API] --> G
 
     H[EventBridge Scheduler] -->|10분마다| I[AWS Lambda]
     I -->|SCAN으로 데이터 조회| C
-    I -->|Bulk INSERT| G
+    I -->|Bulk REPLACE| G
 ```
 
 ### 배치 주기: 일일 1회에서 10분으로 변경
@@ -178,6 +182,20 @@ Fields:
 
 Redis는 싱글스레드로 동작하기 때문에 HINCRBY 명령어로 Lock 경합 없이 안정적으로 값을 누적할 수 있습니다. MySQL에서 발생하던 Row-level Lock과 Deadlock 문제가 원천적으로 해소됩니다.
 
+**TTL 및 메모리 관리:**
+
+각 키에 7일 TTL을 설정했습니다. 배치 동기화가 정상 작동하면 DB에 이미 반영된 데이터이므로 7일 이상 보관할 필요가 없습니다.
+
+```
+- 일당 활성 배너 수: 약 200~300개
+- 키 수: 일당 약 2,000개 (배너 × 날짜)
+- 7일 보관: 약 14,000개 키
+- 키당 크기: Hash 2필드 (IMPRESSION, CLICK) ≈ 100바이트
+- 총 메모리: 약 1.4MB
+```
+
+기존 ElastiCache 인스턴스에서 유의미한 메모리 영향이 없는 수준이며, 별도의 메모리 관리 전략이 불필요했습니다.
+
 ### API 구현
 
 **이벤트 카운트 증가:**
@@ -207,19 +225,30 @@ async incrementClick(@Param('id') bannerId: number) {
 }
 ```
 
-**실시간 조회:**
+**조회 API (DB only):**
+
+배너 성과 조회 API는 **Redis를 직접 조회하지 않고 DB만 단일 소스(Source of Truth)로 사용**합니다.  
+Write 경로만 Redis를 거치고, Read 경로는 항상 `banner_daily_stats`를 조회하도록 분리했습니다.
+
+- 장점: 조회 로직 단순화, 이중 합산/정합성 오류 방지
+- 트레이드오프: 최대 10분 지연 허용
+- 운영 보강: 매일 00시 이후 전일 데이터 1회 최종 REPLACE로 마감 정합성 보장
+
 ```typescript
 @Get('/banners/:id/stats')
-async getStats(@Param('id') bannerId: number) {
-  const dateKey = dayjs().format('YYYYMMDD');
-  const stats = await this.redis.hgetall(`${dateKey}:${bannerId}`);
+async getStats(
+  @Param('id') bannerId: number,
+  @Query('startDate') startDate: string,
+  @Query('endDate') endDate: string,
+) {
+  // 조회는 DB 단일 소스만 사용
+  const stats = await this.statsRepository.findByDateRange(
+    bannerId, startDate, endDate,
+  );
 
   return {
-    impressions: parseInt(stats.IMPRESSION || '0'),
-    clicks: parseInt(stats.CLICK || '0'),
-    ctr: stats.IMPRESSION > 0
-      ? (parseInt(stats.CLICK) / parseInt(stats.IMPRESSION) * 100).toFixed(2)
-      : 0
+    impressions: stats.impressions,
+    clicks: stats.clicks,
   };
 }
 ```
@@ -230,7 +259,12 @@ async getStats(@Param('id') bannerId: number) {
 
 ### 배치 아키텍처
 
-EventBridge Scheduler가 10분마다 Lambda를 트리거하여 Redis 데이터를 RDS에 동기화합니다.
+EventBridge Scheduler가 Lambda를 두 가지 모드로 트리거합니다.
+
+1. **정기 동기화 (10분마다)**: 당일 데이터를 REPLACE
+2. **전일 최종 확정 (자정 이후 1회)**: 전일 데이터(D-1)를 한 번 더 REPLACE
+
+전일 최종 확정 작업으로 날짜 경계(23:59~00:xx) 구간의 지연 이벤트까지 정리해, 조회 API가 DB만 바라봐도 일자별 정합성을 유지할 수 있습니다.
 
 **Lambda 함수:**
 ```typescript
@@ -262,21 +296,70 @@ export const handler = async () => {
 
   if (statsData.length === 0) return;
 
-  // 2. RDS에 Bulk INSERT
+  // 2. RDS에 Bulk REPLACE (누적값 통째로 교체)
   await db.transaction(async (trx) => {
     await trx('banner_daily_stats')
       .insert(statsData)
       .onConflict(['date', 'banner_id'])
       .merge({
-        impressions: trx.raw('banner_daily_stats.impressions + VALUES(impressions)'),
-        clicks: trx.raw('banner_daily_stats.clicks + VALUES(clicks)'),
+        impressions: trx.raw('VALUES(impressions)'),
+        clicks: trx.raw('VALUES(clicks)'),
       });
   });
 
-  // 3. 동기화 완료된 Redis 데이터 정리
-  await cleanupOldRedisData(7); // 일주일 이상 된 데이터 삭제
+  // 3. TTL 7일 이상 된 Redis 데이터 정리
+  await cleanupOldRedisData(7);
 };
 ```
+
+**전일 최종 확정 스케줄 (예시):**
+
+```yaml
+# 10분마다 정기 동기화
+BannerStatsSyncSchedule:
+  Type: AWS::Scheduler::Schedule
+  Properties:
+    ScheduleExpression: rate(10 minutes)
+    Target:
+      Input: '{"mode":"regular"}'
+
+# 매일 00:05 전일(D-1) 최종 REPLACE
+BannerStatsFinalizeSchedule:
+  Type: AWS::Scheduler::Schedule
+  Properties:
+    ScheduleExpression: cron(5 0 * * ? *)
+    Target:
+      Input: '{"mode":"finalize_yesterday"}'
+```
+
+**REPLACE 방식의 데이터 정합성:**
+
+배치 동기화는 INCREMENT(증분)가 아닌 **REPLACE(교체)** 방식입니다. Redis에 저장된 값은 HINCRBY로 계속 누적되는 값이므로, DB에는 Redis의 최신 누적값으로 통째로 교체합니다.
+
+이 방식의 장점은 정합성 관리가 단순해진다는 점입니다:
+
+- **SCAN~INSERT 사이에 새로운 HINCRBY가 발생하면?** → 다음 배치에서 최신 누적값으로 교체되므로 유실 없음
+- **Lambda가 DB INSERT 중 실패하면?** → Redis 데이터는 그대로 유지되므로, 다음 배치에서 최신 값으로 재시도하여 자동 복구
+- **같은 데이터가 2번 동기화되면?** → 동일한 값으로 교체될 뿐, 중복 적산되지 않음
+
+**운영 보강 (정산 데이터 안전장치):**
+
+정산/과금 데이터는 카운트 역행(값 감소)을 허용할 수 없기 때문에, 단순 REPLACE 대신 아래 가드레일을 추가했습니다.
+
+1. **역행 방지 Upsert (`GREATEST`)**
+```sql
+INSERT INTO banner_daily_stats (date, banner_id, impressions, clicks)
+VALUES (?, ?, ?, ?)
+ON DUPLICATE KEY UPDATE
+  impressions = GREATEST(banner_daily_stats.impressions, VALUES(impressions)),
+  clicks = GREATEST(banner_daily_stats.clicks, VALUES(clicks));
+```
+
+2. **역행 감지 알람**
+- 동기화 시 `incoming < current`가 감지되면 해당 키 동기화를 중단
+- CloudWatch + Slack 알람으로 즉시 운영자 개입
+
+이 가드레일로 Redis 데이터 이상 시 DB 카운트가 감소하는 사고를 방지했습니다.
 
 ### SCAN을 사용하는 이유
 
@@ -284,7 +367,7 @@ export const handler = async () => {
 
 ---
 
-## 핵심 구현 3: SQS Fallback으로 데이터 유실 방지
+## 핵심 구현 3: SQS Fallback으로 데이터 유실 방지 (초기 운영 단계)
 
 ### Redis 장애 시나리오
 
@@ -293,6 +376,9 @@ export const handler = async () => {
 - 메모리 부족 (OOM)
 
 이런 상황에서도 배너 성과 데이터를 유실하면 안 됩니다.
+
+> 이 Fallback은 **초기 운영 단계의 보호장치**로 도입했습니다.  
+> 정산/과금 기준이 강화된 이후에는 `date + banner_id` 기준 REPLACE 동기화에 `GREATEST` 역행 방지와 역행 감지 알람을 주 정합성 전략으로 적용했습니다.
 
 ### SQS Fallback 메커니즘
 
@@ -384,6 +470,22 @@ ElastiCache 측은 CPU나 메모리 사용률에 유의미한 영향이 없었�
 
 DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다.
 
+### 운영 후 회고: 아키텍처 전환 결정
+
+Redis Write-back은 **성능 문제를 빠르게 해결**하는 데는 효과적이었습니다. 그러나 실제 운영에서는 설계 단계에서 과소평가했던 비용이 드러났습니다.
+
+- 날짜 경계(23:59~00:xx) 정합성 보정
+- Redis 장애/재시작 시 역행 방지 로직
+- fallback, 재처리, 알람 운영 복잡도 증가
+- 정산/과금 분쟁 대응을 위한 원본 근거 데이터 요구
+
+결론적으로, 정산 데이터의 Source of Truth를 Redis 집계값에 두는 방식은 장기적으로 불리하다고 판단했습니다. 이후에는 **Firehose 기반 이벤트 원본 수집(S3 append-only) + 정산용 재집계 파이프라인**으로 전환했습니다.
+
+전환 후 구조는 다음 원칙을 따릅니다.
+- 원본 이벤트는 append-only로 보관 (감사 추적 가능)
+- 정산 집계는 event_id 기준 dedup + watermark 기반 마감
+- Redis는 정산 원장이 아니라 조회 성능 보조 용도로만 사용
+
 ---
 
 ## 배운 점
@@ -406,7 +508,7 @@ DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 
 - SQS + DLQ로 데이터 유실 방지
 - 추가 비용은 거의 없음
 
-**5. Bulk INSERT의 효과**
+**5. Bulk REPLACE의 효과**
 - 개별 INSERT 대비 DB 트랜잭션 횟수를 대폭 감소
 - 10분간 누적된 데이터를 한 번의 트랜잭션으로 동기화
 
@@ -416,8 +518,9 @@ DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 
 
 | 분류 | 기술 |
 |------|------|
-| **캐시** | Redis (ElastiCache) |
+| **캐시/집계(초기)** | Redis (ElastiCache) |
 | **데이터베이스** | MySQL (RDS) |
 | **배치 스케줄러** | AWS EventBridge Scheduler |
 | **배치 처리** | AWS Lambda |
 | **Fallback** | AWS SQS + DLQ |
+| **정산 파이프라인(후속 전환)** | AWS Firehose, S3, Athena/Redshift |

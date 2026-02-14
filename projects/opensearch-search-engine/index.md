@@ -106,7 +106,7 @@ graph TB
 
     G[관리자] -->|동의어/사전 수정| H[S3]
     H -->|트리거| I[Lambda]
-    I -->|재색인| D
+    I -->|패키지 업데이트| D
 ```
 
 **핵심 컴포넌트:**
@@ -152,6 +152,72 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상
 
 집계된 CTR 데이터를 상품 정보와 함께 OpenSearch에 색인합니다. 이렇게 하면 검색 시 별도의 CTR 조회 없이, Function Score Query로 CTR을 랭킹에 바로 반영할 수 있습니다.
 
+**신규 상품의 Cold-start 처리:**
+
+CTR 기반 랭킹의 가장 큰 약점은 신규 상품입니다. 노출 데이터가 없는 상품은 CTR이 0이므로, 검색 결과에서 밀려나 노출 기회를 얻지 못하는 악순환이 발생합니다(Exploration vs Exploitation 문제).
+
+이를 해결하기 위해 **최소 노출 기준(100회) 미달 상품에는 기본 CTR 값을 부여**했습니다. 기본 CTR은 해당 카테고리 상품들의 평균 CTR로 설정하여, 검색 점수에 중립적 영향(증가도 감소도 아닌)을 미치도록 했습니다. 신규 상품이 자연스럽게 노출되어 실제 CTR 데이터가 쌓이면 기본값은 실측값으로 교체됩니다.
+
+```sql
+-- 신규 상품에 카테고리 평균 CTR 부여
+WITH category_avg AS (
+  SELECT category_id, AVG(ctr) AS avg_ctr
+  FROM product_ctr_stats
+  WHERE impressions >= 100
+  GROUP BY category_id
+)
+SELECT
+  p.product_id,
+  COALESCE(s.ctr, ca.avg_ctr, 0.05) AS ctr  -- 실측값 → 카테고리 평균 → 기본값 5%
+FROM products p
+LEFT JOIN product_ctr_stats s ON p.product_id = s.product_id AND s.impressions >= 100
+LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
+```
+
+**3단계: Function Score Query로 BM25 + CTR 결합**
+
+검색 시 OpenSearch의 Function Score Query를 사용하여 BM25 텍스트 유사도 점수에 CTR을 반영합니다. CTR 값을 log 함수로 변환하여 극단적인 CTR 차이가 랭킹을 지배하지 않도록 완화하고, multiply 모드로 BM25 스코어와 결합합니다.
+
+```json
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "multi_match": {
+                "query": "나이키 운동화",
+                "fields": ["product_name^3", "brand^2", "category"],
+                "type": "cross_fields",
+                "analyzer": "nori_search"
+              }
+            }
+          ]
+        }
+      },
+      "functions": [
+        {
+          "field_value_factor": {
+            "field": "ctr",
+            "modifier": "log1p",
+            "factor": 10,
+            "missing": 0.05
+          }
+        }
+      ],
+      "boost_mode": "multiply",
+      "score_mode": "sum"
+    }
+  }
+}
+```
+
+- `modifier: "log1p"` — CTR에 log(1 + value)를 적용하여 극단값 완화
+- `factor: 10` — CTR 값이 0~1 사이로 작기 때문에 10을 곱해 BM25 스코어와 균형 조정
+- `missing: 0.05` — CTR 필드가 없는 경우 기본값 5% 적용
+- `boost_mode: "multiply"` — BM25 스코어 × CTR 팩터로 최종 점수 산출
+
 ### 검증: A/B 테스트
 
 1주일간 세션 기반 A/B 테스트를 진행했습니다.
@@ -159,7 +225,7 @@ HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상
 - **그룹 B (개선)**: OpenSearch + CTR 기반 랭킹 시스템
 
 **결과:**
-- CTR: 17% → 22.5% (**5.5% 향상**)
+- CTR: 17% → 22.5% (**+5.5%p, 상대 32% 향상**)
 - 상품 상세 페이지 진입율: (**11.75% 증가**) (A/B Test, p < 0.01)
 
 ---
@@ -206,6 +272,14 @@ async getSearchMetadata(category: string): Promise<SearchMetadata> {
 ```
 
 1분 TTL을 선택한 이유는, 상품 수나 필터 옵션, 할인 정보가 초 단위로 변하지 않으면서도 너무 오래된 데이터를 보여주지 않기 위한 균형점이었습니다.
+
+**캐싱 대상의 범위:**
+
+Redis에 캐싱하는 데이터는 **변동이 적은 메타데이터**에 한정했습니다. 검색 필터 옵션, 전체 상품 수, 즉시할인 잔액, 상단 노출 리스트 등이 이에 해당합니다. 반면 **가격, 재고 등 실시간 정합성이 중요한 데이터는 캐싱하지 않고**, OpenSearch 검색 후 DB에서 직접 조회하여 반영합니다.
+
+**캐시 스탬피드(Stampede) 이슈:**
+
+1분 TTL 만료 시 동시에 다수 요청이 캐시 미스를 경험하여 Redis/OpenSearch에 부하가 집중되는 스탬피드 문제가 우려될 수 있습니다. 그러나 TTL 만료 후 **첫 번째 요청이 캐시를 갱신**하면 이후 요청은 즉시 캐시 히트하므로, 실제로 OpenSearch에 동시에 도달하는 요청은 극히 소수입니다. 트래픽 규모에서 이 수준의 순간 부하는 문제가 되지 않아, 별도의 캐시 락이나 사전 갱신 전략은 적용하지 않았습니다.
 
 ### 결과: 응답 속도 50ms 달성
 
@@ -263,47 +337,80 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 }
 ```
 
-**3단계: S3 이벤트 → Lambda → 재색인**
+**3단계: S3 이벤트 → Lambda → 무중단 동의어 업데이트**
 
-S3에 TXT 파일이 업로드되면 Lambda가 자동으로 트리거되어 OpenSearch를 재색인합니다.
+S3에 TXT 파일이 업로드되면 Lambda가 자동으로 트리거되어 동의어를 업데이트합니다.
+
+기존에는 인덱스 close → 설정 변경 → open 방식을 고려했으나, close 동안 검색이 불가능해지는 문제가 있습니다. 이를 해결하기 위해 **동의어를 검색 분석기(search_analyzer)에만 적용하고, `synonym_graph` 타입을 사용**하는 방식을 채택했습니다.
+
+`synonym_graph`는 `synonym` 타입과 달리 다중 토큰 동의어를 정확하게 처리하며, search_analyzer에 적용하면 **인덱스 재생성 없이 동의어를 즉시 반영**할 수 있습니다. 색인 시에는 원본 텍스트 그대로 저장하고, 검색 시에만 동의어를 확장하는 방식이므로 기존 문서의 재색인이 불필요합니다.
 
 ```typescript
 export const handler = async (event: S3Event) => {
-  // 1. S3에서 동의어/사전 TXT 다운로드
+  // 1. S3에서 동의어 TXT 다운로드
   const synonyms = await downloadFromS3(event);
 
-  // 2. OpenSearch 동의어 필터 업데이트
-  // 인덱스 close → 설정 변경 → open 순서로 무중단 반영
-  await openSearch.indices.close({ index: 'products' });
-  await openSearch.indices.putSettings({
-    index: 'products',
-    body: {
-      settings: {
-        analysis: {
-          filter: {
-            synonym_filter: {
-              type: 'synonym',
-              synonyms_path: 'synonyms.txt',
-            },
-          },
-        },
-      },
+  // 2. 동의어 파일을 OpenSearch 패키지로 업데이트
+  await openSearch.updatePackage({
+    PackageID: SYNONYM_PACKAGE_ID,
+    PackageSource: {
+      S3BucketName: event.Records[0].s3.bucket.name,
+      S3Key: event.Records[0].s3.object.key,
     },
   });
-  await openSearch.indices.open({ index: 'products' });
 
-  // 3. 재색인 (기존 문서에 새로운 동의어 적용)
-  await openSearch.indices.updateByQuery({
-    index: 'products',
-    refresh: true,
+  // 3. 패키지를 도메인에 연결 (무중단)
+  await openSearch.associatePackage({
+    PackageID: SYNONYM_PACKAGE_ID,
+    DomainName: OPENSEARCH_DOMAIN,
   });
+
+  // search_analyzer에 synonym_graph 필터가 적용되어 있으므로
+  // 패키지 업데이트만으로 검색 시 새로운 동의어가 즉시 반영됨
+  // 인덱스 close/open이나 재색인이 필요 없음
 };
 ```
+
+**인덱스 설정 (최초 1회):**
+
+```json
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "synonym_filter": {
+          "type": "synonym_graph",
+          "synonyms_path": "synonyms.txt",
+          "updateable": true
+        }
+      },
+      "analyzer": {
+        "nori_search": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["synonym_filter", "lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "product_name": {
+        "type": "text",
+        "analyzer": "nori_index",
+        "search_analyzer": "nori_search"
+      }
+    }
+  }
+}
+```
+
+색인 시에는 `nori_index` 분석기(동의어 미포함)를, 검색 시에는 `nori_search` 분석기(동의어 포함)를 사용합니다. 이 분리 덕분에 동의어 업데이트 시 기존 인덱스를 건드리지 않고 검색 품질만 개선할 수 있습니다.
 
 ### 결과: 30분 → 5분 (6배 단축)
 
 - 마케팅팀이 어드민 페이지에서 동의어/사전 수정 (1분)
-- TXT 파일이 S3에 업로드되고 Lambda가 자동으로 재색인 (4분)
+- TXT 파일이 S3에 업로드되고 Lambda가 패키지를 자동 업데이트 (4분)
 - **총 소요 시간: 5분**
 - **개발자 개입: 0분**
 
@@ -316,7 +423,7 @@ export const handler = async (event: S3Event) => {
 | 지표 | Before | After | 개선율 |
 |------|--------|-------|--------|
 | **검색 응답 속도** | 1~2초 | 50ms | **약 30배** |
-| **CTR** | 17% | 22.5% | **32% 향상** |
+| **CTR** | 17% | 22.5% | **+5.5%p (상대 32% 향상)** |
 | **상품 상세 페이지 진입율** | - | - | **11.75% 증가** |
 | **동의어 업데이트** | 30분 | 5분 | **6배 단축** |
 
@@ -341,7 +448,7 @@ export const handler = async (event: S3Event) => {
 
 ### 2. 데이터 주도 의사결정의 중요성
 
-A/B 테스트 없이 "이게 더 나을 것 같다"는 직감만으로 개발했다면, CTR 5.5% 향상이라는 성과를 증명할 수 없었을 것입니다. 모든 주요 변경사항은 A/B 테스트로 검증했고, 이는 팀 내부 설득에도 큰 도움이 되었습니다.
+A/B 테스트 없이 "이게 더 나을 것 같다"는 직감만으로 개발했다면, CTR **+5.5%p (상대 32% 향상)**라는 성과를 증명할 수 없었을 것입니다. 모든 주요 변경사항은 A/B 테스트로 검증했고, 이는 팀 내부 설득에도 큰 도움이 되었습니다.
 
 ### 3. 비용과 성능의 트레이드오프
 

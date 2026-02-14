@@ -108,8 +108,8 @@ graph TB
     end
 
     subgraph 수집_파이프라인["② 수집 파이프라인 (AWS Managed)"]
-        B -->|JSON 스트림| C[AWS Firehose<br/>버퍼링: 5MB / 5분]
-        C -->|배치 전달| D[Lambda<br/>Parquet + Snappy 변환]
+        B -->|JSON 스트림| C[AWS Firehose<br/>버퍼링: 64MB / 5분]
+        C -->|네이티브 변환<br/>Glue Schema 참조| D[Parquet + Snappy]
     end
 
     subgraph 저장["③ 저장"]
@@ -118,7 +118,7 @@ graph TB
 
     subgraph 분석_레이어["④ 분석 레이어"]
         E -->|"즉시 조회 (5분 지연)"| F[Athena<br/>서버리스 쿼리]
-        E -->|"매일 새벽 COPY"| G[Redshift<br/>데이터 웨어하우스]
+        E -->|"30분 증분 COPY"| G[Redshift<br/>데이터 웨어하우스]
     end
 
     subgraph 시각화["⑤ 시각화"]
@@ -132,35 +132,35 @@ graph TB
 ```typescript
 // 구매
 POST /events/purchase
-{ userId, productId, amount, timestamp }
+{ eventId, userId, productId, amount, timestamp }
 
 // 상품상세 조회
 POST /events/view
-{ userId, productId, timestamp }
+{ eventId, userId, productId, timestamp }
 
 // 장바구니 담기
 POST /events/cart
-{ userId, productId, timestamp }
+{ eventId, userId, productId, timestamp }
 
 // 검색
 POST /events/search
-{ userId, keyword, timestamp }
+{ eventId, userId, keyword, timestamp }
 
 // 배너 클릭/노출
 POST /events/banner
-{ userId, bannerId, type: 'click' | 'view', timestamp }
+{ eventId, userId, bannerId, type: 'click' | 'view', timestamp }
 
 // 페이지 이동
 POST /events/pageview
-{ userId, page, referrer, timestamp }
+{ eventId, userId, page, referrer, timestamp }
 
 // 회원가입
 POST /events/signup
-{ userId, channel, timestamp }
+{ eventId, userId, channel, timestamp }
 
 // 로그인
 POST /events/login
-{ userId, timestamp }
+{ eventId, userId, timestamp }
 ```
 
 ---
@@ -179,23 +179,19 @@ EventsFirehose:
       BucketARN: !GetAtt EventsBucket.Arn
       Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
       ErrorOutputPrefix: errors/
-      CompressionFormat: GZIP
       BufferingHints:
-        SizeInMBs: 5
+        SizeInMBs: 64          # Parquet 네이티브 변환 시 최소 64MB 권장
         IntervalInSeconds: 300  # 5분마다 저장
-      ProcessingConfiguration:
+      # Parquet 네이티브 변환은 "핵심 구현 2"에서 상세 설명
+      DataFormatConversionConfiguration:
         Enabled: true
-        Processors:
-          - Type: Lambda
-            Parameters:
-              - ParameterName: LambdaArn
-                ParameterValue: !GetAtt ParquetTransformLambda.Arn
 ```
 
 **버퍼링 설정 선택 이유:**
-- 5MB 또는 5분 중 먼저 도달하는 조건으로 동작합니다.
+- 64MB 또는 5분 중 먼저 도달하는 조건으로 동작합니다.
+- Parquet 네이티브 변환 시 AWS 권장 최소 버퍼 크기가 64MB
+- 버퍼가 클수록 하나의 Parquet 파일에 더 많은 레코드가 담겨 Athena 쿼리 효율 향상
 - 트래픽이 적으면 5분 대기 (비용 절감)
-- 트래픽이 많으면 5MB마다 저장 (지연 최소화)
 
 ### API 통합
 
@@ -213,6 +209,7 @@ export class EventService {
       DeliveryStreamName: 'user-events-stream',
       Record: {
         Data: JSON.stringify({
+          event_id: event.eventId,   // dedup 기준 키
           ...event,
           timestamp: Date.now(),
           server_timestamp: new Date().toISOString()
@@ -251,60 +248,62 @@ await firehose.putRecordBatch({
 | Parquet | 300MB | $5/TB × 0.3GB = $0.0015 | 2초 |
 | **절감** | **70%** | **70%** | **5배** |
 
-### Lambda Transform 함수
+### Firehose 네이티브 Parquet 변환
 
-**Parquet 변환 (PyArrow):**
+Parquet의 장점은 컬럼 스토리지로 **대량의 레코드를 하나의 파일에 담았을 때** 나타납니다. Lambda Transform에서 레코드를 개별 Parquet 파일로 변환하면 오히려 JSON보다 파일이 커지고, Athena에서 Small File Problem이 발생합니다.
 
-Firehose는 이벤트를 배치(최대 3MB 또는 900초)로 묶어서 Lambda에 전달합니다. Lambda는 배치 내 모든 레코드를 변환하여 반환합니다.
+이를 해결하기 위해 **Firehose의 네이티브 Record Format Conversion** 기능을 활용했습니다. Firehose가 버퍼링한 배치 데이터를 Glue Data Catalog의 스키마 정의를 참조하여 Parquet으로 자동 변환합니다. Lambda Transform 없이도 Firehose 레벨에서 효율적인 Parquet 파일이 생성됩니다.
 
-```python
-import json
-import base64
-import pyarrow as pa
-import pyarrow.parquet as pq
-from io import BytesIO
-
-def lambda_handler(event, context):
-    output = []
-
-    # Firehose가 배치로 전달한 레코드들을 순회
-    for record in event['records']:
-        # 1. Base64 디코딩
-        payload = base64.b64decode(record['data']).decode('utf-8')
-        data = json.loads(payload)
-
-        # 2. 스키마 정의
-        schema = pa.schema([
-            ('user_id', pa.int64()),
-            ('event_type', pa.string()),
-            ('product_id', pa.int64()),
-            ('amount', pa.float64()),
-            ('timestamp', pa.timestamp('ms')),
-            ('server_timestamp', pa.timestamp('ms'))
-        ])
-
-        # 3. Parquet로 변환
-        table = pa.Table.from_pydict({
-            'user_id': [data['userId']],
-            'event_type': [data['eventType']],
-            'product_id': [data.get('productId')],
-            'amount': [data.get('amount')],
-            'timestamp': [pa.scalar(data['timestamp'], type=pa.timestamp('ms'))],
-            'server_timestamp': [pa.scalar(data['server_timestamp'], type=pa.timestamp('ms'))]
-        }, schema=schema)
-
-        # 4. 바이너리로 변환
-        buf = BytesIO()
-        pq.write_table(table, buf, compression='snappy')
-
-        output.append({
-            'recordId': record['recordId'],
-            'result': 'Ok',
-            'data': base64.b64encode(buf.getvalue()).decode('utf-8')
-        })
-
-    return {'records': output}
+**Glue Data Catalog 테이블 정의:**
+```sql
+-- Glue Data Catalog에 스키마 등록
+CREATE EXTERNAL TABLE events_schema (
+  event_id STRING,
+  user_id BIGINT,
+  event_type STRING,
+  product_id BIGINT,
+  amount DOUBLE,
+  `timestamp` TIMESTAMP,
+  server_timestamp TIMESTAMP
+)
+STORED AS PARQUET
+LOCATION 's3://my-events-bucket/events/'
+TBLPROPERTIES ('parquet.compression'='SNAPPY');
 ```
+
+**CloudFormation — Firehose Record Format Conversion 설정:**
+```yaml
+EventsFirehose:
+  Type: AWS::KinesisFirehose::DeliveryStream
+  Properties:
+    DeliveryStreamName: user-events-stream
+    ExtendedS3DestinationConfiguration:
+      BucketARN: !GetAtt EventsBucket.Arn
+      Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
+      ErrorOutputPrefix: errors/
+      BufferingHints:
+        SizeInMBs: 64        # Parquet 변환 시 최소 64MB 권장
+        IntervalInSeconds: 300
+      # Parquet 네이티브 변환 설정
+      DataFormatConversionConfiguration:
+        Enabled: true
+        InputFormatConfiguration:
+          Deserializer:
+            OpenXJsonSerDe: {}    # JSON 입력 파싱
+        OutputFormatConfiguration:
+          Serializer:
+            ParquetSerDe:
+              Compression: SNAPPY  # 빠른 압축 + 적절한 압축률
+        SchemaConfiguration:
+          DatabaseName: !Ref GlueDatabase
+          TableName: !Ref GlueTable
+          RoleARN: !GetAtt FirehoseRole.Arn
+```
+
+**네이티브 변환의 장점:**
+- Firehose가 버퍼링한 데이터를 **한 파일로 묶어** Parquet 변환 → Small File Problem 방지
+- Lambda Transform 비용 제거 (Lambda 실행 비용, 메모리 비용 불필요)
+- Glue Data Catalog 기반 스키마 관리로 스키마 변경이 중앙화
 
 **압축 알고리즘 비교:**
 ```
@@ -312,6 +311,23 @@ def lambda_handler(event, context):
 - GZIP: 300MB (느림, 저렴)
 - Snappy: 350MB (빠름, 중간) ✅ 선택
 ```
+
+### 스키마 진화(Schema Evolution) 전략
+
+이벤트 타입이 추가되거나 필드가 변경되는 것은 데이터 파이프라인에서 가장 빈번하게 발생하는 변경 사항입니다.
+
+**하위 호환성 원칙:**
+- 새 필드는 **nullable로만 추가** (기존 레코드에 영향 없음)
+- 필드 삭제/타입 변경은 금지 → 새 필드를 추가하고 기존 필드는 deprecated 처리
+- 이벤트 타입(`event_type`)은 문자열이므로 새 타입 추가 시 스키마 변경 불필요
+
+**변경 프로세스:**
+1. Glue Data Catalog 스키마에 새 컬럼 추가
+2. Athena 테이블에 `ALTER TABLE ADD COLUMNS` 실행
+3. Redshift 테이블에 `ALTER TABLE ADD COLUMN` 실행
+4. Firehose는 스키마 변경을 자동으로 반영 (재시작 불필요)
+
+Parquet의 self-describing 특성 덕분에, 새 필드가 추가된 파일과 기존 파일이 공존해도 Athena가 정상적으로 쿼리할 수 있습니다. 기존 파일에서 새 필드는 NULL로 반환됩니다.
 
 ---
 
@@ -360,6 +376,7 @@ FORMAT AS PARQUET;
 **테이블 구조:**
 ```sql
 CREATE TABLE analytics.events (
+  event_id VARCHAR(64),
   user_id BIGINT,
   event_type VARCHAR(50),
   product_id BIGINT,
@@ -371,7 +388,7 @@ DISTKEY(user_id)
 SORTKEY(timestamp);
 ```
 
-S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으로 파티션으로 인식되며, Redshift에는 날짜별로 COPY 명령을 실행하여 적재합니다.
+S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으로 파티션으로 인식되며, Redshift에는 30분 간격 증분 COPY를 실행합니다. 증분 범위는 `server_timestamp` 워터마크를 기준으로 관리합니다.
 
 ### Tableau 연동 및 최신 데이터 적재
 
@@ -387,11 +404,33 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 | 단계 | Before            | After |
 |------|-------------------|-------|
 | 데이터 수집 | 어드민 다운로드 / 개발팀 요청 | 자동 (Firehose) |
-| 전처리 | 수동 (1시간)          | 자동 (Lambda) |
+| 전처리 | 수동 (1시간)          | 자동 (Firehose 네이티브 변환) |
 | 적재 | 수동 (1시간)          | 자동 (S3) |
 | **리드타임** | **1~2일**          | **30분** |
 
 기존에는 데이터 담당자가 어드민에서 직접 다운로드하거나 개발팀에 데이터를 요청한 뒤, 전처리를 거쳐 수동으로 적재해야 했습니다. 파이프라인 구축 후 이 과정이 완전히 자동화되었습니다.
+
+### 데이터 품질 검증
+
+```
+- 데이터 유실: 측정 기간 6개월간 0건
+- 검증 방법: API 전송 건수(CloudWatch PutRecord 메트릭) vs S3 적재 건수(Athena COUNT) 일일 비교
+- 에러 핸들링: Firehose가 변환 실패 레코드를 errors/ 프리픽스에 자동 분리 저장
+- 중복 처리: Firehose at-least-once 특성상 소수 중복 가능 → `event_id` 기준 dedup 뷰/집계로 정산 반영
+```
+
+Firehose의 자동 재시도 메커니즘과 ErrorOutputPrefix 설정으로, 변환에 실패한 레코드도 별도 경로에 보관되어 원인 분석과 재처리가 가능합니다.
+
+### 비즈니스 임팩트
+
+| 항목 | 변화 |
+|------|------|
+| **마케팅팀 데이터 요청** | 주 5~10건 → 직접 Tableau 조회 (요청 자체가 불필요) |
+| **캠페인 의사결정 속도** | 캠페인 종료 후 1~2일 → 당일 오후 성과 확인 가능 |
+| **개발자 시간 절약** | 월 40시간 (데이터 추출 작업 제거) |
+| **데이터 활용 범위** | 월간 리포트 → 일일 대시보드 + 실시간 모니터링 |
+
+특히 마케팅팀이 **캠페인 진행 중에 실시간으로 성과를 확인**하고 타겟팅을 조정할 수 있게 되면서, 데이터 기반 의사결정의 속도가 근본적으로 달라졌습니다.
 
 ### 비용
 
@@ -399,7 +438,6 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 |------|------|
 | **추가 인프라 비용** | 월 약 10만원 |
 | **스토리지 절감** | Parquet 적용으로 70% 절감 |
-| **개발자 시간 절약** | 월 40시간 (데이터 추출 작업 제거) |
 
 ### 처리 성능
 
@@ -407,13 +445,7 @@ S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으
 - 월 평균 처리량: 3,000만 건
 - 월 피크 처리량: 5,000만 건
 - 일 평균: 100만 건
-- 데이터 유실: 측정 기간 6개월간 0건 (AWS SDK, Firehose 자동 재시도)
 ```
-
-### 자동화 성과
-
-- Tableau 대시보드 자동 업데이트
-- 개발팀 데이터 요청 대응 시간: 1~2일 → 불필요
 
 ---
 
@@ -448,11 +480,11 @@ s3://bucket/events/year=2024/month=05/day=08/
 
 ## 기술 스택
 
-| 분류 | 기술                               |
-|------|----------------------------------|
-| **이벤트 수집** | AWS Data Firehose  (서버리스) |
-| **데이터 변환** | AWS Lambda (Python, PyArrow)     |
-| **스토리지** | S3 (Parquet + Snappy)            |
-| **쿼리 엔진** | Athena (서버리스)                    |
-| **데이터 웨어하우스** | Redshift (서버리스)                  |
-| **시각화** | Tableau                          |
+| 분류 | 기술 |
+|------|------|
+| **이벤트 수집** | AWS Data Firehose (서버리스) |
+| **데이터 변환** | Firehose 네이티브 변환 (Glue Data Catalog) |
+| **스토리지** | S3 (Parquet + Snappy) |
+| **쿼리 엔진** | Athena (서버리스) |
+| **데이터 웨어하우스** | Redshift (서버리스) |
+| **시각화** | Tableau |
