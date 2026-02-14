@@ -3,7 +3,7 @@
     {
       "id": "opensearch-search-engine",
       "title": "검색 엔진 전면 개편",
-      "description": "AWS OpenSearch 도입으로 CTR 32% 향상, 응답속도 약 30배 개선 (1~2초→50ms). Redis 캐싱으로 월 비용 30% 절감",
+      "description": "AWS OpenSearch 도입으로 CTR +5.5%p(상대 32%) 향상, 응답속도 약 30배 개선 (1~2초→50ms). Redis 캐싱으로 부가 조회 300ms→50ms 단축",
       "image": "projects/opensearch-search-engine/images/thumbnail.svg",
       "tags": ["AWS OpenSearch", "NestJS", "Redis"],
       "github": "https://github.com/banggeunho",
@@ -19,6 +19,15 @@
       "link": "projects/image-optimization-lambda-edge/"
     },
     {
+      "id": "nestjs-platform-migration",
+      "title": "NestJS 마이그레이션",
+      "description": "Express + SST 모놀리식에서 NestJS로 마이그레이션. 도메인별 모듈 분리, ECS 컨테이너 배포 환경 구축, QA 병렬 배포 도입으로 배포 병목 해소",
+      "image": "projects/nestjs-platform-migration/images/thumbnail.svg",
+      "tags": ["NestJS", "AWS ECS", "MySQL 8.0"],
+      "github": "https://github.com/banggeunho",
+      "link": "projects/nestjs-platform-migration/"
+    },
+    {
       "id": "redis-writeback-optimization",
       "title": "배너 성과 집계 API 성능 최적화",
       "description": "Redis Write-back 패턴으로 Write IOPS 10배 이상 감소, Row-level Lock/Deadlock 해소. 기존 ElastiCache 활용으로 추가 비용 없이 DB 부하 개선",
@@ -28,6 +37,15 @@
       "link": "projects/redis-writeback-optimization/"
     },
     {
+      "id": "ecommerce-batch-optimization",
+      "title": "e커머스 주문 수집 배치 성능 개선",
+      "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 1,000+ 라인 코드 중복 70% 감소, DB 저장을 개별 처리에서 3단계 벌크 처리로 전환",
+      "image": "projects/ecommerce-batch-optimization/images/thumbnail.svg",
+      "tags": ["Java", "Spring Boot", "Batch"],
+      "github": "https://github.com/banggeunho",
+      "link": "projects/ecommerce-batch-optimization/"
+    },
+    {
       "id": "data-pipeline-firehose",
       "title": "사용자 이벤트 로그 데이터 파이프라인",
       "description": "AWS Firehose 기반 실시간 파이프라인 구축. 데이터 리드타임 1~2일 → 30분, 월 평균 3,000만 건 처리. Parquet 변환으로 Athena 쿼리 5배 향상",
@@ -35,33 +53,6 @@
       "tags": ["AWS Firehose", "Athena", "Redshift"],
       "github": "https://github.com/banggeunho",
       "link": "projects/data-pipeline-firehose/"
-    },
-    {
-      "id": "ecommerce-batch-optimization",
-      "title": "e커머스 주문 수집 배치 성능 개선",
-      "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 1,000+ 라인 코드 중복 70% 감소, DB I/O 20,000→3",
-      "image": "projects/ecommerce-batch-optimization/images/thumbnail.svg",
-      "tags": ["Java", "Spring Boot", "Batch"],
-      "github": "https://github.com/banggeunho",
-      "link": "projects/ecommerce-batch-optimization/"
-    },
-    {
-      "id": "sqs-lambda-messaging",
-      "title": "SQS + Lambda 대량 문자 발송 시스템",
-      "description": "SQS + Lambda 기반 비동기 처리로 월 100만 건 이상 안정 발송. API 서버 부하 분리, DLQ 기반 실패 재처리로 발송 신뢰성 확보",
-      "image": "projects/sqs-lambda-messaging/images/thumbnail.svg",
-      "tags": ["AWS SQS", "Lambda", "NestJS"],
-      "github": "https://github.com/banggeunho",
-      "link": "projects/sqs-lambda-messaging/"
-    },
-    {
-      "id": "nestjs-platform-migration",
-      "title": "NestJS 마이그레이션",
-      "description": "Express + SST 모놀리식에서 NestJS로 마이그레이션. 도메인별 모듈 분리, ECS 컨테이너 배포 환경 구축, QA 병렬 배포 도입으로 배포 병목 해소",
-      "image": "projects/nestjs-platform-migration/images/thumbnail.svg",
-      "tags": ["NestJS", "AWS ECS", "MySQL 8.0"],
-      "github": "https://github.com/banggeunho",
-      "link": "projects/nestjs-platform-migration/"
     }
   ]
 }
