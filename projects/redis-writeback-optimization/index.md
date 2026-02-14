@@ -297,14 +297,15 @@ export const handler = async () => {
   if (statsData.length === 0) return;
 
   // 2. RDS에 Bulk REPLACE (누적값 통째로 교체)
+  // 정산 안전장치: GREATEST로 카운트 역행 방지 (아래 "운영 보강" 참조)
   await db.transaction(async (trx) => {
-    await trx('banner_daily_stats')
-      .insert(statsData)
-      .onConflict(['date', 'banner_id'])
-      .merge({
-        impressions: trx.raw('VALUES(impressions)'),
-        clicks: trx.raw('VALUES(clicks)'),
-      });
+    await trx.raw(`
+      INSERT INTO banner_daily_stats (date, banner_id, impressions, clicks)
+      VALUES ${statsData.map(() => '(?, ?, ?, ?)').join(', ')}
+      ON DUPLICATE KEY UPDATE
+        impressions = GREATEST(banner_daily_stats.impressions, VALUES(impressions)),
+        clicks = GREATEST(banner_daily_stats.clicks, VALUES(clicks))
+    `, statsData.flatMap(s => [s.date, s.bannerId, s.impressions, s.clicks]));
   });
 
   // 3. TTL 7일 이상 된 Redis 데이터 정리
@@ -444,6 +445,15 @@ BannerStatsDLQ:
 
 ## 결과: DB 부하 10배 감소
 
+### 지표 정의와 측정 기준
+
+| 지표 | 값 | 측정 기준/기간 | 출처 |
+|------|----|----------------|------|
+| **Write IOPS 감소율** | **10배 이상 감소** | 적용 전/후 동일 트래픽 구간 비교 (운영 관측) | RDS 모니터링 대시보드 |
+| **RDS CPU 사용률** | **약 20% 감소** | 적용 전/후 평균 CPU 비교 | CloudWatch `CPUUtilization` |
+| **EC2 CPU 사용률** | **약 8% 감소** | 적용 전/후 평균 CPU 비교 | CloudWatch `CPUUtilization` |
+| **Row-level Lock/Deadlock** | **운영 관측상 해소** | 적용 후 동일 이벤트 피크 구간 관찰 | DB lock/deadlock 로그 |
+
 ### 성능 개선
 
 | 지표 | 개선 내용 |
@@ -464,11 +474,11 @@ ElastiCache 측은 CPU나 메모리 사용률에 유의미한 영향이 없었�
 | **EventBridge + Lambda** | 월 $1 미만 |
 | **SQS** | Fallback 전용 (월 $0.5 미만) |
 
-기존 인프라를 그대로 활용하면서 성능, 비용, 안정성 모두 개선할 수 있었습니다.
+비용 지표는 AWS 청구서 기준 월 평균 관측값입니다. 기존 인프라를 그대로 활용하면서 성능, 비용, 안정성 모두 개선할 수 있었습니다.
 
 ### 다른 API 성능 회복
 
-DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다.
+DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다(운영 관측). 다만 서비스별 절대 응답시간은 트래픽/쿼리 특성이 달라 공통 단일 수치로 제시하지 않았습니다.
 
 ### 운영 후 회고: 아키텍처 전환 결정
 

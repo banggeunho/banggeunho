@@ -326,7 +326,7 @@ const s3 = new AWS.S3();
 
 exports.handler = async (event) =&gt; {
   const request = event.Records[0].cf.request;
-  const querystring = request.querystring;
+  const params = new URLSearchParams(request.querystring);
 
   // 1. 원본 이미지 가져오기
   const key = request.uri.substring(1); // /products/123.jpg -&gt; products/123.jpg
@@ -336,10 +336,10 @@ exports.handler = async (event) =&gt; {
   }).promise();
 
   // 2. 파라미터 파싱
-  const width = parseInt(querystring.w?.value) || null;
-  const height = parseInt(querystring.h?.value) || null;
-  const format = querystring.f?.value || 'jpg';
-  const quality = parseInt(querystring.q?.value) || 80;
+  const width = parseInt(params.get('w')) || null;
+  const height = parseInt(params.get('h')) || null;
+  const format = params.get('f') || 'jpg';
+  const quality = parseInt(params.get('q')) || 80;
 
   // 3. 이미지 처리
   let image = sharp(s3Object.Body);
@@ -553,6 +553,41 @@ done &lt; &quot;$POPULAR_KEYS_FILE&quot;</code></pre><p><strong>최종 히트율
 <section class="content-section">
 <h2 id="결과-비용-75-절감-속도-50-개선">결과: 비용 75% 절감, 속도 50% 개선</h2>
 <h3 id="실제-측정-데이터">실제 측정 데이터</h3>
+<h3 id="지표-정의와-측정-기준">지표 정의와 측정 기준</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>측정 기간/기준</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CloudFront 전송량/전송비 감소율</strong></td>
+<td><strong>68%</strong></td>
+<td>2024-04-03(적용 전) vs 2024-05-26(적용 후)</td>
+<td>CloudFront Usage 리포트</td>
+</tr>
+<tr>
+<td><strong>전송량 감소율 (보조 샘플)</strong></td>
+<td><strong>70%</strong></td>
+<td>2024-04-27 vs 2024-05-24</td>
+<td>CloudFront Usage 리포트</td>
+</tr>
+<tr>
+<td><strong>이미지 서빙 총비용 절감율</strong></td>
+<td><strong>약 75%</strong></td>
+<td>전송비 + Lambda@Edge 처리비 합산, 적용 전/후 월 비교</td>
+<td>CloudFront + Lambda 비용 집계</td>
+</tr>
+<tr>
+<td><strong>어뷰징 방어 비용 절감 추정치</strong></td>
+<td><strong>약 90% (내부 추정)</strong></td>
+<td>CloudFront Functions 미적용 가정 시뮬레이션</td>
+<td>운영 로그 기반 내부 추정</td>
+</tr>
+</tbody></table>
 <p><strong>배포 단계별 적용:</strong></p>
 <ol>
 <li>5월 15일: 혜택탭 전체 적용</li>
@@ -609,11 +644,11 @@ done &lt; &quot;$POPULAR_KEYS_FILE&quot;</code></pre><p><strong>최종 히트율
 <td><strong>68% ⬇️</strong></td>
 </tr>
 </tbody></table>
-<p>CloudFront 데이터 전송 비용이 68% 감소했으며, 이는 이미지 서빙 관련 비용의 대부분을 차지하므로 <strong>CloudFront 전송 비용 약 75% 절감</strong> 효과를 달성했습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.</p>
+<p>CloudFront 데이터 전송 비용이 68% 감소했고, 이미지 서빙 비용에서 전송비 비중이 가장 크기 때문에 <strong>총비용 기준 약 75% 절감</strong>으로 집계되었습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.</p>
 <p><strong>지표 기준 정리:</strong></p>
 <ul>
 <li><strong>68% 감소</strong>: CloudFront 전송량/전송비 감소율</li>
-<li><strong>약 75% 절감</strong>: 이미지 서빙 총비용 기준(전송비 + 처리비 포함, 전송비 비중이 대부분)</li>
+<li><strong>약 75% 절감</strong>: 이미지 서빙 총비용 기준(전송비 + 처리비, 월 단위 비교)</li>
 <li><strong>90% 절감</strong>: 비정상 파라미터 요청 방어 관점의 비용 추정치(Functions 미적용 대비)</li>
 </ul>
 <h3 id="성능-개선">성능 개선</h3>
@@ -694,8 +729,7 @@ After:
 <ul>
 <li>512MB → 1024MB: 비용 10% 증가</li>
 <li>타임아웃 95% 감소</li>
-<li>사용자 이탈률 50% 감소</li>
-<li>ROI가 10배 이상!</li>
+<li>응답 안정성이 개선되어 대체 원본 반환 케이스가 크게 줄었습니다.</li>
 </ul>
 <p><strong>5. 사전 워밍의 중요성</strong></p>
 <ul>

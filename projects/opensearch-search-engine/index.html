@@ -190,7 +190,7 @@
     B -->|메타데이터/할인/상단노출| C[Redis]
     B -->|상품 검색| D[OpenSearch]
 
-    E[Athena/Redshift] -->|주간 CTR 집계| F[색인 배치]
+    E[Athena/Redshift] -->|매일 CTR 집계<br/>7일 윈도우| F[색인 배치]
     F -->|CTR 포함 색인| D
 
     G[관리자] -->|동의어/사전 수정| H[S3]
@@ -200,7 +200,7 @@
 <li><strong>NestJS API</strong>: 검색 요청 처리 및 비즈니스 로직</li>
 <li><strong>Redis</strong>: 메타데이터(상품 수, 필터), 즉시할인 비용, 상단 노출 리스트 캐싱</li>
 <li><strong>OpenSearch</strong>: 전문 검색 및 CTR 기반 랭킹</li>
-<li><strong>Athena/Redshift</strong>: 주간 CTR 데이터 집계</li>
+<li><strong>Athena/Redshift</strong>: 7일 롤링 CTR 데이터 집계 (매일 배치)</li>
 <li><strong>Lambda + S3</strong>: 동의어/사용자 사전 자동 업데이트</li>
 </ol>
 <hr>
@@ -217,7 +217,7 @@
 <p>하지만 <strong>상품 B의 CTR이 25%</strong>, <strong>상품 A의 CTR은 5%</strong>라면 어떨까요? 사용자는 명백히 상품 B를 선호하는데, 검색 결과는 상품 A를 상위에 노출하고 있었습니다.</p>
 <h3 id="해결-색인-시-ctr-데이터를-함께-저장">해결: 색인 시 CTR 데이터를 함께 저장</h3>
 <p><strong>CTR(Click-Through Rate, 클릭률)</strong>을 검색 랭킹에 반영하기 위해, 상품 데이터를 색인할 때 CTR 정보를 함께 저장하는 방식을 채택했습니다.</p>
-<p><strong>1단계: Athena/Redshift에서 주간 CTR 집계</strong></p>
+<p><strong>1단계: Athena/Redshift에서 7일 롤링 CTR 집계</strong></p>
 <p>매일 새벽, Athena 또는 Redshift에서 최근 7일간의 상품별 CTR을 집계합니다.</p>
 <pre><code class="language-sql">SELECT
   product_id,
@@ -291,6 +291,7 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;</code></pre><p><str
 <ul>
 <li>CTR: 17% → 22.5% (<strong>+5.5%p, 상대 32% 향상</strong>)</li>
 <li>상품 상세 페이지 진입율: (<strong>11.75% 증가</strong>) (A/B Test, p &lt; 0.01)</li>
+<li>측정 기준: 세션 기반 A/B 테스트, 1주 관측</li>
 </ul>
 <hr>
 </section>
@@ -466,31 +467,36 @@ async updateSynonyms(@Body() dto: SynonymDto) {
 <th>Before</th>
 <th>After</th>
 <th>개선율</th>
+<th>측정 기준</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>검색 응답 속도</strong></td>
+<td><strong>검색 응답 속도 (API)</strong></td>
 <td>1~2초</td>
 <td>50ms</td>
 <td><strong>약 30배</strong></td>
+<td>검색 API 응답시간 (1주 관측)</td>
 </tr>
 <tr>
 <td><strong>CTR</strong></td>
 <td>17%</td>
 <td>22.5%</td>
 <td><strong>+5.5%p (상대 32% 향상)</strong></td>
+<td>세션 기반 A/B 테스트 (p &lt; 0.01)</td>
 </tr>
 <tr>
 <td><strong>상품 상세 페이지 진입율</strong></td>
-<td>-</td>
-<td>-</td>
+<td>기준군</td>
+<td>실험군</td>
 <td><strong>11.75% 증가</strong></td>
+<td>세션 기반 A/B 테스트 (p &lt; 0.01)</td>
 </tr>
 <tr>
 <td><strong>동의어 업데이트</strong></td>
 <td>30분</td>
 <td>5분</td>
 <td><strong>6배 단축</strong></td>
+<td>운영 요청 1건 처리 리드타임</td>
 </tr>
 </tbody></table>
 <h3 id="비즈니스-임팩트">비즈니스 임팩트</h3>

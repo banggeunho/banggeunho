@@ -9,7 +9,7 @@ date: 2024-04-01
 ## 목차
 1. [배경: 1~2일 걸리는 데이터 분석](#배경-1-2일-걸리는-데이터-분석)
 2. [문제 분석: 수동 데이터 수집의 한계](#문제-분석-수동-데이터-수집의-한계)
-3. [해결 목표: 30분~1시간 이내 데이터 제공](#해결-목표-30분-1시간-이내-데이터-제공)
+3. [해결 목표: 당일 데이터 제공](#해결-목표-당일-데이터-제공)
 4. [아키텍처 설계: AWS 관리형 서비스 선택 이유](#아키텍처-설계-aws-관리형-서비스-선택-이유)
 5. [핵심 구현 1: Firehose로 실시간 수집](#핵심-구현-1-firehose로-실시간-수집)
 6. [핵심 구현 2: Parquet 변환으로 비용 70% 절감](#핵심-구현-2-parquet-변환으로-비용-70-절감)
@@ -113,7 +113,7 @@ graph TB
     end
 
     subgraph 저장["③ 저장"]
-        D -->|Parquet 파일| E["S3<br/>year=/month=/day= 파티셔닝"]
+        D -->|Parquet 파일| E["S3<br/>year=/month=/day=/hour= 파티셔닝"]
     end
 
     subgraph 분석_레이어["④ 분석 레이어"]
@@ -177,7 +177,7 @@ EventsFirehose:
     DeliveryStreamName: user-events-stream
     ExtendedS3DestinationConfiguration:
       BucketARN: !GetAtt EventsBucket.Arn
-      Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
+      Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/
       ErrorOutputPrefix: errors/
       BufferingHints:
         SizeInMBs: 64          # Parquet 네이티브 변환 시 최소 64MB 권장
@@ -279,7 +279,7 @@ EventsFirehose:
     DeliveryStreamName: user-events-stream
     ExtendedS3DestinationConfiguration:
       BucketARN: !GetAtt EventsBucket.Arn
-      Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/
+      Prefix: events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/
       ErrorOutputPrefix: errors/
       BufferingHints:
         SizeInMBs: 64        # Parquet 변환 시 최소 64MB 권장
@@ -364,17 +364,10 @@ After (Parquet):
 
 ### Redshift 적재 (배치)
 
-**30분 간격 배치:**
-```sql
--- COPY 명령어로 S3 → Redshift
-COPY analytics.events
-FROM 's3://my-events-bucket/events/year=2026/month=01/day=08/'
-IAM_ROLE 'arn:aws:iam::123456789:role/RedshiftS3Role'
-FORMAT AS PARQUET;
-```
+**30분 간격 증분 적재 (staging + merge):**
 
-**테이블 구조:**
 ```sql
+-- 테이블 구조
 CREATE TABLE analytics.events (
   event_id VARCHAR(64),
   user_id BIGINT,
@@ -388,7 +381,25 @@ DISTKEY(user_id)
 SORTKEY(timestamp);
 ```
 
-S3의 Hive 스타일 파티셔닝(`year=/month=/day=`)은 Athena에서 자동으로 파티션으로 인식되며, Redshift에는 30분 간격 증분 COPY를 실행합니다. 증분 범위는 `server_timestamp` 워터마크를 기준으로 관리합니다.
+```sql
+-- Step 1: 당일 파티션을 스테이징 테이블에 COPY
+COPY analytics.events_staging
+FROM 's3://my-events-bucket/events/year=2026/month=02/day=15/hour=14/'
+IAM_ROLE 'arn:aws:iam::123456789:role/RedshiftS3Role'
+FORMAT AS PARQUET;
+
+-- Step 2: event_id 기준으로 신규 데이터만 메인 테이블에 병합
+INSERT INTO analytics.events
+SELECT s.*
+FROM analytics.events_staging s
+LEFT JOIN analytics.events e ON s.event_id = e.event_id
+WHERE e.event_id IS NULL;
+
+-- Step 3: 스테이징 테이블 초기화
+TRUNCATE analytics.events_staging;
+```
+
+S3의 Hive 스타일 파티셔닝(`year=/month=/day=/hour=`)은 Athena에서 자동으로 파티션으로 인식됩니다. Redshift에는 30분 간격으로 해당 시간 파티션을 스테이징 테이블에 COPY한 뒤, `event_id` 기준 dedup으로 신규 데이터만 메인 테이블에 병합합니다.
 
 ### Tableau 연동 및 최신 데이터 적재
 
@@ -468,7 +479,7 @@ Firehose의 자동 재시도 메커니즘과 ErrorOutputPrefix 설정으로, 변
 
 **4. 데이터 파티셔닝**
 ```
-s3://bucket/events/year=2024/month=05/day=08/
+s3://bucket/events/year=2024/month=05/day=08/hour=14/
 ```
 - 날짜별 파티션으로 쿼리 성능을 향상시켰습니다.
 - 불필요한 데이터 스캔을 방지하여 비용도 절감됩니다.

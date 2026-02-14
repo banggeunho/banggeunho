@@ -311,14 +311,15 @@ async getStats(
   if (statsData.length === 0) return;
 
   // 2. RDS에 Bulk REPLACE (누적값 통째로 교체)
+  // 정산 안전장치: GREATEST로 카운트 역행 방지 (아래 &quot;운영 보강&quot; 참조)
   await db.transaction(async (trx) =&gt; {
-    await trx('banner_daily_stats')
-      .insert(statsData)
-      .onConflict(['date', 'banner_id'])
-      .merge({
-        impressions: trx.raw('VALUES(impressions)'),
-        clicks: trx.raw('VALUES(clicks)'),
-      });
+    await trx.raw(`
+      INSERT INTO banner_daily_stats (date, banner_id, impressions, clicks)
+      VALUES ${statsData.map(() =&gt; '(?, ?, ?, ?)').join(', ')}
+      ON DUPLICATE KEY UPDATE
+        impressions = GREATEST(banner_daily_stats.impressions, VALUES(impressions)),
+        clicks = GREATEST(banner_daily_stats.clicks, VALUES(clicks))
+    `, statsData.flatMap(s =&gt; [s.date, s.bannerId, s.impressions, s.clicks]));
   });
 
   // 3. TTL 7일 이상 된 Redis 데이터 정리
@@ -430,6 +431,41 @@ BannerStatsDLQ:
 </section>
 <section class="content-section">
 <h2 id="결과-db-부하-10배-감소">결과: DB 부하 10배 감소</h2>
+<h3 id="지표-정의와-측정-기준">지표 정의와 측정 기준</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>측정 기준/기간</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Write IOPS 감소율</strong></td>
+<td><strong>10배 이상 감소</strong></td>
+<td>적용 전/후 동일 트래픽 구간 비교 (운영 관측)</td>
+<td>RDS 모니터링 대시보드</td>
+</tr>
+<tr>
+<td><strong>RDS CPU 사용률</strong></td>
+<td><strong>약 20% 감소</strong></td>
+<td>적용 전/후 평균 CPU 비교</td>
+<td>CloudWatch <code>CPUUtilization</code></td>
+</tr>
+<tr>
+<td><strong>EC2 CPU 사용률</strong></td>
+<td><strong>약 8% 감소</strong></td>
+<td>적용 전/후 평균 CPU 비교</td>
+<td>CloudWatch <code>CPUUtilization</code></td>
+</tr>
+<tr>
+<td><strong>Row-level Lock/Deadlock</strong></td>
+<td><strong>운영 관측상 해소</strong></td>
+<td>적용 후 동일 이벤트 피크 구간 관찰</td>
+<td>DB lock/deadlock 로그</td>
+</tr>
+</tbody></table>
 <h3 id="성능-개선">성능 개선</h3>
 <table>
 <thead>
@@ -481,9 +517,9 @@ BannerStatsDLQ:
 <td>Fallback 전용 (월 $0.5 미만)</td>
 </tr>
 </tbody></table>
-<p>기존 인프라를 그대로 활용하면서 성능, 비용, 안정성 모두 개선할 수 있었습니다.</p>
+<p>비용 지표는 AWS 청구서 기준 월 평균 관측값입니다. 기존 인프라를 그대로 활용하면서 성능, 비용, 안정성 모두 개선할 수 있었습니다.</p>
 <h3 id="다른-api-성능-회복">다른 API 성능 회복</h3>
-<p>DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다.</p>
+<p>DB 부하가 감소하면서 같은 RDS를 사용하는 다른 API들의 응답 속도도 함께 개선되었습니다(운영 관측). 다만 서비스별 절대 응답시간은 트래픽/쿼리 특성이 달라 공통 단일 수치로 제시하지 않았습니다.</p>
 <h3 id="운영-후-회고-아키텍처-전환-결정">운영 후 회고: 아키텍처 전환 결정</h3>
 <p>Redis Write-back은 <strong>성능 문제를 빠르게 해결</strong>하는 데는 효과적이었습니다. 그러나 실제 운영에서는 설계 단계에서 과소평가했던 비용이 드러났습니다.</p>
 <ul>

@@ -77,6 +77,9 @@
 <section class="content-section">
 <h2 id="개요">개요</h2>
 <p>Express + SST 기반 모놀리식 서버를 NestJS로 마이그레이션하고, ECS 기반 컨테이너 배포 환경을 구축했습니다. 코드 컨벤션과 모듈 구조를 표준화하고, 개발 착수 전 아키텍처 공유 및 리뷰 프로세스를 도입했습니다.</p>
+<blockquote>
+<p>이 프로젝트는 <strong>완료형 전환이 아닌 진행형 마이그레이션</strong>입니다. 아래 성과는 모바일 전환 단계에서 운영/관찰로 확보한 수치를 기준으로 작성했습니다.</p>
+</blockquote>
 <hr>
 </section>
 <section class="content-section">
@@ -193,6 +196,31 @@ export class OrderModule {}</code></pre><p>모듈 파일만 보면 해당 도메
 <h3 id="마이그레이션-진행-현황">마이그레이션 진행 현황</h3>
 <p>모바일 서비스를 우선 전환하여 실 운영 환경에 배포 완료했으며, 이후 기존 운영 서비스로 확장 전환을 진행 중입니다. 기존 시스템이 서버사이드 템플릿 기반이었기 때문에 단순한 API 수 비교로 진행률을 측정하기 어렵지만, 모바일 서비스 전환에서 축적한 아키텍처 노하우와 컨벤션이 확장 전환의 속도를 높이고 있습니다.</p>
 <p>정량 지표는 아직 수집/고정 중이며, 본 프로젝트는 <strong>완료형 전환이 아닌 진행형 마이그레이션</strong>입니다.</p>
+<h3 id="현재-확보된-정량-지표-모바일-전환-단계">현재 확보된 정량 지표 (모바일 전환 단계)</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>값</th>
+<th>측정 기준/근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Domain 레이어 메서드 커버리지</strong></td>
+<td><strong>100% 유지</strong></td>
+<td>팀 룰 + CI 머지 조건 (<code>Domain</code> 테스트 통과 필수)</td>
+</tr>
+<tr>
+<td><strong>온보딩 구조 파악 시간</strong></td>
+<td><strong>수시간 수준</strong></td>
+<td>신규 입사자 2명 관찰 기준(레거시 대비 단축)</td>
+</tr>
+<tr>
+<td><strong>신규 입사자 관찰 표본</strong></td>
+<td><strong>2명</strong></td>
+<td>동일 온보딩 체크리스트로 비교</td>
+</tr>
+</tbody></table>
 <h3 id="구조-표준화의-효과">구조 표준화의 효과</h3>
 <ul>
 <li><strong>기술 부채 해소</strong>: 라우터에 밀집되어 있던 비즈니스 로직이 도메인별, 기능별로 수직 분리되어 유지보수성이 크게 개선되었습니다</li>

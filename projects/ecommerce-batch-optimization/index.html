@@ -133,12 +133,12 @@ public void collectLotteOrders() {
 <li>배포 (1일)</li>
 </ol>
 <p><strong>합계: 2주</strong></p>
-<p><strong>4. 비효율적인 DB I/O</strong></p>
+<p><strong>4. 개인정보 분리 DB로 인한 과다 DB 호출</strong></p>
 <p>주문 데이터는 <strong>분산 DB 구조</strong>로 저장됩니다. 개인정보 DB에 배송지 데이터를, 주문 DB에 주문 정보를 각각 저장하며, 두 테이블 간 FK 매핑이 필요합니다.</p>
 <pre><code class="language-">주문 10,000건 처리 시:
 1. 개인정보 DB - 배송지 저장: 10,000번
 2. 주문 DB - 주문 정보 저장: 10,000번
-→ 총 20,000번의 DB I/O</code></pre><p>이로 인해 DB 커넥션 풀이 고갈되고 전체 배치 처리 시간이 크게 증가했습니다.</p>
+→ 총 20,000번의 개별 DB 저장</code></pre><p>이로 인해 DB 커넥션 풀이 고갈되고 전체 배치 처리 시간이 크게 증가했습니다.</p>
 <p><strong>5. 에러 전파</strong></p>
 <p>한 판매자에서 에러가 발생하면 해당 커머스 배치 전체가 중단되었습니다.</p>
 <pre><code class="language-">판매자 A 성공 → 판매자 B 실패
@@ -149,7 +149,7 @@ public void collectLotteOrders() {
 <h3 id="정량적-목표">정량적 목표</h3>
 <ul>
 <li><strong>처리 시간</strong>: 30분 → 3분 (10배 단축)</li>
-<li><strong>코드 중복</strong>: 70% → 10% 이하</li>
+<li><strong>코드 중복</strong>: 주요 수집 모듈 기준 60% 이상 감소</li>
 <li><strong>신규 커머스 추가</strong>: 2주 → 2일 (7배 단축)</li>
 <li><strong>DB 저장 단계</strong>: 주문당 2회 개별 저장 → 3단계 벌크 처리</li>
 </ul>
@@ -693,10 +693,10 @@ public class SlackNotifier {
 <td><strong>10배 단축</strong></td>
 </tr>
 <tr>
-<td><strong>코드 중복</strong></td>
-<td>70%</td>
-<td>10%</td>
-<td><strong>7배 감소</strong></td>
+<td><strong>코드 중복(주요 모듈 코드 라인)</strong></td>
+<td>570줄</td>
+<td>215줄</td>
+<td><strong>62% 감소</strong></td>
 </tr>
 <tr>
 <td><strong>신규 커머스 추가</strong></td>
