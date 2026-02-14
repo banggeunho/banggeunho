@@ -12,8 +12,8 @@ date: 2024-05-01
 3. [해결 방안 검토: 3가지 옵션 비교](#해결-방안-검토-3가지-옵션-비교)
 4. [아키텍처 설계: Redis Write-back 전략](#아키텍처-설계-redis-write-back-전략)
 5. [핵심 구현 1: Redis Hash로 실시간 집계](#핵심-구현-1-redis-hash로-실시간-집계)
-6. [핵심 구현 2: EventBridge + Lambda 배치 동기화](#핵심-구현-2-eventbridge--lambda-배치-동기화)
-7. [핵심 구현 3: SQS Fallback으로 데이터 유실 방지](#핵심-구현-3-sqs-fallback으로-데이터-유실-방지)
+6. [핵심 구현 2: EventBridge + Lambda 배치 동기화](#핵심-구현-2-eventbridge-lambda-배치-동기화)
+7. [핵심 구현 3: SQS Fallback으로 데이터 유실 방지](#핵심-구현-3-sqs-fallback으로-데이터-유실-방지-초기-운영-단계)
 8. [결과: DB 부하 10배 감소](#결과-db-부하-10배-감소)
 
 ---
@@ -71,6 +71,21 @@ router.post("/api/banner/performance/impression", async (req, res, next) => {
 트랜잭션 A: S Lock 획득 → X Lock 필요 (B의 S Lock 대기)
 트랜잭션 B: S Lock 획득 → X Lock 필요 (A의 S Lock 대기)
 → Deadlock!
+```
+
+```mermaid
+sequenceDiagram
+    participant A as 트랜잭션 A
+    participant DB as MySQL (banner_performance)
+    participant B as 트랜잭션 B
+
+    A->>DB: INSERT ON DUPLICATE KEY UPDATE (S Lock 획득)
+    B->>DB: INSERT ON DUPLICATE KEY UPDATE (S Lock 획득)
+    A->>DB: 중복 감지 → X Lock 필요
+    Note over A,DB: B의 S Lock 해제 대기
+    B->>DB: 중복 감지 → X Lock 필요
+    Note over DB,B: A의 S Lock 해제 대기
+    Note over A,B: DEADLOCK — 서로의 S Lock을 기다리며 교착
 ```
 
 **3. 다른 API에 대한 연쇄 영향**
@@ -495,6 +510,19 @@ Redis Write-back은 **성능 문제를 빠르게 해결**하는 데는 효과적
 - 원본 이벤트는 append-only로 보관 (감사 추적 가능)
 - 정산 집계는 event_id 기준 dedup + watermark 기반 마감
 - Redis는 정산 원장이 아니라 조회 성능 보조 용도로만 사용
+
+```mermaid
+graph TB
+    A[배너 이벤트] -->|클릭/노출| B[API Server]
+    B -->|이벤트 전송| C[Firehose]
+    C -->|Parquet 변환| D["S3 (append-only 원본)"]
+    D -->|event_id dedup| E[Athena / Redshift]
+    E -->|watermark 마감| F[정산 집계]
+
+    B -.->|조회 성능 보조| G[Redis]
+    G -.->|캐시 only| H[조회 API]
+    F -->|정산 원장| H
+```
 
 ---
 

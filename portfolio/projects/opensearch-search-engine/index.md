@@ -244,6 +244,25 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
 
 OpenSearch 전환으로 검색 자체는 300ms로 개선되었지만, 메타데이터 조회와 할인 계산 등 부가 작업까지 합치면 추가 개선 여지가 있었습니다.
 
+```mermaid
+sequenceDiagram
+    participant C as 클라이언트
+    participant A as API Server
+    participant R as Redis
+    participant O as OpenSearch
+
+    C->>A: 검색 요청 "나이키 운동화"
+    par 병렬 조회
+        A->>R: 메타데이터 (상품 수, 필터, 할인)
+        R-->>A: 캐시 HIT (1ms)
+    and
+        A->>O: 상품 검색 (Function Score Query)
+        O-->>A: BM25 + CTR 랭킹 결과
+    end
+    A->>A: 결과 병합
+    A-->>C: 검색 결과 응답 (50ms)
+```
+
 ### 해결: Redis 캐싱 (1분 TTL)
 
 자주 변하지 않는 부가 데이터를 Redis에 1분 주기로 캐싱했습니다.
@@ -311,6 +330,15 @@ const synonyms = {
 4. **총 소요 시간: 30분**
 
 ### 해결: 어드민 + S3 + Lambda 자동화
+
+```mermaid
+graph LR
+    A[마케팅팀] -->|동의어 수정| B[어드민]
+    B -->|TXT 변환| C[S3]
+    C -->|이벤트 트리거| D[Lambda]
+    D -->|패키지 업데이트| E[OpenSearch]
+    E -->|search_analyzer<br/>즉시 반영| F[검색 품질 개선]
+```
 
 **1단계: 어드민 페이지에서 동의어 및 사용자 사전 수정**
 

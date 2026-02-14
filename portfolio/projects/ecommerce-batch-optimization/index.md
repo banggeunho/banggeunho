@@ -15,7 +15,7 @@ date: 2023-09-01
 6. [핵심 구현 2: CompletableFuture로 판매자별 병렬 처리](#핵심-구현-2-completablefuture로-판매자별-병렬-처리)
 7. [핵심 구현 3: 벌크 처리로 DB 라운드트립 최적화](#핵심-구현-3-벌크-처리로-db-라운드트립-최적화)
 8. [핵심 구현 4: Jenkins 기반 재수집 시스템](#핵심-구현-4-jenkins-기반-재수집-시스템)
-9. [결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일](#결과-처리-시간-30분-3분-신규-커머스-추가-2주-2일)
+9. [결과: 처리 시간 30분→3분, 신규 커머스 추가 2주→2일](#결과-처리-시간-30분3분-신규-커머스-추가-2주2일)
 
 ---
 
@@ -574,6 +574,22 @@ List<Long> ids = IntStream.rangeClosed(lastId - 20, lastId)
 ```
 
 **해결: UUID + Sequence**
+
+```mermaid
+sequenceDiagram
+    participant W as 위메프 배치
+    participant DB as 개인정보 DB
+    participant L as 롯데ON 배치
+
+    W->>DB: saveAll(20건, batchUuid=A, seq=0~19)
+    L->>DB: saveAll(15건, batchUuid=B, seq=0~14)
+    Note over W,L: 동시 INSERT — ID 범위가 섞여도 무관
+    W->>DB: findByBatchUuid('A') ORDER BY seq
+    DB-->>W: 정확히 20건 (순서 보장)
+    L->>DB: findByBatchUuid('B') ORDER BY seq
+    DB-->>L: 정확히 15건 (순서 보장)
+    Note over W,L: UUID 격리로 동시성 안전 + Sequence로 순서 보장
+```
 
 ```java
 // 배치 작업별 UUID 생성
