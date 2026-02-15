@@ -13,13 +13,17 @@ date: 2024-03-01
 4. [아키텍처 설계: Lambda@Edge 선택 이유](#아키텍처-설계-lambdaedge-선택-이유)
 5. [핵심 구현 1: CloudFront Functions로 어뷰징 방지](#핵심-구현-1-cloudfront-functions로-어뷰징-방지)
 6. [핵심 구현 2: Lambda@Edge로 On-demand 처리](#핵심-구현-2-lambdaedge로-on-demand-처리)
-7. [결과: 비용 75% 절감, 속도 50% 개선](#결과-비용-75-절감-속도-50-개선)
+7. [핵심 구현 3: 캐시 무효화 전략](#핵심-구현-3-캐시-무효화-전략)
+8. [결과: 비용 75% 절감, 속도 50% 개선](#결과-비용-75-절감-속도-50-개선)
+9. [트러블슈팅](#트러블슈팅)
 
 ---
 
 ## 배경: 트래픽 30% 증가, 비용은 어떻게?
 
 에브리타임은 대학생 커뮤니티 앱입니다. 2024년 3월, 우리 커머스 서비스가 앱 내 전용 '혜택탭'으로 노출되기 시작했습니다.
+
+<img src="images/에브리타임_혜택탭이미지.png" alt="에브리타임 혜택탭" width="300">
 
 **변화의 규모:**
 - 거의 모든 페이지에 배너와 상품 이미지 노출
@@ -34,7 +38,7 @@ date: 2024-03-01
 2025년 1월: 전년 대비 24.6% 추가 증가
 ```
 
-월별 데이터 전송량도 400GB에서 12,600GB까지 증가. "트래픽이 늘어나는 건 좋은데, 비용도 같이 늘어나네요." 팀 리더의 한마디에서 이 프로젝트가 시작되었습니다.
+월별 데이터 전송량도 400GB에서 12,600GB까지 증가.
 
 ---
 
@@ -101,9 +105,8 @@ AVIF: 3.3KB (90.6% 감소)
 
 ### 정량적 목표
 - **CloudFront 비용**: 50% 이상 절감
-- **캐시 히트율**: 85% 이상 달성
 - **페이지 로딩 속도**: 50% 개선
-- **Lambda 타임아웃**: 95% 감소
+- **Lambda 타임아웃**: 85% 감소 (20% → 3%)
 
 ### 정성적 목표
 - On-demand 이미지 처리로 다양한 크기 요구사항 대응
@@ -135,20 +138,45 @@ AVIF: 3.3KB (90.6% 감소)
 
 ### 전체 아키텍처
 
+![이미지 최적화 아키텍처](images/Cloudfront_architecture.png)
+
+### 요청 처리 흐름
+
 ```mermaid
-graph TB
-    A[브라우저] -->|?w=400&h=300&f=webp&q=80| B[CloudFront]
-    B --> C[CloudFront Functions]
-    C -->|검증/정규화| D{캐시 확인}
+sequenceDiagram
+    participant Client as 브라우저
+    participant CF_Func as CF Functions<br/>(Viewer Request)
+    participant CF as CloudFront<br/>(캐시)
+    participant Lambda as Lambda@Edge<br/>(Origin Response)
+    participant S3 as S3
 
-    D -->|캐시 HIT| A
-    D -->|캐시 MISS| F[Lambda@Edge]
+    Client->>CF_Func: ?w=387&h=287&f=webp&q=75
+    CF_Func->>CF_Func: 검증 / 10px 올림 정규화 / 쿼리 정렬
+    CF_Func->>CF: ?f=webp&h=290&q=80&w=390
 
-    F -->|원본 요청| G[S3]
-    G -->|원본 이미지| F
-    F -->|리사이징<br/>포맷 변환| B
-    B -->|캐시 저장| D
+    alt 캐시 HIT
+        CF-->>Client: 캐시된 이미지 응답 (Lambda 실행 없음)
+    else 캐시 MISS
+        CF->>S3: 원본 이미지 요청
+        S3-->>CF: 원본 이미지 반환
+        CF->>Lambda: Origin Response 트리거
+        Lambda->>Lambda: 이미지 리사이징 + 포맷 변환
+        Lambda-->>CF: 최적화된 이미지
+        CF->>CF: 캐시 저장
+        CF-->>Client: 최적화된 이미지 응답
+    end
 ```
+
+### 이벤트 트리거 선택 이유
+
+CloudFront는 4가지 이벤트 트리거를 제공합니다. 각 트리거의 실행 시점과 역할이 다르기 때문에, 비용과 기능 요구사항에 맞는 배치가 중요합니다.
+
+| 트리거 | 실행 시점 | 실행 빈도 | 사용 가능 서비스 |
+|--------|----------|----------|----------------|
+| **Viewer Request** | 요청 수신 직후 (캐시 확인 전) | 모든 요청 | CF Functions, Lambda@Edge |
+| Viewer Response | 응답 반환 직전 | 모든 요청 | CF Functions, Lambda@Edge |
+| Origin Request | 캐시 MISS → Origin 전달 시 | 캐시 MISS만 | Lambda@Edge |
+| **Origin Response** | Origin 응답 수신 후 (캐시 저장 전) | 캐시 MISS만 | Lambda@Edge |
 
 ### URL 파라미터 설계
 
@@ -181,80 +209,38 @@ Lambda@Edge는 요청당 과금입니다. 악의적인 사용자가 다음과 �
 
 ### 해결: CloudFront Functions로 검증/정규화
 
-CloudFront Functions는 Lambda@Edge보다 **1/6 저렴**하고 **10배 빠릅니다**.
+검증/정규화 로직은 Lambda@Edge에서도 구현할 수 있지만, **CloudFront Functions를 별도로 분리**했습니다.
 
-**핵심 정규화 로직 (요약):**
+| 기준 | CloudFront Functions | Lambda@Edge |
+|------|---------------------|-------------|
+| **사용 가능 트리거** | Viewer Request/Response | 4개 전부 (Viewer/Origin × Request/Response) |
+| **실행 비용** | 요청 100만 건당 $0.10 | 요청 100만 건당 $0.60 |
+| **실행 속도** | < 1ms | 5ms ~ 수 초 |
+| **제한** | 네트워크/파일 I/O 불가, 최대 10KB | 제한 없음 |
+
+Lambda@Edge도 Viewer Request에서 동일한 검증 로직을 실행할 수 있지만, 검증/정규화는 네트워크 I/O가 필요 없는 단순 연산이므로 CF Functions의 제한에 해당하지 않습니다. **모든 요청에서 실행**되는 Viewer Request 특성상, 비용이 1/6이고 속도가 10배 빠른 CF Functions가 적합합니다.
+
+또한 정규화는 반드시 **캐시 확인 전**(Viewer Request)에 실행되어야 합니다. 만약 Origin Request에서 처리했다면, 정규화 전 쿼리로 캐시 키가 생성되어 동일한 이미지 요청도 캐시를 활용하지 못하게 됩니다.
+
+**정규화 로직:**
 ```javascript
-// 상수 정의
-const MIN_WIDTH = 50;
-const MAX_WIDTH = 2000;
-const MIN_HEIGHT = 50;
-const MAX_HEIGHT = 2000;
-const MIN_QUALITY = 10;
-const MAX_QUALITY = 100;
-const STEP = 10;  // 10px 단위
-
-const ALLOWED_FORMATS = ['jpeg', 'png', 'webp', 'gif', 'svg', 'jpg', 'avif'];
-
 function handler(event) {
-  var request = event.request;
-  var queryParams = request.querystring;
-  var newQueryParams = {};
+  var params = event.request.querystring;
 
-  // w 파라미터 정규화 (50~2000, 10단위)
-  if (queryParams.w) {
-    var wValue = parseInt(queryParams.w.value, 10) || 0;
-    if (wValue < MIN_WIDTH) {
-      newQueryParams.w = MIN_WIDTH;
-    } else if (wValue > MAX_WIDTH) {
-      newQueryParams.w = MAX_WIDTH;
-    } else {
-      // 가장 가까운 10단위 값으로 반올림
-      newQueryParams.w = Math.round(wValue / STEP) * STEP;
-    }
-  }
+  // 1. w, h: 범위 제한(50~2000) + 10px 단위 올림
+  //    예: w=387 → w=390, w=5000 → w=2000
+  normalize(params.w, MIN=50, MAX=2000, STEP=10);
+  normalize(params.h, MIN=50, MAX=2000, STEP=10);
 
-  // h 파라미터 정규화 (50~2000, 10단위)
-  if (queryParams.h) {
-    var hValue = parseInt(queryParams.h.value, 10) || 0;
-    if (hValue < MIN_HEIGHT) {
-      newQueryParams.h = MIN_HEIGHT;
-    } else if (hValue > MAX_HEIGHT) {
-      newQueryParams.h = MAX_HEIGHT;
-    } else {
-      newQueryParams.h = Math.round(hValue / STEP) * STEP;
-    }
-  }
+  // 2. q: 품질 범위 제한(10~100) + 10단위 올림
+  normalize(params.q, MIN=10, MAX=100, STEP=10);
 
-  // q 파라미터 정규화 (10~100, 10단위)
-  if (queryParams.q) {
-    var qValue = parseInt(queryParams.q.value, 10) || 0;
-    if (qValue < MIN_QUALITY) {
-      newQueryParams.q = MIN_QUALITY;
-    } else if (qValue > MAX_QUALITY) {
-      newQueryParams.q = MAX_QUALITY;
-    } else {
-      newQueryParams.q = Math.round(qValue / STEP) * STEP;
-    }
-  }
+  // 3. f: 허용 포맷만 통과 (jpeg, png, webp, avif, gif, svg)
+  validateFormat(params.f);
 
-  // f 파라미터 정규화 (허용된 포맷만)
-  if (queryParams.f) {
-    var fValue = queryParams.f.value.toLowerCase();
-    if (ALLOWED_FORMATS.includes(fValue)) {
-      newQueryParams.f = fValue;
-    }
-  }
-
-  // 정렬하여 동일한 키로 캐싱 가능하도록 변경
-  var sortedQuery = Object.keys(newQueryParams)
-    .sort()
-    .map(key => key + "=" + newQueryParams[key])
-    .join("&");
-
-  if (sortedQuery.length > 0) {
-    request.querystring = sortedQuery;
-  }
+  // 4. 쿼리 키 정렬 → 동일 파라미터 조합이 같은 캐시 키로 매핑
+  //    ?w=390&f=webp → ?f=webp&w=390
+  sortQueryString(params);
 
   return request;
 }
@@ -262,69 +248,66 @@ function handler(event) {
 
 **효과:**
 - `?w=387&h=287` → `?w=390&h=290` (10px 단위 정규화)
-- `?w=755` → `?w=760` (반올림)
+- `?w=755` → `?w=760` (올림)
 - 캐시 키 개수: 1,950개 → 195개 (**10배 감소**)
-- 캐시 히트율 **70% → 85%** 향상
 
 **10px 단위 선택 이유:**
-- 100px: 캐시 효율은 최고지만 서비스에서 100px 단위가 아닌 이미지 규격이 다수 존재
-- 10px: 실제 이미지 규격과 자연스럽게 매칭되면서 충분한 캐시 히트율 확보
-- 품질 저하 없이 캐시 효율을 달성하는 현실적인 균형점
+
+정규화 단위를 결정할 때 100px과 10px을 비교했습니다.
+
+- **100px 단위의 한계**: 서비스 요구사항 상 100px 단위로 떨어지지 않는 이미지가 다수 존재 (예: 썸네일 142px, 리스트뷰 342px, 배너 768px). 반올림 시 원본과 크기 차이가 눈에 띄는 경우 발생
+- **10px 단위 채택**: 실제 서비스에서 10px 단위로 떨어지는 이미지 규격이 많아 자연스럽게 정확한 크기 매칭 가능
+- 품질 저하 없이 캐시 효율을 확보하는 현실적인 균형점
 
 ---
 
 ## 핵심 구현 2: Lambda@Edge로 On-demand 처리
 
-### Sharp 라이브러리 최적화
+이미지 리사이징과 포맷 변환은 Node.js 기반 이미지 처리 라이브러리인 [Sharp](https://github.com/lovell/sharp)를 활용하여 구현했습니다.
 
-Sharp는 Node.js에서 가장 빠른 이미지 처리 라이브러리입니다. libvips 기반으로 C++로 작성되어 매우 빠릅니다.
+```typescript
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import sharp from 'sharp';
+import type { CloudFrontResponseEvent, CloudFrontResponseResult } from 'aws-lambda';
 
-**Lambda 코드 (Node.js 18):**
-```javascript
-const AWS = require('aws-sdk');
-const sharp = require('sharp');
-const s3 = new AWS.S3();
+const s3 = new S3Client();
 
-exports.handler = async (event) => {
+export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFrontResponseResult> => {
+  const response = event.Records[0].cf.response;
   const request = event.Records[0].cf.request;
   const params = new URLSearchParams(request.querystring);
 
   // 1. 원본 이미지 가져오기
-  const key = request.uri.substring(1); // /products/123.jpg -> products/123.jpg
-  const s3Object = await s3.getObject({
+  const key = request.uri.substring(1);
+  const { Body } = await s3.send(new GetObjectCommand({
     Bucket: 'my-images-bucket',
-    Key: key
-  }).promise();
+    Key: key,
+  }));
+  const imageBuffer = Buffer.from(await Body!.transformToByteArray());
 
   // 2. 파라미터 파싱
-  const width = parseInt(params.get('w')) || null;
-  const height = parseInt(params.get('h')) || null;
-  const format = params.get('f') || 'jpg';
-  const quality = parseInt(params.get('q')) || 80;
+  const width = parseInt(params.get('w') ?? '') || null;
+  const height = parseInt(params.get('h') ?? '') || null;
+  const format = params.get('f') ?? 'jpg';
+  const quality = parseInt(params.get('q') ?? '') || 80;
 
   // 3. 이미지 처리
-  let image = sharp(s3Object.Body);
+  let image = sharp(imageBuffer);
 
-  // 리사이징
   if (width || height) {
     image = image.resize({
-      width: width,
-      height: height,
-      fit: 'inside',  // 비율 유지
-      withoutEnlargement: true  // 원본보다 크게 안 함
+      width: width ?? undefined,
+      height: height ?? undefined,
+      fit: 'inside',           // 비율 유지
+      withoutEnlargement: true, // 원본보다 크게 안 함
     });
   }
 
   // 포맷 변환
-  if (format === 'webp') {
-    image = image.webp({ quality: quality });
-  } else if (format === 'avif') {
-    image = image.avif({ quality: quality });
-  } else if (format === 'png') {
-    image = image.png({ quality: quality });
-  } else {
-    image = image.jpeg({ quality: quality });
-  }
+  const formatMap = { webp: 'webp', avif: 'avif', png: 'png' } as const;
+  image = format in formatMap
+    ? image[formatMap[format as keyof typeof formatMap]]({ quality })
+    : image.jpeg({ quality });
 
   const buffer = await image.toBuffer();
 
@@ -333,48 +316,14 @@ exports.handler = async (event) => {
     status: '200',
     headers: {
       'content-type': [{ key: 'Content-Type', value: `image/${format}` }],
-      'cache-control': [{ key: 'Cache-Control', value: 'public, max-age=31536000' }], // 1년
-      'content-length': [{ key: 'Content-Length', value: buffer.length.toString() }]
+      'cache-control': [{ key: 'Cache-Control', value: 'public, max-age=31536000' }],
+      'content-length': [{ key: 'Content-Length', value: buffer.length.toString() }],
     },
     body: buffer.toString('base64'),
-    bodyEncoding: 'base64'
+    bodyEncoding: 'base64',
   };
 };
 ```
-
-### Sharp Native Binary 배포 이슈
-
-**문제: 로컬과 Lambda 환경의 차이**
-
-Sharp는 네이티브 바이너리(libvips)에 의존하는 라이브러리입니다. 로컬 macOS(ARM64)에서 `npm install`하면 ARM64용 바이너리가 설치되지만, Lambda@Edge는 x64 Linux 환경에서 실행됩니다.
-
-**해결: Docker로 Lambda 환경에서 빌드**
-
-```dockerfile
-# Lambda@Edge와 동일한 환경 (Amazon Linux 2)
-FROM public.ecr.aws/lambda/nodejs:18
-
-WORKDIR /app
-
-# Sharp 설치 (x64 Linux용 바이너리)
-RUN npm install sharp --platform=linux --arch=x64
-
-# 나머지 의존성 설치
-COPY package.json package-lock.json ./
-RUN npm ci --production
-
-# Lambda 함수 코드
-COPY index.js ./
-```
-
-**배포 과정:**
-1. Docker 컨테이너에서 `npm install` 실행
-2. x64 Linux용 Sharp 바이너리 포함된 node_modules 생성
-3. 전체를 zip으로 압축하여 Lambda@Edge에 배포
-
-**주의사항:**
-- 로컬에서 직접 zip으로 압축하면 ARM64 바이너리가 포함되어 Lambda에서 실행 실패
-- CI/CD 파이프라인에서 Docker 빌드 자동화 필수
 
 ### Lambda 메모리 최적화
 
@@ -393,92 +342,13 @@ COPY index.js ./
 
 **선택: 1024MB**
 - 메모리를 2배로 늘렸지만 처리 시간이 2.5배 줄어 오히려 GB·초 기준 비용이 감소
-- 타임아웃 95% 감소로 사용자 경험 대폭 개선
+- 타임아웃 85% 감소(20% → 3%)로 사용자 경험 대폭 개선
 
-### 실무 이슈와 해결
+---
 
-**이슈 1: OOM (Out Of Memory) - 대용량 이미지**
+## 핵심 구현 3: 캐시 무효화 전략
 
-문제:
-- 7952 × 5304 해상도 이미지 처리 시 Lambda OOM 발생
-- Sharp가 이미지를 메모리에 올릴 때: width × height × 4 바이트 필요
-- 계산: 7952 × 5304 × 4 = 약 160MB
-
-해결:
-```javascript
-// 이미지 규격 제한
-const MAX_DIMENSION = 4000;
-
-if (originalWidth > MAX_DIMENSION || originalHeight > MAX_DIMENSION) {
-  // 4000×4000 이상은 원본 이미지 반환
-  return originalResponse;
-}
-```
-
-2GB 메모리로 증설해도 초대형 이미지는 OOM 발생. 현실적인 제한선을 두는 것이 필요.
-
-**이슈 2: Lambda 타임아웃**
-
-문제:
-- 이미지 처리 시간이 Lambda 타임아웃(30초)보다 길 때 응답 없음
-- Lambda 자체가 종료되어 catch 블록도 실행 안 됨 → 원본 이미지 응답도 불가
-
-해결:
-```javascript
-// Promise.race로 타임아웃 경쟁
-const TIMEOUT = 28000; // 30초보다 약간 짧게
-
-const processImage = sharp(s3Object.Body).resize(...).toBuffer();
-
-const result = await Promise.race([
-  processImage,
-  new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout')), TIMEOUT)
-  )
-]);
-
-// 타임아웃 시 원본 이미지 반환
-```
-
-CloudFront Lambda@Edge는 30초 제한. 처리 시간이 긴 이미지는 원본으로 대체하여 사용자 경험 보장.
-
-**이슈 3: 이미지 파일명에 확장자 없는 케이스**
-
-문제:
-- 기존: 파일명의 확장자로 이미지 여부 판단
-- 실제: `product-image` 같은 확장자 없는 파일 다수 존재
-- 결과: 이미지인데도 원본 객체 그대로 반환
-
-해결:
-```javascript
-// 파일명 대신 Content-Type 헤더로 검증
-const response = event.Records[0].cf.response;
-const contentType = response.headers['content-type']?.[0]?.value;
-
-if (!contentType || !contentType.startsWith('image/')) {
-  return response; // 이미지 아님
-}
-```
-
-S3 응답의 Content-Type 헤더가 더 정확한 판단 기준.
-
-### 크기 정규화: 10px 단위 선택 이유
-
-정규화 단위를 결정할 때 100px과 10px을 비교했습니다.
-
-**100px 단위의 한계:**
-- 서비스 요구사항 상 100px 단위로 떨어지지 않는 이미지가 다수 존재
-- 예: 썸네일 142px, 리스트뷰 342px, 배너 768px 등
-- 100px 단위 반올림 시 원본과 크기 차이가 눈에 띄는 경우 발생
-
-**10px 단위 채택:**
-- 실제 서비스에서 10px 단위로 떨어지는 이미지 규격이 많아 자연스럽게 정확한 크기 매칭 가능
-- 캐시 키 개수는 100px 단위 대비 많지만, 충분히 높은 캐시 히트율(85%) 달성
-- 품질 저하 없이 캐시 효율을 확보하는 현실적인 균형점
-
-### 캐시 무효화 전략
-
-상품 이미지가 교체되면 CloudFront에 캐시된 리사이즈 이미지도 무효화해야 합니다. 두 가지 방식을 비교했습니다.
+캐싱을 도입할 때는 항상 무효화 전략도 함께 고려해야 합니다. 상품 이미지가 교체되면 CloudFront에 캐시된 리사이즈 이미지도 무효화해야 하기 때문입니다. 두 가지 방식을 비교했습니다.
 
 **URL 버저닝 vs S3 이벤트 트리거:**
 
@@ -492,11 +362,18 @@ S3 응답의 Content-Type 헤더가 더 정확한 판단 기준.
 어드민에서 이미지를 업로드하는 경로가 상품 등록, 배너 관리, 프로모션 관리 등 다양했습니다. 각 경로마다 URL 버저닝 로직을 추가하는 것보다, S3에 이미지가 업로드되는 이벤트를 감지하여 중앙에서 처리하는 것이 개발 공수 면에서 효율적이었습니다.
 
 ```mermaid
-graph LR
-    A[어드민 이미지 업로드] -->|PutObject| B[S3]
-    B -->|S3 Event| C[Lambda]
-    C -->|CreateInvalidation| D[CloudFront]
-    D -->|캐시 삭제| E[다음 요청 시 재생성]
+sequenceDiagram
+    participant Admin as 어드민
+    participant S3 as S3
+    participant Lambda as Lambda
+    participant CF as CloudFront
+
+    Admin->>S3: 이미지 업로드 (PutObject)
+    S3->>Lambda: S3 Event 트리거
+    Lambda->>CF: CreateInvalidation (캐시 무효화)
+    CF->>CF: 해당 이미지 캐시 삭제
+
+    Note over CF: 다음 요청 시<br/>Lambda@Edge가 재생성
 ```
 
 월 이미지 변경 건수가 100회 미만이므로 CloudFront Invalidation 무료 범위(월 1,000건) 내에서 운영 가능하며, 추가 비용이 발생하지 않습니다.
@@ -505,110 +382,64 @@ graph LR
 
 ## 결과: 비용 75% 절감, 속도 50% 개선
 
-### 실제 측정 데이터
-
-### 지표 정의와 측정 기준
-
-| 지표 | 값 | 측정 기간/기준 | 출처 |
-|------|----|----------------|------|
-| **CloudFront 전송량/전송비 감소율** | **68%** | 2024-04-03(적용 전) vs 2024-05-26(적용 후) | CloudFront Usage 리포트 |
-| **전송량 감소율 (보조 샘플)** | **70%** | 2024-04-27 vs 2024-05-24 | CloudFront Usage 리포트 |
-| **이미지 서빙 총비용 절감율** | **약 75%** | 전송비 + Lambda@Edge 처리비 합산, 적용 전/후 월 비교 | CloudFront + Lambda 비용 집계 |
-| **어뷰징 방어 비용 절감 추정치** | **약 90% (내부 추정)** | CloudFront Functions 미적용 가정 시뮬레이션 | 운영 로그 기반 내부 추정 |
-
-**배포 단계별 적용:**
-1. 5월 15일: 혜택탭 전체 적용
-2. 5월 20일: 상품 이미지, 배너 이미지 적용
-
-**트래픽 vs 데이터 전송량:**
-```
-4월 3일 (적용 전):
-- 요청: 360만 건
-- 전송량: 419.71GB
-
-5월 26일 (적용 후):
-- 요청: 475만 건 (31% 증가)
-- 전송량: 132.49GB (68% 감소)
-```
-
-**핵심 성과:**
-- 요청이 115만 건 더 많았지만, 전송량은 **약 3배 감소**
-- 이미지 최적화 없었다면 전송량 550GB 예상 → 실제 132GB
+![CloudFront 사용량 지표](images/cloudfront_사용량_지표.png)
 
 ### 비용 절감
 
-| 시점 | 데이터 전송량 | 절감률 |
-|------|--------------|--------|
-| **4월 27일** | 279.4GB | 기준 |
-| **5월 24일** | 82.52GB | **70% ⬇️** |
+배포는 단계적으로 진행했습니다.
+1. **5월 15일**: 혜택탭 전체 적용
+2. **5월 20일**: 상품 이미지, 배너 이미지 적용
 
-| 시점 | 데이터 전송량 | 절감률 |
-|------|--------------|--------|
-| **4월 3일** | 419.71GB | 기준 |
-| **5월 26일** | 132.49GB | **68% ⬇️** |
+| 시점 | 요청 수 | 데이터 전송량 | 절감률 |
+|------|---------|--------------|--------|
+| **4월 3일** (적용 전) | 360만 건 | 419.71GB | 기준 |
+| **5월 26일** (적용 후) | 475만 건 (+31%) | 132.49GB | **68%** |
 
-CloudFront 데이터 전송 비용이 68% 감소했고, 이미지 서빙 비용에서 전송비 비중이 가장 크기 때문에 **총비용 기준 약 75% 절감**으로 집계되었습니다. Lambda@Edge 실행 비용은 전체 대비 미미한 수준입니다.
+요청이 115만 건(31%) 더 많았지만, 전송량은 오히려 **약 3배 감소**했습니다. 이미지 최적화가 없었다면 전송량 550GB로 예상되었으나 실제 132GB로 집계되었습니다.
 
-**지표 기준 정리:**
-- **68% 감소**: CloudFront 전송량/전송비 감소율
-- **약 75% 절감**: 이미지 서빙 총비용 기준(전송비 + 처리비, 월 단위 비교)
-- **90% 절감**: 비정상 파라미터 요청 방어 관점의 비용 추정치(Functions 미적용 대비)
+CloudFront 데이터 전송 비용이 68% 감소했고, Lambda@Edge 실행 비용은 전체 대비 미미하여 **총비용 기준 약 75% 절감**으로 집계되었습니다.
 
 ### 성능 개선
 
 | 지표 | Before | After | 개선률 |
 |------|--------|-------|--------|
-| **평균 이미지 크기** | 300KB | 80KB | 73% ⬇️ |
-| **페이지 로딩 속도** | 4.2초 | 2.1초 | 50% ⬇️ |
-| **Lambda 타임아웃** | - | <5% | 95% ⬇️ |
+| **평균 이미지 크기** | 300KB | 80KB | 73% |
+| **페이지 로딩 속도** | 4.2초 | 2.1초 | 50% |
+| **Lambda 타임아웃** | 20% | 3% | 85% 감소 |
 
-### Before vs After
-
-**이미지 크기 비교 (상품 썸네일):**
-```
-Before:
-- JPEG 원본: 1920x1080 (300KB)
-- 브라우저에서 400x300으로 크롭
-
-After:
-- WebP 리사이징: 400x300 (60KB)
-- 80% 절감!
-```
-
-**사용자 경험:**
-```
-Before:
-- 상품 리스트 페이지 로딩: 4.2초
-- 20개 상품 × 300KB = 6MB
-
-After:
-- 상품 리스트 페이지 로딩: 2.1초
-- 20개 상품 × 60KB = 1.2MB
-- 50% 빨라짐!
-```
+상품 리스트 페이지 기준, 20개 상품 이미지 총 전송량이 6MB(JPEG 원본)에서 1.2MB(WebP 리사이징)로 줄어 로딩 속도가 4.2초에서 2.1초로 **50% 개선**되었습니다.
 
 ---
 
-## 배운 점
+## 트러블슈팅
 
-**1. CloudFront Functions는 필수**
-- Lambda@Edge만 쓰면 어뷰징에 취약
-- Functions로 비정상 요청 방어 비용을 크게 절감 (내부 추정 약 90%)
-- 검증 로직은 가볍게, Lambda는 무겁게
+**1. OOM (Out Of Memory) - 대용량 이미지**
 
-**2. Sharp 최적화 설정**
-```javascript
-resize({
-  fit: 'inside',           // 비율 유지
-  withoutEnlargement: true // 원본보다 크게 안 함
-})
-```
-- 이 두 옵션으로 품질 유지 + 파일 크기 최소화
+| 구분 | 내용 |
+|------|------|
+| **증상** | 7952 × 5304 해상도 이미지 처리 시 Lambda OOM 발생 |
+| **원인** | Sharp 메모리 사용량: width × height × 4 바이트 = 약 160MB |
+| **해결** | 4000px 초과 이미지는 리사이징 건너뛰고 원본 반환 |
 
-**3. Lambda 메모리는 비용이 아닌 투자**
-- 512MB → 1024MB: 비용 10% 증가
-- 타임아웃 95% 감소
-- 응답 안정성이 개선되어 대체 원본 반환 케이스가 크게 줄었습니다.
+2GB 메모리로 증설해도 초대형 이미지는 OOM이 발생하므로, 현실적인 제한선을 두는 것이 필요했습니다.
+
+**2. Lambda 타임아웃 - 원본 응답 불가**
+
+| 구분 | 내용 |
+|------|------|
+| **증상** | 처리 시간이 30초를 초과하면 응답 자체가 없음 |
+| **원인** | Lambda 자체가 종료되어 catch 블록도 실행 안 됨 → 원본 반환도 불가 |
+| **해결** | `Promise.race`로 28초 타임아웃을 걸어 시간 초과 시 원본 이미지 반환 |
+
+CloudFront Lambda@Edge는 30초 제한이므로, 2초 여유를 두고 타임아웃을 설정했습니다.
+
+**3. 확장자 없는 이미지 파일**
+
+| 구분 | 내용 |
+|------|------|
+| **증상** | `product-image` 같은 확장자 없는 파일이 리사이징 대상에서 제외됨 |
+| **원인** | 파일명의 확장자로 이미지 여부를 판단하는 로직 |
+| **해결** | S3 응답의 `Content-Type` 헤더로 이미지 여부 판단으로 변경 |
 
 ---
 
