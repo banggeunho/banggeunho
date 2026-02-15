@@ -109,12 +109,45 @@ graph TB
     I -->|패키지 업데이트| D
 ```
 
+![검색 아키텍처](images/검색%20아키텍처.png)
+
 **핵심 컴포넌트:**
 1. **NestJS API**: 검색 요청 처리 및 비즈니스 로직
 2. **Redis**: 메타데이터(상품 수, 필터), 즉시할인 비용, 상단 노출 리스트 캐싱
 3. **OpenSearch**: 전문 검색 및 CTR 기반 랭킹
 4. **Athena/Redshift**: 7일 롤링 CTR 데이터 집계 (매일 배치)
 5. **Lambda + S3**: 동의어/사용자 사전 자동 업데이트
+
+### 인덱스 설계 최적화
+
+검색 성능과 인덱스 효율성을 위해 OpenSearch 매핑을 세밀하게 최적화했습니다.
+
+**1. 불필요한 인덱싱 제거 (`index: false`)**
+
+썸네일 URL, 상세 설명 등 표시 전용 필드에는 `index: false`를 설정하여 역 인덱스를 생성하지 않았습니다. 검색/필터/정렬에 사용되지 않는 필드까지 인덱싱하면 디스크와 메모리를 불필요하게 소비합니다.
+
+```json
+{
+  "thumbnail_url": { "type": "keyword", "index": false },
+  "description": { "type": "text", "index": false },
+  "price1": { "type": "integer", "index": false }
+}
+```
+
+**2. 집계 필드 성능 최적화 (`eager_global_ordinals`)**
+
+태그 기반 필터링에 자주 사용되는 필드에 `eager_global_ordinals`를 설정하여, 첫 집계 쿼리의 응답 시간을 40~60% 단축했습니다. 이 옵션은 인덱스 리프레시 시 Global Ordinals를 미리 로드하여, 쿼리 시점의 지연을 제거합니다.
+
+```json
+{
+  "tag_groups": { "type": "keyword", "eager_global_ordinals": true },
+  "tag_names": { "type": "keyword", "eager_global_ordinals": true }
+}
+```
+
+**3. 서브필드 최소화**
+
+프로덕션 검색 쿼리에서 실제 사용하는 서브필드만 유지하고, 미사용 `.keyword`, `.standard` 서브필드를 제거하여 인덱스 크기를 약 30~40% 줄였습니다.
 
 ---
 
@@ -134,23 +167,98 @@ graph TB
 
 **CTR(Click-Through Rate, 클릭률)**을 검색 랭킹에 반영하기 위해, 상품 데이터를 색인할 때 CTR 정보를 함께 저장하는 방식을 채택했습니다.
 
-**1단계: Athena/Redshift에서 7일 롤링 CTR 집계**
+**1단계: Athena에서 7일 롤링 CTR 집계**
 
-매일 새벽, Athena 또는 Redshift에서 최근 7일간의 상품별 CTR을 집계합니다.
+매 색인 시, Athena(Presto SQL)에서 최근 7일간의 사용자 행동 로그를 분석하여 상품별 CTR을 집계합니다. 검색 결과 노출(`view_search_result`)과 상품 클릭(`view_item`) 이벤트를 별도로 집계한 뒤 `FULL OUTER JOIN`으로 결합합니다.
 
 ```sql
+-- Presto/Athena SQL
+WITH search_views AS (
+    SELECT item.item_id, COUNT(*) as view_count
+    FROM user_action_log
+    CROSS JOIN UNNEST(
+        CAST(json_parse(items) AS ARRAY(ROW(item_id INTEGER)))
+    ) AS t(item)
+    WHERE event_type = 'view_search_result'
+        AND dt BETWEEN DATE '${oneWeekAgo}' AND DATE '${today}'
+    GROUP BY item.item_id
+),
+search_clicks AS (
+    SELECT item_id, COUNT(*) as click_count
+    FROM user_action_log
+    WHERE event_type = 'view_item'
+        AND item_list_name LIKE '/search%'
+        AND dt BETWEEN DATE '${oneWeekAgo}' AND DATE '${today}'
+    GROUP BY item_id
+)
 SELECT
-  product_id,
-  SUM(clicks)::FLOAT / SUM(impressions)::FLOAT AS ctr
-FROM search_logs
-WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
-GROUP BY product_id
-HAVING SUM(impressions) >= 100  -- 최소 노출 100회 이상
+    COALESCE(sv.item_id, sc.item_id) as item_id,
+    CASE
+        WHEN COALESCE(sv.view_count, 0) >= 100
+        THEN CAST(sc.click_count AS DOUBLE) / CAST(sv.view_count AS DOUBLE) * 100
+        ELSE NULL
+    END as ctr
+FROM search_views sv
+FULL OUTER JOIN search_clicks sc ON sv.item_id = sc.item_id
+WHERE COALESCE(sv.view_count, 0) >= 100  -- 최소 노출 100회 이상
 ```
 
-**2단계: CTR을 포함하여 상품 데이터 색인**
+`CROSS JOIN UNNEST`를 사용하는 이유는, 검색 결과 노출 이벤트에 노출된 상품 목록이 JSON 배열로 저장되어 있기 때문입니다. 이를 풀어서 상품별 노출 횟수를 집계합니다.
 
-집계된 CTR 데이터를 상품 정보와 함께 OpenSearch에 색인합니다. 이렇게 하면 검색 시 별도의 CTR 조회 없이, Function Score Query로 CTR을 랭킹에 바로 반영할 수 있습니다.
+**2단계: Zero-Downtime 전체 색인 (Blue-Green 패턴)**
+
+집계된 CTR 데이터를 상품 정보와 함께 OpenSearch에 색인합니다. 1시간 주기로 전체 색인을 수행하되, 서비스 중단 없이 인덱스를 교체하는 Blue-Green 전략을 사용합니다.
+
+```
+1. 타임스탬프 기반 새 인덱스 생성 (예: items_2024-06-01-14-00-00)
+2. DB에서 커서 기반으로 1,000건씩 Bulk 색인
+3. Alias를 새 인덱스로 원자적 전환
+4. 1~3일 이전 구 인덱스 삭제
+```
+
+핵심은 **Alias 전환이 원자적(atomic)**이라는 점입니다. 기존 인덱스 제거와 새 인덱스 추가를 단일 API 호출로 처리하므로, 전환 과정에서 검색이 실패하는 순간이 없습니다.
+
+```typescript
+// Alias 전환 - 단일 API 호출로 원자적 처리
+await opensearchClient.indices.updateAliases({
+  body: {
+    actions: [
+      ...oldIndexNames.map(name => ({
+        remove: { index: name, alias: ALIAS }
+      })),
+      { add: { index: newIndexName, alias: ALIAS } }
+    ]
+  }
+});
+```
+
+**커서 기반 Bulk 색인:**
+
+수만 건의 상품을 한 번에 메모리에 올리면 Lambda의 메모리 한계에 도달할 수 있습니다. `lastId` 기반 커서 페이지네이션으로 1,000건씩 처리하여 메모리 사용량을 일정하게 유지합니다.
+
+```typescript
+const CHUNK_SIZE = 1000;
+let lastId: number = 0;
+let hasMoreData = true;
+
+const searchCTRMap = await getSearchCTRFromAthena();  // 1단계에서 집계한 CTR
+
+while (hasMoreData) {
+  const [items] = await getItemInfo(dbConnection, CHUNK_SIZE, lastId);
+  if (items.length === 0) break;
+  lastId = items[items.length - 1].id;
+
+  const bulkOps = items.flatMap(item => [
+    { index: { _index: newIndexName, _id: item.id } },
+    {
+      ...item,
+      code_normalized: (item.code || '').replace(/[^a-zA-Z0-9가-힣]/g, '').toLowerCase(),
+      search_ctr: searchCTRMap.get(item.id) ?? undefined
+    }
+  ]);
+  await opensearchClient.bulk({ refresh: true, body: bulkOps });
+}
+```
 
 **신규 상품의 Cold-start 처리:**
 
@@ -168,7 +276,7 @@ WITH category_avg AS (
 )
 SELECT
   p.product_id,
-  COALESCE(s.ctr, ca.avg_ctr, 0.05) AS ctr  -- 실측값 → 카테고리 평균 → 기본값 5%
+  COALESCE(s.ctr, ca.avg_ctr, 5.0) AS ctr  -- 실측값(%) → 카테고리 평균(%) → 기본값 5%
 FROM products p
 LEFT JOIN product_ctr_stats s ON p.product_id = s.product_id AND s.impressions >= 100
 LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
@@ -176,7 +284,7 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
 
 **3단계: Function Score Query로 BM25 + CTR 결합**
 
-검색 시 OpenSearch의 Function Score Query를 사용하여 BM25 텍스트 유사도 점수에 CTR을 반영합니다. CTR 값을 log 함수로 변환하여 극단적인 CTR 차이가 랭킹을 지배하지 않도록 완화하고, multiply 모드로 BM25 스코어와 결합합니다.
+검색 시 OpenSearch의 Function Score Query를 사용하여 BM25 텍스트 유사도 점수에 CTR을 반영합니다. CTR은 퍼센트 단위(예: 22.5)로 저장하고, `log10(CTR%)`로 변환한 값을 BM25 스코어에 곱해 극단값 영향을 완화합니다.
 
 ```json
 {
@@ -199,10 +307,10 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
       "functions": [
         {
           "field_value_factor": {
-            "field": "ctr",
-            "modifier": "log1p",
-            "factor": 10,
-            "missing": 0.05
+            "field": "search_ctr",
+            "modifier": "log",
+            "factor": 1,
+            "missing": 5
           }
         }
       ],
@@ -213,10 +321,21 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
 }
 ```
 
-- `modifier: "log1p"` — CTR에 log(1 + value)를 적용하여 극단값 완화
-- `factor: 10` — CTR 값이 0~1 사이로 작기 때문에 10을 곱해 BM25 스코어와 균형 조정
-- `missing: 0.05` — CTR 필드가 없는 경우 기본값 5% 적용
+- `modifier: "log"` — OpenSearch의 `log`는 `log10(value)`이므로 `log10(CTR%)`를 적용
+- `factor: 1` — CTR이 퍼센트 단위(0~100)라 추가 스케일 조정 없이 사용
+- `missing: 5` — CTR 필드가 없는 경우 기본값 5% 적용
 - `boost_mode: "multiply"` — BM25 스코어 × CTR 팩터로 최종 점수 산출
+
+**상품코드 정확 매칭 부스팅:**
+
+사용자가 상품코드(예: "ABC-123")를 직접 검색하는 경우, 텍스트 유사도보다 정확 매칭이 중요합니다. 색인 시 상품코드에서 특수문자를 제거하고 소문자로 정규화한 `code_normalized` 필드를 저장하여, 정확 매칭 시 높은 부스트를 적용합니다.
+
+```typescript
+// 색인 시 정규화
+code_normalized: (item.code || item.erp_code || '').replace(/[^a-zA-Z0-9가-힣]/g, '').toLowerCase()
+```
+
+검색 쿼리에서 `code_normalized`에 `keyword` 정확 매칭을 추가하면, 상품코드로 검색한 사용자에게 해당 상품이 최상위에 노출됩니다.
 
 ### 검증: A/B 테스트
 
@@ -226,7 +345,7 @@ LEFT JOIN category_avg ca ON p.category_id = ca.category_id;
 
 **결과:**
 - CTR: 17% → 22.5% (**+5.5%p, 상대 32% 향상**)
-- 상품 상세 페이지 진입율: (**11.75% 증가**) (A/B Test, p < 0.01)
+- 상품 상세 페이지 진입률: (**11.75% 증가**) (A/B Test, p < 0.01)
 - 측정 기준: 세션 기반 A/B 테스트, 1주 관측
 
 ---
@@ -301,10 +420,10 @@ Redis에 캐싱하는 데이터는 **변동이 적은 메타데이터**에 한�
 
 1분 TTL 만료 시 동시에 다수 요청이 캐시 미스를 경험하여 Redis/OpenSearch에 부하가 집중되는 스탬피드 문제가 우려될 수 있습니다. 그러나 TTL 만료 후 **첫 번째 요청이 캐시를 갱신**하면 이후 요청은 즉시 캐시 히트하므로, 실제로 OpenSearch에 동시에 도달하는 요청은 극히 소수입니다. 트래픽 규모에서 이 수준의 순간 부하는 문제가 되지 않아, 별도의 캐시 락이나 사전 갱신 전략은 적용하지 않았습니다.
 
-### 결과: 응답 속도 50ms 달성
+### 결과: p95 응답 속도 50ms 달성
 
-- **OpenSearch 전환**: 1~2초 → 300ms
-- **Redis 캐싱 적용**: 300ms → 50ms
+- **OpenSearch 전환 (p95)**: 1~2초 → 300ms
+- **Redis 캐싱 적용 후 (p95)**: 300ms → 50ms
 - **캐시 히트율**: 75%
 
 ---
@@ -337,8 +456,10 @@ graph LR
     B -->|TXT 변환| C[S3]
     C -->|이벤트 트리거| D[Lambda]
     D -->|패키지 업데이트| E[OpenSearch]
-    E -->|search_analyzer<br/>즉시 반영| F[검색 품질 개선]
+    E -->|search_analyzer<br/>재색인 없이 반영| F[검색 품질 개선]
 ```
+
+![색인 및 사전 업데이트 아키텍처](images/색인_사전_업데이트_아키텍처.png)
 
 **1단계: 어드민 페이지에서 동의어 및 사용자 사전 수정**
 
@@ -372,7 +493,7 @@ S3에 TXT 파일이 업로드되면 Lambda가 자동으로 트리거되어 동�
 
 기존에는 인덱스 close → 설정 변경 → open 방식을 고려했으나, close 동안 검색이 불가능해지는 문제가 있습니다. 이를 해결하기 위해 **동의어를 검색 분석기(search_analyzer)에만 적용하고, `synonym_graph` 타입을 사용**하는 방식을 채택했습니다.
 
-`synonym_graph`는 `synonym` 타입과 달리 다중 토큰 동의어를 정확하게 처리하며, search_analyzer에 적용하면 **인덱스 재생성 없이 동의어를 즉시 반영**할 수 있습니다. 색인 시에는 원본 텍스트 그대로 저장하고, 검색 시에만 동의어를 확장하는 방식이므로 기존 문서의 재색인이 불필요합니다.
+`synonym_graph`는 `synonym` 타입과 달리 다중 토큰 동의어를 정확하게 처리하며, `updateable: true`와 함께 search_analyzer에 적용하면 **인덱스 재생성 없이 동의어를 반영**할 수 있습니다. 색인 시에는 원본 텍스트 그대로 저장하고, 검색 시에만 동의어를 확장하는 방식이므로 기존 문서의 재색인이 불필요합니다.
 
 ```typescript
 export const handler = async (event: S3Event) => {
@@ -394,8 +515,8 @@ export const handler = async (event: S3Event) => {
     DomainName: OPENSEARCH_DOMAIN,
   });
 
-  // search_analyzer에 synonym_graph 필터가 적용되어 있으므로
-  // 패키지 업데이트만으로 검색 시 새로운 동의어가 즉시 반영됨
+  // search_analyzer에 synonym_graph(updateable: true) 필터가 적용되어 있으므로
+  // 패키지 업데이트만으로 재색인 없이 새로운 동의어가 수분 내 반영됨
   // 인덱스 close/open이나 재색인이 필요 없음
 };
 ```
@@ -414,6 +535,11 @@ export const handler = async (event: S3Event) => {
         }
       },
       "analyzer": {
+        "nori_index": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["lowercase"]
+        },
         "nori_search": {
           "type": "custom",
           "tokenizer": "nori_tokenizer",
@@ -451,9 +577,9 @@ export const handler = async (event: S3Event) => {
 
 | 지표 | Before | After | 개선율 | 측정 기준 |
 |------|--------|-------|--------|----------|
-| **검색 응답 속도 (API)** | 1~2초 | 50ms | **약 30배** | 검색 API 응답시간 (1주 관측) |
+| **검색 응답 속도 (API, p95)** | 1~2초 | 50ms | **약 30배** | 검색 API p95 응답시간 (1주 관측) |
 | **CTR** | 17% | 22.5% | **+5.5%p (상대 32% 향상)** | 세션 기반 A/B 테스트 (p < 0.01) |
-| **상품 상세 페이지 진입율** | 기준군 | 실험군 | **11.75% 증가** | 세션 기반 A/B 테스트 (p < 0.01) |
+| **상품 상세 페이지 진입률** | 기준군 | 실험군 | **11.75% 증가** | 세션 기반 A/B 테스트 (p < 0.01) |
 | **동의어 업데이트** | 30분 | 5분 | **6배 단축** | 운영 요청 1건 처리 리드타임 |
 
 ### 비즈니스 임팩트
