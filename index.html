@@ -52,6 +52,7 @@
     <div class="nav-inner">
       <a href="#" class="nav-logo"><span class="logo-name">bang</span><span class="logo-dot">.geunho</span></a>
       <ul class="nav-links">
+        <li><a href="#journey">Journey</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
       </ul>
@@ -73,7 +74,7 @@
       <h1 class="hero-name">Geunho Bang</h1>
       <p class="hero-title">Software Engineer</p>
       <p class="hero-description" id="hero-intro">
-        운영 중인 서비스에서 문제를 정의하고, 제약 조건을 고려해 대안을 비교·검증하고 최적안을 선택하는 엔지니어입니다. 300만 회원 커머스 플랫폼의 3명으로 이루어진 소규모 백엔드 팀에서 검색·결제·보안·인프라 등 백엔드 전반의 핵심 과제를 주도했습니다.
+        300만 유저 커머스 플랫폼에서 검색·주문·결제까지 커머스 핵심 플로우 전반을 경험한 백엔드 엔지니어입니다. 3명의 소규모 백엔드 팀에서 검색 엔진 구축부터 이미지 최적화, 보안, 인프라까지 폭넓게 주도하며 서비스 품질과 비용 효율을 동시에 개선해 왔습니다.
       </p>
 
       <ul class="hero-impacts" id="hero-impacts">
@@ -110,6 +111,17 @@
     </div>
   </section>
 
+  <!-- Journey -->
+  <section class="section section-alt" id="journey">
+    <div class="container">
+      <h2 class="section-title">Journey</h2>
+      <p class="journey-intro"></p>
+      <div class="journey-timeline">
+        <!-- Timeline items loaded from data/journey.json -->
+      </div>
+    </div>
+  </section>
+
   <!-- Projects -->
   <section class="section" id="projects">
     <div class="container">
@@ -133,7 +145,13 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 Geunho Bang</p>
+      <div class="footer-inner">
+        <p>&copy; 2026 Geunho Bang</p>
+        <button class="footer-pdf-btn" onclick="handlePrint()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Save as PDF</span>
+        </button>
+      </div>
     </div>
   </footer>
 
