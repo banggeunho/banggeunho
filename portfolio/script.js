@@ -2,7 +2,8 @@
 let portfolioData = {
   projects: [],
   about: null,
-  skills: null
+  skills: null,
+  journey: null
 };
 
 async function loadJSON(url) {
@@ -21,15 +22,17 @@ async function loadAllData() {
   // Show loading skeleton
   showLoadingSkeleton();
 
-  const [projects, about, skills] = await Promise.all([
+  const [projects, about, skills, journey] = await Promise.all([
     loadJSON('data/projects.json'),
     loadJSON('data/about.json'),
-    loadJSON('data/skills.json')
+    loadJSON('data/skills.json'),
+    loadJSON('data/journey.json')
   ]);
 
   portfolioData.projects = projects?.projects || [];
   portfolioData.about = about;
   portfolioData.skills = skills;
+  portfolioData.journey = journey;
 
   renderContent();
 }
@@ -87,12 +90,56 @@ function showError(message) {
 }
 
 function renderContent() {
+  renderJourney();
   renderSkills();
   renderAbout();
   renderProjects();
 
   // Dispatch event to re-observe elements for scroll reveal
   window.dispatchEvent(new Event('contentLoaded'));
+}
+
+function renderJourney() {
+  const timeline = document.querySelector('.journey-timeline');
+  const introEl = document.querySelector('.journey-intro');
+  if (!timeline || !portfolioData.journey) return;
+
+  if (introEl && portfolioData.journey.intro) {
+    introEl.textContent = portfolioData.journey.intro;
+  }
+
+  timeline.innerHTML = '';
+
+  portfolioData.journey.items.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'journey-item fade-in' + (item.current ? ' current' : '');
+
+    const tags = item.tags.map(tag => `<span>${tag}</span>`).join('');
+    const highlights = item.highlights && item.highlights.length > 0
+      ? `<ul class="journey-highlights">${item.highlights.map(h => `<li>${h}</li>`).join('')}</ul>`
+      : '';
+
+    div.innerHTML = `
+      <div class="journey-dot"></div>
+      <div class="journey-content">
+        <span class="journey-period">${item.period}</span>
+        <span class="journey-date">${item.date}</span>
+        <h3 class="journey-title">${item.title}</h3>
+        <p class="journey-desc">${item.description}</p>
+        ${highlights}
+        <div class="journey-tags">${tags}</div>
+      </div>
+    `;
+
+    timeline.appendChild(div);
+
+    if (item.image) {
+      const logo = document.createElement('div');
+      logo.className = 'journey-logo' + ((index % 2 === 0) ? ' logo-right' : ' logo-left');
+      logo.innerHTML = `<img src="${item.image}" alt="${item.title} logo">`;
+      div.appendChild(logo);
+    }
+  });
 }
 
 function renderSkills() {
@@ -266,7 +313,7 @@ function renderProjects() {
 (function initReveal() {
   function observeElements() {
     const targets = document.querySelectorAll(
-      '.section-title, .project-card, .contact-content, .content-section, .skill-category'
+      '.section-title, .project-card, .contact-content, .content-section, .skill-category, .journey-item'
     );
 
     // Immediately show all elements without animation
@@ -282,6 +329,62 @@ function renderProjects() {
   // Re-observe after content is loaded
   window.addEventListener('contentLoaded', observeElements);
 })();
+
+// ========== PDF Print with Project Details ==========
+async function handlePrint() {
+  try {
+    // Fetch projects content
+    const response = await fetch('data/projects-content.json');
+    if (!response.ok) {
+      console.warn('Could not load projects content, using basic print');
+      window.print();
+      return;
+    }
+
+    const projectsContent = await response.json();
+
+    // Create or get print container
+    let printContainer = document.querySelector('.print-projects-detail');
+    if (!printContainer) {
+      printContainer = document.createElement('div');
+      printContainer.className = 'print-projects-detail';
+      document.body.appendChild(printContainer);
+    }
+
+    // Clear and populate with project details
+    printContainer.innerHTML = '';
+
+    projectsContent.forEach(project => {
+      const projectSection = document.createElement('div');
+      projectSection.className = 'print-project';
+
+      const title = document.createElement('h2');
+      title.textContent = project.title;
+
+      const tags = document.createElement('div');
+      tags.className = 'print-project-tags';
+      project.tags.forEach(tag => {
+        const tagSpan = document.createElement('span');
+        tagSpan.textContent = tag;
+        tags.appendChild(tagSpan);
+      });
+
+      const content = document.createElement('div');
+      content.innerHTML = project.content;
+
+      projectSection.appendChild(title);
+      projectSection.appendChild(tags);
+      projectSection.appendChild(content);
+      printContainer.appendChild(projectSection);
+    });
+
+    // Trigger print
+    window.print();
+  } catch (error) {
+    console.error('Error loading project details for print:', error);
+    window.print();
+  }
+}
 
 // ========== Initialize on DOM Ready ==========
 if (document.readyState === 'loading') {

@@ -179,6 +179,14 @@ function processProject(projectName) {
   fs.writeFileSync(outputPath, html, 'utf-8');
 
   console.log(`✓ Built: ${projectName}/index.html`);
+
+  // 11. Return project data for projects-content.json
+  return {
+    id: projectName,
+    title: frontmatter.title || projectName,
+    tags: frontmatter.tags || [],
+    content: htmlContent
+  };
 }
 
 /**
@@ -246,13 +254,25 @@ function build() {
 
   console.log(`Found ${projects.length} markdown project(s):\n`);
 
+  const projectsContent = [];
+
   projects.forEach(projectName => {
     try {
-      processProject(projectName);
+      const projectData = processProject(projectName);
+      projectsContent.push(projectData);
     } catch (error) {
       console.error(`✗ Error processing ${projectName}:`, error.message);
     }
   });
+
+  // Generate projects-content.json for PDF printing
+  if (projectsContent.length > 0) {
+    const dataDir = path.join(BUILD_DIR, 'data');
+    fs.ensureDirSync(dataDir);
+    const contentJsonPath = path.join(dataDir, 'projects-content.json');
+    fs.writeFileSync(contentJsonPath, JSON.stringify(projectsContent, null, 2), 'utf-8');
+    console.log(`✓ Generated projects-content.json with ${projectsContent.length} project(s)`);
+  }
 
   console.log(`\n✓ Build completed! Output: ${BUILD_DIR}`);
 }

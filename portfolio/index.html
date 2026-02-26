@@ -52,6 +52,7 @@
     <div class="nav-inner">
       <a href="#" class="nav-logo"><span class="logo-name">bang</span><span class="logo-dot">.geunho</span></a>
       <ul class="nav-links">
+        <li><a href="#journey">Journey</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
       </ul>
@@ -110,6 +111,17 @@
     </div>
   </section>
 
+  <!-- Journey -->
+  <section class="section section-alt" id="journey">
+    <div class="container">
+      <h2 class="section-title">Journey</h2>
+      <p class="journey-intro"></p>
+      <div class="journey-timeline">
+        <!-- Timeline items loaded from data/journey.json -->
+      </div>
+    </div>
+  </section>
+
   <!-- Projects -->
   <section class="section" id="projects">
     <div class="container">
@@ -133,7 +145,13 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 Geunho Bang</p>
+      <div class="footer-inner">
+        <p>&copy; 2026 Geunho Bang</p>
+        <button class="footer-pdf-btn" onclick="handlePrint()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Save as PDF</span>
+        </button>
+      </div>
     </div>
   </footer>
 
