@@ -19,7 +19,7 @@
       "date": "2022.09 — 2023.02",
       "title": "가천-카카오엔터프라이즈 SW 아카데미 1기",
       "description": "웹 개발 라이프사이클, 클라우드, 데이터 엔지니어링 학습. 클라우드 네이티브 웹서비스 프로젝트 수행",
-      "tags": ["Cloud Native", "Web Dev"],
+      "tags": ["Java", "Docker", "Cloud Native", "Web Dev"],
       "highlights": [
         "우수교육생 표창 수상",
         "전체 교육생 50여명 중 2명 인턴 전환"
@@ -31,7 +31,7 @@
       "date": "2023.04 — 2023.11",
       "title": "카카오엔터프라이즈 LaaS플랫폼개발팀",
       "description": "주문 수집 배치, 상품 이미지 검증 API 구현. 실서비스 운영 첫 경험",
-      "tags": ["Spring Boot", "Batch"],
+      "tags": ["Java", "Spring Boot", "Spring Batch"],
       "highlights": [],
       "image": "data/images/kakaoenterprise/logotype-white.svg",
       "current": false
@@ -41,7 +41,7 @@
       "date": "2023.11 — 2023.12",
       "title": "카카오클라우드 클라우드개발CV실 Vortex팀",
       "description": "클라우드 기반 콘텐츠 가이드 제작 및 POC",
-      "tags": ["Cloud", "POC"],
+      "tags": ["KakaoCloud"],
       "highlights": [],
       "current": false
     },
@@ -50,7 +50,7 @@
       "date": "2023.12 — 재직중",
       "title": "비누커머스 프로덕트개발팀",
       "description": "300만 유저 커머스 플랫폼. 검색, 결제, 보안, 인프라 등 백엔드 전반 주도",
-      "tags": ["OpenSearch", "AWS", "Kafka"],
+      "tags": ["NodeJS", "NestJS", "Typescript", "OpenSearch", "AWS"],
       "highlights": [
         "VINUxAWS AI 해커톤 대상 수상",
         "AWS Certified Solutions Architect – Associate"
