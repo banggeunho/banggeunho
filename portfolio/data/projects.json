@@ -21,9 +21,9 @@
     {
       "id": "redis-writeback-optimization",
       "title": "배너 성과 집계 API 성능 최적화",
-      "description": "Redis Write-back 패턴으로 Write IOPS 10배 이상 감소, Row-level Lock/Deadlock 해소. 기존 ElastiCache 활용으로 추가 비용 없이 DB 부하 개선",
+      "description": "Redis 집계 방식으로 Write IOPS 10배 이상 감소, Row-level Lock 경합 해소. 기존 ElastiCache 활용으로 추가 비용 없이 RDS CPU 20% 감소",
       "image": "projects/redis-writeback-optimization/images/thumbnail.svg",
-      "tags": ["Redis", "MySQL", "SQS"],
+      "tags": ["Redis", "MySQL", "Lambda", "EventBridge"],
       "github": "https://github.com/banggeunho",
       "link": "projects/redis-writeback-optimization/"
     },
