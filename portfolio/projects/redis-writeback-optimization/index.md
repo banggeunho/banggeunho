@@ -148,7 +148,7 @@ Redis에서 실시간 집계 후 주기적으로 DB에 동기화하는 방식입
 
 **핵심 흐름:**
 1. **실시간 집계**: 배너 이벤트 → API Server → Redis `HINCRBY` (즉시 응답)
-2. **배치 동기화**: EventBridge가 10분마다 Lambda를 트리거 → Redis `SCAN` → MySQL `Bulk REPLACE`
+2. **배치 동기화**: EventBridge가 10분마다 Lambda를 트리거 → Redis `SCAN` → MySQL `Bulk UPSERT`
 3. **조회**: 어드민 API는 MySQL만 조회 (기존 로직 변경 없음)
 
 ---
@@ -170,7 +170,7 @@ HSET banner_stats:20240501:1 IMPRESSION 12345 CLICK 890
 → 일 평균 3,000개 배너 = 3,000개 키
 ```
 
-키 수가 절반으로 줄어드는 것 외에 메모리 측면의 이점도 있습니다. Redis에서 String Key는 키마다 [`dictEntry`(32바이트, jemalloc 할당) + `redisObject`(16바이트) + SDS 헤더](https://github.com/redis/redis/discussions/13677) 등 약 70-90바이트의 메타데이터 오버헤드가 발생합니다. Hash Key는 필드 수가 [`hash-max-ziplist-entries`](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/memory-optimization/)(기본 128) 이하이면 내부적으로 **ziplist**(Redis 7.0부터는 [**listpack**](https://github.com/redis/redis/issues/8702))로 인코딩되어, 필드를 연속된 메모리 블록에 순차 저장합니다. 배너 집계는 Hash당 필드가 2개뿐이므로 ziplist 인코딩이 확정적으로 적용됩니다.
+키 수가 절반으로 줄어드는 것 외에 메모리 측면의 이점도 있습니다. Redis에서 String Key는 키마다 [`dictEntry`(32바이트, jemalloc 할당) + `redisObject`(16바이트) + SDS 헤더](https://github.com/redis/redis/discussions/13677) 등 약 70-90바이트의 메타데이터 오버헤드가 발생합니다. Redis 7 기준으로 Hash는 필드 수가 [`hash-max-listpack-entries`](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/memory-optimization/)(기본 512) 이하이고 값 크기가 작으면 내부적으로 **listpack** 인코딩을 사용해 필드를 연속된 메모리 블록에 순차 저장합니다. 배너 집계는 Hash당 필드가 2개뿐이라 listpack 인코딩 조건을 안정적으로 만족합니다.
 
 **데이터 모델:**
 ```
@@ -190,7 +190,7 @@ Redis는 싱글스레드로 동작하기 때문에 HINCRBY 명령어로 Lock 경
 ```
 - 일당 활성 배너 키: 약 3,000개
 - 7일 보관: 약 21,000개 키
-- 키당 크기: Hash 2필드 (IMPRESSION, CLICK), ziplist ≈ 100바이트
+- 키당 크기: Hash 2필드 (IMPRESSION, CLICK), listpack ≈ 100바이트
 - 총 메모리: 약 2.1MB
 ```
 
@@ -203,13 +203,14 @@ Redis는 싱글스레드로 동작하기 때문에 HINCRBY 명령어로 Lock 경
 @Post('/banners/:id/click')
 async incrementClick(@Param('id') bannerId: number) {
   const dateKey = dayjs().format('YYYYMMDD');
+  const key = `banner_stats:${dateKey}:${bannerId}`;
 
   try {
-    await this.redis.hincrby(
-      `banner_stats:${dateKey}:${bannerId}`,
-      'CLICK',
-      1
-    );
+    await this.redis
+      .multi()
+      .hincrby(key, 'CLICK', 1)
+      .expire(key, 60 * 60 * 24 * 7, 'NX') // 최초 생성 시에만 TTL 7일 설정
+      .exec();
     return { success: true };
   } catch (error) {
     this.logger.error(
@@ -258,8 +259,10 @@ BannerStatsFinalizeSchedule:
       Input: '{"mode":"finalize_yesterday"}'
 ```
 
-1. **정기 동기화 (10분마다)**: Redis `SCAN`으로 당일 데이터를 조회하여 DB에 REPLACE
-2. **전일 최종 확정 (자정 이후 1회)**: Redis 데이터와 CloudWatch 로그를 함께 집계하여, 배치 실패나 날짜 경계(23:59-00:xx) 구간에서 누락된 이벤트까지 보정한 뒤 최종 REPLACE
+1. **정기 동기화 (10분마다)**: Redis `SCAN`으로 당일 데이터를 조회하여 DB에 UPSERT
+2. **전일 최종 확정 (자정 이후 1회)**: Redis 데이터와 CloudWatch 로그를 함께 집계하여, 배치 실패나 날짜 경계(23:59-00:xx) 구간에서 누락된 이벤트까지 보정한 뒤 최종 UPSERT
+
+보정 시에는 날짜 경계 구간(23:50~00:10) 로그를 대상으로 `request_id` 기준 중복 제거를 적용해, 지연 유입/중복 집계를 방지했습니다.
 
 **Lambda 함수:**
 ```typescript
@@ -278,7 +281,7 @@ export const handler = async (event: { mode: string }) => {
     mergeStats(redisStats, logStats);
   }
 
-  // 3. 역행 감지 — incoming < current이면 REPLACE 중단 및 알람
+  // 3. 역행 감지 — incoming < current이면 UPSERT 제외 및 알람
   const currentStats = await fetchCurrentStats(targetDate);
   const regressions = detectRegressions(redisStats, currentStats);
 
@@ -287,25 +290,28 @@ export const handler = async (event: { mode: string }) => {
     excludeFromSync(redisStats, regressions);
   }
 
-  // 4. DB에 Bulk REPLACE (누적값 통째로 교체)
+  // 4. DB에 Bulk UPSERT (누적값 절대치 반영)
   if (redisStats.length > 0) {
     await db.raw(`
-      REPLACE INTO banner_daily_stats (date, banner_id, impressions, clicks)
+      INSERT INTO banner_daily_stats (date, banner_id, impressions, clicks)
       VALUES ${redisStats.map(() => '(?, ?, ?, ?)').join(', ')}
+      ON DUPLICATE KEY UPDATE
+        impressions = VALUES(impressions),
+        clicks = VALUES(clicks)
     `, redisStats.flatMap(s => [s.date, s.bannerId, s.impressions, s.clicks]));
   }
 };
 ```
 
-**REPLACE 방식의 데이터 정합성:**
+**UPSERT(절대값 반영) 방식의 데이터 정합성:**
 
-배치 동기화는 INCREMENT(증분)가 아닌 **REPLACE(교체)** 방식입니다. Redis에 저장된 값은 HINCRBY로 계속 누적되는 값이므로, DB에는 Redis의 최신 누적값으로 통째로 교체합니다.
+배치 동기화는 INCREMENT(증분)가 아닌 **UPSERT + 절대값 반영** 방식입니다. Redis에 저장된 값은 HINCRBY로 계속 누적되는 값이므로, DB에는 Redis의 최신 누적값으로 덮어씁니다.
 
 이 방식의 장점은 정합성 관리가 단순해진다는 점입니다:
 
-- **SCAN과 REPLACE 사이에 새로운 HINCRBY가 발생하면?** → 다음 배치에서 최신 누적값으로 교체되므로 유실 없음
-- **Lambda가 DB REPLACE 중 실패하면?** → Redis 데이터는 그대로 유지되므로, 다음 배치에서 최신 값으로 재시도하여 자동 복구
-- **같은 데이터가 2번 동기화되면?** → 동일한 값으로 교체될 뿐, 중복 적산되지 않음
+- **SCAN과 UPSERT 사이에 새로운 HINCRBY가 발생하면?** → 다음 배치에서 최신 누적값으로 반영되므로 유실 없음
+- **Lambda가 DB UPSERT 중 실패하면?** → Redis 데이터는 그대로 유지되므로, 다음 배치에서 최신 값으로 재시도하여 자동 복구
+- **같은 데이터가 2번 동기화되면?** → 동일한 절대값으로 재반영될 뿐, 중복 적산되지 않음
 
 ---
 
@@ -327,11 +333,11 @@ export const handler = async (event: { mode: string }) => {
 | **Write IOPS** | 10배 이상 감소 |
 | **RDS CPU 사용률** | 약 20% 감소 |
 | **EC2 CPU 사용률** | 약 8% 감소 |
-| **Row-level Lock 경합** | 완전 해소 |
+| **Row-level Lock 경합** | 운영 관측상 해소 |
 
 기존에는 모든 배너 이벤트가 `INSERT ON DUPLICATE KEY UPDATE`로 DB에 직접 Write했지만, Redis 전환 후에는 이 SQL 호출 자체가 제거되었습니다. 이로 인해:
 
-- **RDS**: 초당 수십 건의 Write 쿼리가 10분마다 1회 Bulk REPLACE로 대체되어 Write IOPS와 CPU 사용률이 대폭 감소
+- **RDS**: 초당 수십 건의 Write 쿼리가 10분마다 1회 Bulk UPSERT로 대체되어 Write IOPS와 CPU 사용률이 대폭 감소
 - **EC2**: Lock Wait으로 인한 DB 커넥션 장기 점유가 사라지면서 커넥션 풀 고갈 문제가 해소되고, Node.js 이벤트 루프의 콜백 지연도 줄어들어 전체 CPU 사용률 감소
 - **ElastiCache**: 단순 카운터 누적은 Redis에게 매우 가벼운 연산으로, CPU나 메모리 사용률에 유의미한 영향 없음
 
@@ -348,24 +354,24 @@ export const handler = async (event: { mode: string }) => {
 
 ## 배운 점
 
-**1. 발상의 전환이 가장 효과적인 최적화였다**
-- 기존 로직을 복잡하게 튜닝하는 대신, "실시간으로 RDB에 쓸 필요가 있는가?"라는 질문 하나가 해결의 시작이었다
-- 쓰기 경로를 Redis로 분리하는 단순한 구조 변경만으로 Lock 경합, 커넥션 풀 고갈, CPU 상승까지 연쇄적으로 해소됐다
-- 복잡한 구현보다 문제의 본질을 정확히 파악하는 것이 더 큰 성능 개선을 만든다는 걸 체감했다
+**1. 발상의 전환이 가장 효과적인 최적화였습니다**
+- 기존 로직을 복잡하게 튜닝하는 대신, "실시간으로 RDB에 쓸 필요가 있는가?"라는 질문 하나가 해결의 시작이었습니다
+- 쓰기 경로를 Redis로 분리하는 단순한 구조 변경만으로 Lock 경합, 커넥션 풀 고갈, CPU 상승까지 연쇄적으로 해소됐습니다
+- 복잡한 구현보다 문제의 본질을 정확히 파악하는 것이 더 큰 성능 개선을 만든다는 걸 체감했습니다
 
 **2. 기존 시스템 영향도를 최소화하는 설계**
-- 어드민의 집계 조회 로직, 기존 테이블 구조, 다른 API 등 기존 시스템을 건드리지 않는 것을 최우선으로 설계했다
-- API 레이어의 쓰기 경로만 변경하고, 배치로 동일한 테이블에 동기화하는 방식으로 나머지 시스템은 변경 없이 동작하게 했다
-- 프로덕션 환경에서는 "무엇을 바꾸지 않을 것인가"를 먼저 정하는 것이 안정적인 개선의 핵심이었다
+- 어드민의 집계 조회 로직, 기존 테이블 구조, 다른 API 등 기존 시스템을 건드리지 않는 것을 최우선으로 설계했습니다
+- API 레이어의 쓰기 경로만 변경하고, 배치로 동일한 테이블에 동기화하는 방식으로 나머지 시스템은 변경 없이 동작하게 했습니다
+- 프로덕션 환경에서는 "무엇을 바꾸지 않을 것인가"를 먼저 정하는 것이 안정적인 개선의 핵심이었습니다
 
-**3. 기술적 의사결정에는 이해관계자의 맥락이 필요하다**
-- 배치 주기, 데이터 정합성 허용 범위 등은 순수한 엔지니어링 판단이 아니라 실제 사용하는 마케팅팀과의 논의를 통해 결정했다
-- "10분 이내 반영이면 충분하다"는 현업의 요구사항이 있었기에 실시간 동기화 대신 배치 방식을 선택할 수 있었다
-- 기술적 트레이드오프를 판단할 때, 비즈니스 요구사항을 먼저 확인하는 습관의 중요성을 배웠다
+**3. 기술적 의사결정에는 이해관계자의 맥락이 필요합니다**
+- 배치 주기, 데이터 정합성 허용 범위 등은 순수한 엔지니어링 판단이 아니라 실제 사용하는 마케팅팀과의 논의를 통해 결정했습니다
+- "10분 이내 반영이면 충분하다"는 현업의 요구사항이 있었기에 실시간 동기화 대신 배치 방식을 선택할 수 있었습니다
+- 기술적 트레이드오프를 판단할 때, 비즈니스 요구사항을 먼저 확인하는 습관의 중요성을 배웠습니다
 
-**4. 단순한 구현에도 고민할 포인트는 많았다**
-- Redis 자료구조 선택(String vs Hash), TTL 정책, 배치 주기, 역행 감지와 알림, 전일 데이터 보정 등 하나하나가 근거 있는 의사결정이 필요했다
-- 단순해 보이는 구현이라도 "왜 이렇게 했는가"를 설명할 수 있어야 한다는 점에서, 설계 과정 자체가 좋은 경험이었다
+**4. 단순한 구현에도 고민할 포인트는 많았습니다**
+- Redis 자료구조 선택(String vs Hash), TTL 정책, 배치 주기, 역행 감지와 알림, 전일 데이터 보정 등 하나하나가 근거 있는 의사결정이 필요했습니다
+- 단순해 보이는 구현이라도 "왜 이렇게 했는가"를 설명할 수 있어야 한다는 점에서, 설계 과정 자체가 좋은 경험이었습니다
 
 ---
 
