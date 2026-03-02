@@ -1,14 +1,15 @@
 {
-  "intro": "연구실에서 시작해, 실전과 운영을 거쳐 서비스의 문제를 해결하는 엔지니어가 되기까지.",
+  "intro": "",
   "items": [
     {
       "period": "대학교",
       "date": "2016.03 — 2023.02",
       "title": "가천대학교 소프트웨어학과",
-      "description": "HCI LAB 학부생연구원으로 AI 기반 행동분류 연구, CNN/시계열 논문 작성 (2년)",
-      "tags": ["CNN", "시계열", "논문"],
+      "description": "HCI LAB 학부생연구원 활동 AI 기반 행동분류 연구 및 CNN/시계열 논문 작성 (2년)",
+      "tags": ["소프트웨어", "CNN", "시계열", "논문"],
       "highlights": [
-        "전체 평점 3.91 / 4.5, 전공 평점 4.07 / 4.5",
+        "전체 평점 3.91 / 4.5",
+        "전공 평점 4.07 / 4.5",
         "웨어러블 기기로부터 추출한 가속도 및 자이로 신호 기반 아동의 놀이 행동 레벨 인식 기술 (2022.05)",
         "정신과 폐쇄 병동 입원환자 모니터링을 위한 웨어러블 워치 기반 실시간 이상 심박수 및 신체활동 플랫폼 개발 (2023.07)"
       ],
@@ -30,8 +31,8 @@
       "period": "인턴",
       "date": "2023.04 — 2023.11",
       "title": "카카오엔터프라이즈 LaaS플랫폼개발팀",
-      "description": "주문 수집 배치, 상품 이미지 검증 API 구현. 실서비스 운영 첫 경험",
-      "tags": ["Java", "Spring Boot", "Spring Batch"],
+      "description": "주문 관리 시스템 개발 (주문 수집 배치 설계, 상품 이미지 검증 API 구현.)",
+      "tags": ["Java 8+", "Spring Boot", "Spring Batch", "MySQL"],
       "highlights": [],
       "image": "data/images/kakaoenterprise/logotype-white.svg",
       "current": false
@@ -49,7 +50,7 @@
       "period": "현재",
       "date": "2023.12 — 재직중",
       "title": "비누커머스 프로덕트개발팀",
-      "description": "300만 유저 커머스 플랫폼. 검색, 결제, 보안, 인프라 등 백엔드 전반 주도",
+      "description": "300만 유저 커머스 플랫폼. 검색, 결제, 보안, 인프라 운영 등 백엔드 전반 주도",
       "tags": ["NodeJS", "NestJS", "Typescript", "OpenSearch", "AWS"],
       "highlights": [
         "VINUxAWS AI 해커톤 대상 수상",
