@@ -1,3 +1,101 @@
+// ========== Analytics (GA4) ==========
+const GA_MEASUREMENT_ID = 'G-M777TD5DVB';
+const IS_LOCALHOST = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const ANALYTICS_ENABLED = Boolean(GA_MEASUREMENT_ID) && !IS_LOCALHOST;
+
+function getPageType() {
+  return window.location.pathname.includes('/projects/')
+    ? 'project_detail'
+    : 'portfolio_home';
+}
+
+function getProjectIdFromPath() {
+  const match = window.location.pathname.match(/\/projects\/([^/]+)/);
+  return match ? match[1] : null;
+}
+
+function trackEvent(eventName, params = {}) {
+  if (!ANALYTICS_ENABLED || typeof window.gtag !== 'function') return;
+
+  window.gtag('event', eventName, {
+    page_type: getPageType(),
+    transport_type: 'beacon',
+    ...params
+  });
+}
+
+function trackFunnelStep(step, params = {}) {
+  if (!ANALYTICS_ENABLED) return;
+
+  const key = `ga4_funnel_${step}`;
+  try {
+    if (window.sessionStorage.getItem(key) === '1') return;
+    window.sessionStorage.setItem(key, '1');
+  } catch (_) {
+    // If sessionStorage is unavailable, send event without deduplication.
+  }
+
+  trackEvent('funnel_step', { step, ...params });
+}
+
+function initAnalytics() {
+  if (!ANALYTICS_ENABLED) return;
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`;
+  document.head.appendChild(script);
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function gtag() {
+    window.dataLayer.push(arguments);
+  };
+
+  window.gtag('js', new Date());
+  window.gtag('config', GA_MEASUREMENT_ID, {
+    send_page_view: true,
+    debug_mode: false
+  });
+
+  const pageType = getPageType();
+  const projectId = getProjectIdFromPath();
+
+  if (pageType === 'portfolio_home') {
+    trackFunnelStep('home_view');
+  } else if (projectId) {
+    trackEvent('project_detail_view', { project_id: projectId });
+    trackFunnelStep('project_detail_view', { project_id: projectId });
+  }
+
+  const projectsSection = document.getElementById('projects');
+  if (projectsSection) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        trackEvent('section_view', { section_id: 'projects' });
+        trackFunnelStep('projects_section_view');
+        obs.disconnect();
+      });
+    }, { threshold: 0.35 });
+    observer.observe(projectsSection);
+  }
+
+  document.querySelectorAll('.hero-contact-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const label = (link.textContent || '').trim().toLowerCase();
+      const contactType = label.includes('github') ? 'github' : (label.includes('@') ? 'email' : 'other');
+      trackEvent('contact_click', { contact_type: contactType });
+    });
+  });
+
+  const backLink = document.querySelector('.back-link');
+  if (backLink) {
+    backLink.addEventListener('click', () => {
+      trackEvent('project_back_click', { project_id: projectId || 'unknown' });
+    });
+  }
+}
+
 // ========== Data Loading ==========
 let portfolioData = {
   projects: [],
@@ -35,6 +133,10 @@ async function loadAllData() {
   portfolioData.journey = journey;
 
   renderContent();
+
+  trackEvent('portfolio_loaded', {
+    project_count: portfolioData.projects.length
+  });
 }
 
 function showLoadingSkeleton() {
@@ -219,10 +321,11 @@ function renderProjects() {
 
   grid.innerHTML = '';
 
-  portfolioData.projects.forEach(project => {
+  portfolioData.projects.forEach((project, index) => {
     const card = document.createElement('a');
     card.href = project.link;
     card.className = 'project-card fade-in';
+    card.setAttribute('data-project-id', project.id || `project_${index + 1}`);
 
     const thumbnail = project.image
       ? `<img src="${project.image}" alt="${project.title} project thumbnail">`
@@ -246,6 +349,16 @@ function renderProjects() {
         <div class="project-tags">${tags}</div>
       </div>
     `;
+
+    card.addEventListener('click', () => {
+      const projectId = project.id || `project_${index + 1}`;
+      trackEvent('project_card_click', {
+        project_id: projectId,
+        project_title: project.title,
+        project_position: index + 1
+      });
+      trackFunnelStep('project_click', { project_id: projectId });
+    });
 
     grid.appendChild(card);
   });
@@ -282,6 +395,10 @@ function renderProjects() {
     // Close on link click
     links.querySelectorAll('a').forEach((a) => {
       a.addEventListener('click', () => {
+        const href = a.getAttribute('href') || '';
+        const sectionId = href.startsWith('#') ? href.slice(1) : href;
+        trackEvent('nav_click', { section_id: sectionId });
+
         toggle.classList.remove('open');
         links.classList.remove('open');
       });
@@ -332,6 +449,9 @@ function renderProjects() {
 
 // ========== PDF Print with Project Details ==========
 async function handlePrint() {
+  trackEvent('pdf_export_click');
+  trackFunnelStep('pdf_export');
+
   try {
     // Fetch projects content
     const response = await fetch('data/projects-content.json');
@@ -387,8 +507,16 @@ async function handlePrint() {
 }
 
 // ========== Initialize on DOM Ready ==========
+function initializePage() {
+  initAnalytics();
+
+  if (getPageType() === 'portfolio_home') {
+    loadAllData();
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadAllData);
+  document.addEventListener('DOMContentLoaded', initializePage);
 } else {
-  loadAllData();
+  initializePage();
 }
