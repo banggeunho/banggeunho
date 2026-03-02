@@ -38,6 +38,112 @@ function trackFunnelStep(step, params = {}) {
   trackEvent('funnel_step', { step, ...params });
 }
 
+function getProjectReadProgressPercent() {
+  const content = document.querySelector('.project-detail-content');
+  if (!content) return null;
+
+  const viewportBottom = window.scrollY + window.innerHeight;
+  const rect = content.getBoundingClientRect();
+  const contentTop = window.scrollY + rect.top;
+  const contentHeight = Math.max(content.scrollHeight, rect.height, 1);
+
+  const raw = ((viewportBottom - contentTop) / contentHeight) * 100;
+  const bounded = Math.max(0, Math.min(100, raw));
+  return Math.round(bounded);
+}
+
+function initProjectReadAnalytics(projectId) {
+  if (!projectId) return;
+
+  const content = document.querySelector('.project-detail-content');
+  if (!content) return;
+
+  const depthThresholds = [25, 50, 75, 90, 100];
+  const sentDepths = new Set();
+  const seenSections = new Set();
+  const sectionElements = Array.from(content.querySelectorAll('.content-section'));
+  const readStartedAt = Date.now();
+  let maxProgress = 0;
+  let readCompleteSent = false;
+  let scrollTicking = false;
+
+  const emitDepthEvents = () => {
+    const progress = getProjectReadProgressPercent();
+    if (progress === null) return;
+
+    maxProgress = Math.max(maxProgress, progress);
+
+    depthThresholds.forEach((threshold) => {
+      if (progress < threshold || sentDepths.has(threshold)) return;
+
+      sentDepths.add(threshold);
+      trackEvent('scroll_depth', {
+        project_id: projectId,
+        progress_percent: threshold
+      });
+
+      if (threshold >= 90 && !readCompleteSent) {
+        readCompleteSent = true;
+        const elapsed = Math.floor((Date.now() - readStartedAt) / 1000);
+        trackEvent('read_complete', {
+          project_id: projectId,
+          progress_percent: threshold,
+          read_time_sec: elapsed
+        });
+        trackFunnelStep('project_read_complete', { project_id: projectId });
+      }
+    });
+  };
+
+  const onScroll = () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      emitDepthEvents();
+      scrollTicking = false;
+    });
+  };
+
+  const onPageExit = () => {
+    const elapsed = Math.floor((Date.now() - readStartedAt) / 1000);
+    trackEvent('project_read_exit', {
+      project_id: projectId,
+      max_progress_percent: maxProgress,
+      read_time_sec: elapsed
+    });
+  };
+
+  if (sectionElements.length > 0) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const index = sectionElements.indexOf(entry.target);
+        if (index < 0 || seenSections.has(index)) return;
+        seenSections.add(index);
+
+        const heading = entry.target.querySelector('h2');
+        const sectionId = heading?.id || `section_${index + 1}`;
+        const sectionTitle = (heading?.textContent || '').trim() || `section_${index + 1}`;
+
+        trackEvent('project_section_view', {
+          project_id: projectId,
+          section_id: sectionId,
+          section_title: sectionTitle,
+          section_index: index + 1
+        });
+      });
+    }, { threshold: 0.45 });
+
+    sectionElements.forEach((section) => sectionObserver.observe(section));
+  }
+
+  emitDepthEvents();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('pagehide', onPageExit, { once: true });
+}
+
 function initAnalytics() {
   if (!ANALYTICS_ENABLED) return;
 
@@ -65,6 +171,7 @@ function initAnalytics() {
   } else if (projectId) {
     trackEvent('project_detail_view', { project_id: projectId });
     trackFunnelStep('project_detail_view', { project_id: projectId });
+    initProjectReadAnalytics(projectId);
   }
 
   const projectsSection = document.getElementById('projects');
