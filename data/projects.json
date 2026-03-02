@@ -14,16 +14,16 @@
       "title": "실시간 이미지 최적화 시스템",
       "description": "Lambda@Edge On-demand 처리로 CloudFront 전송량 68% 감소, 비용 75% 절감. WebP/AVIF 변환으로 요청 +31%, 전송량 -68%",
       "image": "projects/image-optimization-lambda-edge/images/thumbnail.svg",
-      "tags": ["Lambda@Edge", "CloudFront", "WebP"],
+      "tags": ["Lambda@Edge", "CloudFront"],
       "github": "https://github.com/banggeunho",
       "link": "projects/image-optimization-lambda-edge/"
     },
     {
       "id": "redis-writeback-optimization",
       "title": "배너 성과 집계 API 성능 최적화",
-      "description": "Redis Write-back 패턴으로 Write IOPS 10배 이상 감소, Row-level Lock/Deadlock 해소. 기존 ElastiCache 활용으로 추가 비용 없이 DB 부하 개선",
+      "description": "Redis 집계 방식으로 Write IOPS 10배 이상 감소, Row-level Lock 경합 해소. 기존 ElastiCache 활용으로 추가 비용 없이 RDS CPU 20% 감소",
       "image": "projects/redis-writeback-optimization/images/thumbnail.svg",
-      "tags": ["Redis", "MySQL", "Performance"],
+      "tags": ["Redis", "MySQL", "Lambda", "EventBridge"],
       "github": "https://github.com/banggeunho",
       "link": "projects/redis-writeback-optimization/"
     },
@@ -32,7 +32,7 @@
       "title": "e커머스 주문 수집 배치 성능 개선",
       "description": "템플릿 메소드 패턴 + CompletableFuture 병렬 처리로 30분→3분 (10배 향상). 코드 570줄→215줄(62% 감소), DB 저장을 개별 처리에서 3단계 벌크 처리로 전환",
       "image": "projects/ecommerce-batch-optimization/images/thumbnail.svg",
-      "tags": ["Java", "Spring Boot", "Batch"],
+      "tags": ["Java", "Spring Boot", "Spring Batch"],
       "github": "https://github.com/banggeunho",
       "link": "projects/ecommerce-batch-optimization/"
     },
@@ -41,7 +41,7 @@
       "title": "사용자 이벤트 로그 데이터 파이프라인",
       "description": "AWS Firehose 기반 실시간 파이프라인 구축. 데이터 리드타임 1~2일 → 30분, 월 평균 3,000만 건 처리. Parquet 변환으로 Athena 쿼리 5배 향상(측정: 50초→10초)",
       "image": "projects/data-pipeline-firehose/images/thumbnail.svg",
-      "tags": ["AWS Firehose", "Athena", "Redshift"],
+      "tags": ["AWS Firehose", "Athena", "Redshift", "Lambda"],
       "github": "https://github.com/banggeunho",
       "link": "projects/data-pipeline-firehose/"
     }
