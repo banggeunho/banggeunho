@@ -523,36 +523,40 @@ SELECT LAST_INSERT_ID();  -- 520
 </section>
 <section class="content-section">
 <h2 id="결과-신규-커머스-추가-한-달23주-처리-시간-30분3분">결과: 신규 커머스 추가 한 달→2~3주, 처리 시간 30분→3분</h2>
-<h3 id="before-순차-처리-30분">Before: 순차 처리 (30분)</h3>
-<pre class="mermaid">gantt
-    title 판매자 20개 순차 수집 + 건별 DB 저장
-    dateFormat X
-    axisFormat %s분
+<h3 id="before-순차-처리">Before: 순차 처리</h3>
+<pre class="mermaid">graph TD
+    A["판매자 A 수집"] --> A1["주문 건별 반복: 배송지 저장 → 주문 저장"]
+    A1 --> B["판매자 B 수집"]
+    B --> B1["주문 건별 반복: 배송지 저장 → 주문 저장"]
+    B1 --> C["... × 20개 판매자 순차 대기"]
 
-    section 수집 (순차)
-    판매자 A 수집     :a1, 0, 90
-    판매자 B 수집     :a2, after a1, 120
-    판매자 C 수집     :a3, after a2, 60
-    판매자 D 수집     :a4, after a3, 90
-    ...나머지 순차 대기 :a5, after a4, 1440
+    style A1 fill:#f8514933,stroke:#f85149
+    style B1 fill:#f8514933,stroke:#f85149</pre><h3 id="after-병렬-벌크">After: 병렬 + 벌크</h3>
+<pre class="mermaid">graph TD
+    subgraph 동시처리["판매자별 병렬 처리"]
+        subgraph S1["판매자 A"]
+            A1["인증 → 수집 → 파싱"] --> A2["배송지 BULK INSERT"]
+            A2 --> A3["ID 조회"]
+            A3 --> A4["주문 BULK INSERT"]
+        end
+        subgraph S2["판매자 B"]
+            B1["인증 → 수집 → 파싱"] --> B2["배송지 BULK INSERT"]
+            B2 --> B3["ID 조회"]
+            B3 --> B4["주문 BULK INSERT"]
+        end
+        subgraph S3["... × 20개 동시"]
+            C1["인증 → 수집 → 파싱"] --> C2["배송지 BULK INSERT"]
+            C2 --> C3["ID 조회"]
+            C3 --> C4["주문 BULK INSERT"]
+        end
+        S1 ~~~ S2
+        S2 ~~~ S3
+    end
 
-    section DB 저장 (건별)
-    주문 10,000건 × 2회 :b1, after a5, 600</pre><h3 id="after-병렬-처리-벌크-저장-3분">After: 병렬 처리 + 벌크 저장 (3분)</h3>
-<pre class="mermaid">gantt
-    title 판매자 20개 병렬 수집 + 벌크 DB 저장
-    dateFormat X
-    axisFormat %s분
-
-    section 수집 (병렬)
-    판매자 A 수집     :a1, 0, 90
-    판매자 B 수집     :a2, 0, 120
-    판매자 C 수집     :a3, 0, 60
-    판매자 D~T 수집   :a4, 0, 100
-
-    section DB 저장 (벌크)
-    배송지 벌크 INSERT :b1, 120, 140
-    배송지 ID 조회     :b2, 140, 150
-    주문 벌크 INSERT   :b3, 150, 180</pre><h3 id="개선-결과">개선 결과</h3>
+    style 동시처리 fill:#7ee78711,stroke:#7ee787
+    style S1 fill:#58a6ff11,stroke:#58a6ff
+    style S2 fill:#58a6ff11,stroke:#58a6ff
+    style S3 fill:#58a6ff11,stroke:#58a6ff</pre><h3 id="개선-결과">개선 결과</h3>
 <table>
 <thead>
 <tr>
