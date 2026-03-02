@@ -9,7 +9,7 @@ date: 2024-03-01
 ## 목차
 1. [배경: 트래픽 30% 증가, 비용은 어떻게?](#배경-트래픽-30-증가-비용은-어떻게)
 2. [문제 분석: 원본 이미지 서빙의 낭비](#문제-분석-원본-이미지-서빙의-낭비)
-3. [아키텍처 설계](#아키텍처-설계-lambdaedge-선택-이유)
+3. [아키텍처 설계](#아키텍처-설계)
 4. [핵심 구현 1: CloudFront Functions로 어뷰징 방지](#핵심-구현-1-cloudfront-functions로-어뷰징-방지)
 5. [핵심 구현 2: Lambda@Edge로 On-demand 처리](#핵심-구현-2-lambdaedge로-on-demand-처리)
 6. [핵심 구현 3: 캐시 무효화 전략](#핵심-구현-3-캐시-무효화-전략)
@@ -92,6 +92,7 @@ AVIF: 3.3KB (90.6% 감소)
 **결론:** AVIF가 압축률은 최고지만, Opera Mini 등 일부 브라우저에서 미지원. WebP는 IE를 제외한 모든 브라우저에서 지원하므로 **WebP를 기본으로 선택하되, `<picture>` 태그로 AVIF도 지원**하는 방향을 채택했습니다.
 
 **4. 클라이언트 단에서 크롭**
+예시 코드:
 ```html
 <img src="original.jpg" style="width: 200px; height: 200px; object-fit: cover;">
 ```
@@ -212,6 +213,7 @@ Lambda@Edge도 Viewer Request에서 동일한 검증 로직을 실행할 수 있
 또한 정규화는 반드시 **캐시 확인 전**(Viewer Request)에 실행되어야 합니다. 만약 Origin Request에서 처리했다면, 정규화 전 쿼리로 캐시 키가 생성되어 동일한 이미지 요청도 캐시를 활용하지 못하게 됩니다.
 
 **정규화 로직:**
+예시 코드(의사코드):
 ```javascript
 function handler(event) {
   var params = event.request.querystring;
@@ -224,7 +226,7 @@ function handler(event) {
   // 2. q: 품질 범위 제한(10~100) + 10단위 올림
   normalize(params.q, MIN=10, MAX=100, STEP=10);
 
-  // 3. f: 허용 포맷만 통과 (jpeg, png, webp, avif, gif, svg)
+  // 3. f: 허용 포맷만 통과 (jpg, jpeg, png, webp, avif)
   validateFormat(params.f);
 
   // 4. 쿼리 키 정렬 → 동일 파라미터 조합이 같은 캐시 키로 매핑
@@ -254,6 +256,7 @@ function handler(event) {
 
 이미지 리사이징과 포맷 변환은 Node.js 기반 이미지 처리 라이브러리인 [Sharp](https://github.com/lovell/sharp)를 활용하여 구현했습니다.
 
+예시 코드:
 ```typescript
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
@@ -277,7 +280,7 @@ export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFron
   // 2. 파라미터 파싱
   const width = parseInt(params.get('w') ?? '') || null;
   const height = parseInt(params.get('h') ?? '') || null;
-  const format = params.get('f') ?? 'jpg';
+  const requestedFormat = (params.get('f') ?? 'jpg').toLowerCase();
   const quality = parseInt(params.get('q') ?? '') || 80;
 
   // 3. 이미지 처리
@@ -293,10 +296,14 @@ export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFron
   }
 
   // 포맷 변환
-  const formatMap = { webp: 'webp', avif: 'avif', png: 'png' } as const;
-  image = format in formatMap
-    ? image[formatMap[format as keyof typeof formatMap]]({ quality })
-    : image.jpeg({ quality });
+  const formatMap = { webp: 'webp', avif: 'avif', png: 'png', jpg: 'jpeg', jpeg: 'jpeg' } as const;
+  const outputFormat = requestedFormat in formatMap
+    ? formatMap[requestedFormat as keyof typeof formatMap]
+    : 'jpeg';
+
+  image = outputFormat === 'jpeg'
+    ? image.jpeg({ quality })
+    : image[outputFormat]({ quality });
 
   const buffer = await image.toBuffer();
 
@@ -304,7 +311,7 @@ export const handler = async (event: CloudFrontResponseEvent): Promise<CloudFron
   return {
     status: '200',
     headers: {
-      'content-type': [{ key: 'Content-Type', value: `image/${format}` }],
+      'content-type': [{ key: 'Content-Type', value: `image/${outputFormat}` }],
       'cache-control': [{ key: 'Cache-Control', value: 'public, max-age=31536000' }],
       'content-length': [{ key: 'Content-Length', value: buffer.length.toString() }],
     },
@@ -386,7 +393,8 @@ sequenceDiagram
 
 요청이 115만 건(31%) 더 많았지만, 전송량은 오히려 **약 3배 감소**했습니다. 이미지 최적화가 없었다면 전송량 550GB로 예상되었으나 실제 132GB로 집계되었습니다.
 
-CloudFront 데이터 전송 비용이 68% 감소했고, Lambda@Edge 실행 비용은 전체 대비 미미하여 **총비용 기준 약 75% 절감**으로 집계되었습니다.
+- **실측 비교(4/3 → 5/26)**: CloudFront 데이터 전송 비용 **68% 절감**
+- **트래픽 증가 반영 추정 비교(최적화 미적용 가정 550GB 대비)**: 이미지 전달 **총비용 기준 약 75% 절감**
 
 ### 성능 개선
 
