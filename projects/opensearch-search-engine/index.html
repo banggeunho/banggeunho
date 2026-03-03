@@ -121,8 +121,15 @@
 </section>
 <section class="content-section">
 <h2 id="아키텍처-설계-opensearch를-선택한-이유">아키텍처 설계: OpenSearch를 선택한 이유</h2>
+<p>Fuse.js의 한계를 분석한 결과, 새로운 검색 시스템에 필요한 요건이 명확해졌습니다.</p>
+<ul>
+<li><strong>역 인덱스 기반 검색</strong>: 전체 데이터 순회가 아닌, 상품 수가 늘어도 일정한 성능을 유지하는 구조</li>
+<li><strong>검색 전용 클러스터 분리</strong>: API 서버의 메모리/CPU를 검색이 잠식하지 않도록 검색 워크로드를 별도 인프라로 격리</li>
+<li><strong>운영 독립성</strong>: 동의어 추가, 검색 순위 조정 등을 코드 배포 없이 운영팀이 직접 수행</li>
+</ul>
+<p>자체 Elasticsearch를 구축하는 방안도 검토했지만, 클러스터 운영(노드 교체, 버전 업그레이드, 스냅샷 관리)에 드는 운영 비용이 작은 팀 규모에 맞지 않았습니다. 이미 ECS, Lambda, Redshift 등 AWS 기반으로 인프라를 운영하고 있었기 때문에, AWS 관리형 검색 서비스를 사용하는 것이 운영 부담을 줄이면서도 기존 인프라와 자연스럽게 통합할 수 있는 선택이었습니다.</p>
 <h3 id="opensearch-vs-cloudsearch">OpenSearch vs CloudSearch</h3>
-<p>AWS에는 두 가지 관리형 검색 서비스가 있습니다. 저희는 AWS 생태계 내에서 인프라를 운영 중이었기 때문에, 검색 서비스인 Amazon CloudSearch와 Amazon OpenSearch Service 중 하나를 선택해야 했습니다.</p>
+<p>AWS 관리형 검색 서비스는 Amazon CloudSearch와 Amazon OpenSearch Service 두 가지가 있었습니다.</p>
 <table>
 <thead>
 <tr>
